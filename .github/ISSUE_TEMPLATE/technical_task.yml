@@ -33,25 +33,11 @@ body:
       label: Technical Requirements
       description: Fill in the table with the relevant specifications for this task.
       placeholder: |
-        | Category              | Specification                  |
-        |-----------------------|--------------------------------|
-        | Language / Runtime    | e.g. Node.js 20.x LTS          |
-        | Framework / Library   | e.g. Express 4.18              |
-        | Build / Deploy        | e.g. Docker + GitHub Actions   |
-        | Database              | e.g. PostgreSQL 15             |
-        | Cloud / Infra         | e.g. AWS ECS Fargate           |
-    validations:
-      required: true
-
-  - type: textarea
-    id: dependencies
-    attributes:
-      label: 📦 Required Dependencies / Stack
-      description: List each dependency with its version and purpose.
-      placeholder: |
-        - **dependency-name** `vX.X.X` — purpose / why it's needed
-        - **dependency-name** `vX.X.X` — purpose / why it's needed
-        - **dependency-name** `vX.X.X` — purpose / why it's needed
+        - Language / Runtime e.g. Node.js 20.x LTS
+        - Framework / Library e.g. Express 4.18
+        - Build / Deploy e.g. Docker + GitHub Actions
+        - Database e.g. PostgreSQL 15
+        - Cloud / Infra e.g. AWS ECS Fargate
     validations:
       required: true
 
