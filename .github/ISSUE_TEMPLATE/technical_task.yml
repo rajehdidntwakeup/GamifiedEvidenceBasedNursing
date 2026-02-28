@@ -1,0 +1,151 @@
+name: Technical Task
+description: Use this template for technical implementation tasks (mirrors Jira Technical Task structure)
+title: "[TASK] [Action Verb] + [Component] + [Context] — max 80 chars"
+labels: ["technical-task"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 📋 Summary
+        > **Format:** `[Action verb] + [component] + [context]` — max 80 characters
+        > _Example: "Migrate authentication service to OAuth 2.0 with PKCE flow"_
+
+  - type: textarea
+    id: objective
+    attributes:
+      label: 🎯 Objective
+      description: One sentence describing the business or technical goal this task achieves.
+      placeholder: "e.g. Upgrade the payment gateway integration to support 3DS2 compliance by Q2 deadline."
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        ---
+        ## ⚙️ Technical Requirements
+
+  - type: textarea
+    id: technical-requirements
+    attributes:
+      label: Technical Requirements
+      description: Fill in the table with the relevant specifications for this task.
+      value: |
+        | Category              | Specification                  |
+        |-----------------------|--------------------------------|
+        | Language / Runtime    | e.g. Node.js 20.x LTS          |
+        | Framework / Library   | e.g. Express 4.18              |
+        | Build / Deploy        | e.g. Docker + GitHub Actions   |
+        | Database              | e.g. PostgreSQL 15             |
+        | Cloud / Infra         | e.g. AWS ECS Fargate           |
+    validations:
+      required: true
+
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: 📦 Required Dependencies / Stack
+      description: List each dependency with its version and purpose.
+      placeholder: |
+        - **dependency-name** `vX.X.X` — purpose / why it's needed
+        - **dependency-name** `vX.X.X` — purpose / why it's needed
+        - **dependency-name** `vX.X.X` — purpose / why it's needed
+    validations:
+      required: true
+
+  - type: textarea
+    id: implementation-details
+    attributes:
+      label: 🔧 Implementation Details
+      description: 3–5 specific technical implementation requirements, architectural decisions, or constraints.
+      placeholder: |
+        - Specific technical requirement or architectural decision #1
+        - Specific technical requirement or architectural decision #2
+        - Specific technical requirement or architectural decision #3
+        - Specific technical requirement or architectural decision #4
+        - Specific technical requirement or architectural decision #5
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: ✅ Acceptance Criteria
+      description: Measurable, testable criteria that must be met for this task to be considered complete.
+      value: |
+        - [ ] Measurable, testable criterion #1
+        - [ ] Measurable, testable criterion #2
+        - [ ] Measurable, testable criterion #3
+        - [ ] Measurable, testable criterion #4
+        - [ ] Measurable, testable criterion #5
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        ---
+        ## 🏁 Definition of Done
+
+        - [ ] Code reviewed and approved by at least 1 peer
+        - [ ] All acceptance criteria met and verified
+        - [ ] Tests passing — unit, integration, and/or E2E as applicable
+        - [ ] Documentation updated (README, ADR, API docs, etc.)
+        - [ ] Merged to `main` / target branch with no conflicts
+
+        ---
+
+  - type: dropdown
+    id: story-points
+    attributes:
+      label: 🔢 Story Points
+      description: Estimated complexity using Fibonacci scale.
+      options:
+        - "1 — Trivial"
+        - "2 — Simple"
+        - "3 — Small"
+        - "5 — Medium"
+        - "8 — Large"
+        - "13 — Very Large"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: 🚨 Priority
+      options:
+        - "Highest"
+        - "High"
+        - "Medium"
+        - "Low"
+    validations:
+      required: true
+
+  - type: input
+    id: component
+    attributes:
+      label: 🧩 Component
+      description: Which system or service does this task belong to?
+      placeholder: "e.g. Auth Service, Payment API, Frontend"
+    validations:
+      required: false
+
+  - type: input
+    id: sprint
+    attributes:
+      label: 🗓️ Sprint
+      placeholder: "e.g. Sprint 42"
+    validations:
+      required: false
+
+  - type: input
+    id: linked-issues
+    attributes:
+      label: 🔗 Linked Issues
+      description: Reference any related, blocking, or dependent issues.
+      placeholder: "Closes #___, Depends on #___"
+    validations:
+      required: false
