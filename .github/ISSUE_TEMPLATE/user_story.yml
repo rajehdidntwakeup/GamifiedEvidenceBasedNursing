@@ -1,235 +1,152 @@
 name: User Story
-description: Use this template for feature development work from a user's perspective (mirrors Jira User Story structure)
-title: "[STORY] As a [user type], I want [goal] so that [benefit]"
-labels: ["user-story"]
+description: Create a new user story following Jira-style structure
+title: "[STORY] As a <user>, I want <goal> so that <reason>"
+labels: ["user-story", "needs-refinement"]
 assignees: []
+projects: []
 
 body:
   - type: markdown
     attributes:
       value: |
-        ## 👤 User Story
-        > **Format:** `As a [type of user], I want [an action] so that [a benefit/value]`
-        > _Example: "As a returning customer, I want to save my payment details so that I can check out faster on future purchases."_
-
-  - type: textarea
-    id: user-story
-    attributes:
-      label: 📖 Story Statement
-      description: Write the full user story in the standard format.
-      placeholder: |
-        As a [type of user],
-        I want [to perform some action],
-        so that [I can achieve some goal/benefit].
-    validations:
-      required: true
-
-  - type: textarea
-    id: background
-    attributes:
-      label: 🧠 Background / Context
-      description: Provide any business context, user research, or background that explains why this story matters.
-      placeholder: "e.g. User interviews revealed that 62% of drop-offs occur at the checkout step due to friction in re-entering payment details..."
-    validations:
-      required: false
-
-  - type: markdown
-    attributes:
-      value: |
-        ---
-        ## 👥 User Personas
-
-  - type: textarea
-    id: personas
-    attributes:
-      label: Target Persona(s)
-      description: Who is this story being built for? List the relevant user types.
-      value: |
-        | Persona        | Description                              | Pain Point Being Solved          |
-        |----------------|------------------------------------------|----------------------------------|
-        | [Persona Name] | [Brief description of this user type]   | [What friction does this remove] |
-        | [Persona Name] | [Brief description of this user type]   | [What friction does this remove] |
-    validations:
-      required: false
-
-  - type: markdown
-    attributes:
-      value: |
-        ---
-        ## 🎨 UX / Design
+        ## 📋 User Story Definition
+        Please complete all sections to ensure the story is ready for refinement and estimation.
 
   - type: input
-    id: figma-link
+    id: story_id
     attributes:
-      label: Figma / Design Link
-      description: Link to the relevant Figma file, prototype, or design spec.
-      placeholder: "https://figma.com/file/..."
+      label: Story ID
+      description: Optional tracking ID (e.g., PROJ-123)
+      placeholder: "PROJ-XXX"
     validations:
       required: false
 
   - type: textarea
-    id: ux-notes
+    id: user_story
     attributes:
-      label: UX Notes & Interaction Details
-      description: Describe any specific UI behavior, edge case designs, or interaction states (empty states, loading, errors).
+      label: User Story Statement
+      description: Classic format - Who, What, Why
       placeholder: |
-        - Loading state: show skeleton loader while fetching user data
-        - Empty state: display onboarding prompt if no saved items exist
-        - Error state: show inline error with retry CTA if API call fails
-    validations:
-      required: false
-
-  - type: markdown
-    attributes:
+        As a [type of user],
+        I want [some goal],
+        so that [some reason/benefit].
       value: |
-        ---
-        ## ⚙️ Technical Notes
-
-  - type: textarea
-    id: technical-notes
-    attributes:
-      label: Technical Considerations
-      description: Any known technical constraints, architectural decisions, or dependencies the developer should be aware of.
-      placeholder: |
-        - Must integrate with existing UserProfile service (v2 API)
-        - Payment data must be tokenized — no raw card data stored client-side
-        - Feature flag required for phased rollout (use LaunchDarkly flag: `saved_payments_v1`)
-    validations:
-      required: false
-
-  - type: textarea
-    id: out-of-scope
-    attributes:
-      label: 🚫 Out of Scope
-      description: Explicitly list anything that is NOT part of this story to prevent scope creep.
-      placeholder: |
-        - Editing or deleting saved payment methods (covered in STORY-204)
-        - Support for PayPal or Apple Pay (future iteration)
-        - Admin-side visibility of saved payment tokens
-    validations:
-      required: false
-
-  - type: markdown
-    attributes:
-      value: |
-        ---
-        ## ✅ Acceptance Criteria
-        > Written in **Given / When / Then** format for clarity and testability.
-
-  - type: textarea
-    id: acceptance-criteria
-    attributes:
-      label: Acceptance Criteria
-      description: Each criterion should be independently verifiable. Use Given/When/Then where possible.
-      value: |
-        - [ ] **Given** [precondition], **When** [action], **Then** [expected outcome]
-        - [ ] **Given** [precondition], **When** [action], **Then** [expected outcome]
-        - [ ] **Given** [precondition], **When** [action], **Then** [expected outcome]
-        - [ ] **Given** [precondition], **When** [action], **Then** [expected outcome]
-        - [ ] **Given** [precondition], **When** [action], **Then** [expected outcome]
+        As a 
+        I want 
+        so that
     validations:
       required: true
 
-  - type: markdown
-    attributes:
-      value: |
-        ---
-        ## 🧪 Testing Requirements
-
   - type: textarea
-    id: testing-requirements
+    id: description
     attributes:
-      label: Testing Scope
-      description: Outline what types of testing are required and any specific scenarios to cover.
-      placeholder: |
-        - Unit tests: [specific functions or components to test]
-        - Integration tests: [API contracts or service interactions to validate]
-        - E2E tests: [critical user flows to automate in Cypress/Playwright]
-        - Accessibility: [WCAG 2.1 AA compliance check required]
-        - Browser/device coverage: [Chrome, Safari, Firefox / Mobile responsive]
-    validations:
-      required: false
-
-  - type: markdown
-    attributes:
-      value: |
-        ---
-        ## 🏁 Definition of Done
-
-        - [ ] All acceptance criteria met and verified by QA
-        - [ ] Unit and integration tests written and passing
-        - [ ] Code reviewed and approved by at least 1 peer
-        - [ ] UX reviewed and signed off by designer
-        - [ ] No new accessibility violations introduced
-        - [ ] Feature flag configured (if applicable)
-        - [ ] Documentation updated (API docs, README, Confluence, etc.)
-        - [ ] Product Owner sign-off received
-        - [ ] Merged to `main` / target branch with no conflicts
-
-        ---
-
-  - type: dropdown
-    id: story-points
-    attributes:
-      label: 🔢 Story Points
-      description: Estimated effort using Fibonacci scale.
-      options:
-        - "1 — Trivial"
-        - "2 — Simple"
-        - "3 — Small"
-        - "5 — Medium"
-        - "8 — Large"
-        - "13 — Very Large"
+      label: Description / Context
+      description: Additional context, background, or business justification
+      placeholder: Provide any additional details that help understand the "why" behind this story...
     validations:
       required: true
+
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: Acceptance Criteria (Definition of Done)
+      description: Specific, testable conditions that must be met. Use Gherkin format (Given/When/Then) if helpful.
+      placeholder: |
+        - [ ] Criteria 1: Specific measurable outcome
+        - [ ] Criteria 2: Another testable condition
+        - [ ] Criteria 3: Edge case handling
+      value: |
+        - [ ] 
+        - [ ] 
+        - [ ]
+    validations:
+      required: true
+
+  - type: textarea
+    id: technical_notes
+    attributes:
+      label: Technical Notes / Implementation Details
+      description: Architecture considerations, API changes, database impacts, dependencies
+      placeholder: |
+        - API changes required:
+        - Database migrations needed:
+        - Dependencies on other stories:
+        - Performance considerations:
+    validations:
+      required: false
 
   - type: dropdown
     id: priority
     attributes:
-      label: 🚨 Priority
+      label: Priority
+      description: Business priority level
       options:
-        - "Highest"
-        - "High"
-        - "Medium"
-        - "Low"
+        - Critical (Blocker)
+        - High
+        - Medium
+        - Low
+        - Trivial
+      default: 2
     validations:
       required: true
 
   - type: dropdown
-    id: moscow
+    id: story_points
     attributes:
-      label: 🎯 MoSCoW Prioritisation
-      description: How critical is this story to the current release?
+      label: Story Points (Estimation)
+      description: Fibonacci scale - leave as "Not Estimated" for refinement session
       options:
-        - "Must Have"
-        - "Should Have"
-        - "Could Have"
-        - "Won't Have (this iteration)"
-    validations:
-      required: false
-
-  - type: input
-    id: epic-link
-    attributes:
-      label: 🗺️ Epic Link
-      description: Which Epic does this story belong to?
-      placeholder: "e.g. EPIC-42 — Guest Checkout Optimisation"
+        - Not Estimated
+        - 1
+        - 2
+        - 3
+        - 5
+        - 8
+        - 13
+        - 21
+      default: 0
     validations:
       required: false
 
   - type: input
     id: sprint
     attributes:
-      label: 🗓️ Sprint
-      placeholder: "e.g. Sprint 14"
+      label: Sprint
+      description: Target sprint (if known)
+      placeholder: "Sprint 12"
     validations:
       required: false
 
-  - type: input
-    id: linked-issues
+  - type: textarea
+    id: attachments
     attributes:
-      label: 🔗 Linked Issues
-      description: Reference any related, blocking, or dependent issues.
-      placeholder: "Closes #___, Blocked by #___, Relates to #___"
+      label: Attachments / References
+      description: Links to designs, documentation, related issues, or external resources
+      placeholder: |
+        - Design mockups: [Figma link]
+        - Related issues: #123, #456
+        - Documentation: [Confluence link]
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: definition_of_ready
+    attributes:
+      label: Definition of Ready Checklist
+      description: Ensure this story is ready for development
+      options:
+        - label: User story format is complete (As a... I want... So that...)
+        - label: Acceptance criteria are clear and testable
+        - label: Dependencies identified and linked
+        - label: Design/mockups attached (if UI related)
+        - label: Estimated by the team
+        - label: Small enough to complete in one sprint
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Additional Notes / Discussion
+      description: Any other relevant information, open questions, or discussion points
+      placeholder: Open questions, assumptions, risks, or notes from refinement sessions...
     validations:
       required: false
