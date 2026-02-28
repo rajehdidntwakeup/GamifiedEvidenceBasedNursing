@@ -15,3 +15,6 @@ issue_templates:
   - name: Technical Task
     description: Use this template for technical implementation tasks (mirrors Jira Technical Task structure)
     file: technical_task.yml
+  - name: User Story
+    description: Use this template for user stories (mirrors Jira User Story structure)
+    file: user_story.yml
