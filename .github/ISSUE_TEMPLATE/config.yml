@@ -11,3 +11,7 @@ issue_templates:
     file: bug_issue.yml
   - name: Documentation Issue
     description: Add or update documentation
+    file: documentation_issue.yml
+  - name: Technical Task
+    description: Use this template for technical implementation tasks (mirrors Jira Technical Task structure)
+    file: technical_task.yml

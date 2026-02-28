@@ -1,7 +1,6 @@
 name: Technical Task
 description: Use this template for technical implementation tasks (mirrors Jira Technical Task structure)
-title: "[TASK]: "
-placeholders: [TASK]: [Action Verb] + [Component] + [Context] — max 80 chars
+title: "[TASK]: [Action Verb] + [Component] + [Context] — max 80 chars"
 labels: ["technical-task"]
 assignees: []
 
