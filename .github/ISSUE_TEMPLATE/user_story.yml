@@ -51,10 +51,6 @@ body:
         - [ ] Criteria 1: Specific measurable outcome
         - [ ] Criteria 2: Another testable condition
         - [ ] Criteria 3: Edge case handling
-      value: |
-        - [ ] 
-        - [ ] 
-        - [ ]
     validations:
       required: true
 
