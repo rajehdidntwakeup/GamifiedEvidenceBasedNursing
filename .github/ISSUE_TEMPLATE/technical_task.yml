@@ -1,6 +1,7 @@
 name: Technical Task
 description: Use this template for technical implementation tasks (mirrors Jira Technical Task structure)
-title: "[TASK] [Action Verb] + [Component] + [Context] — max 80 chars"
+title: "[TASK]: "
+placeholders: [TASK]: [Action Verb] + [Component] + [Context] — max 80 chars
 labels: ["technical-task"]
 assignees: []
 
@@ -32,7 +33,7 @@ body:
     attributes:
       label: Technical Requirements
       description: Fill in the table with the relevant specifications for this task.
-      value: |
+      placeholder: |
         | Category              | Specification                  |
         |-----------------------|--------------------------------|
         | Language / Runtime    | e.g. Node.js 20.x LTS          |
@@ -74,7 +75,7 @@ body:
     attributes:
       label: ✅ Acceptance Criteria
       description: Measurable, testable criteria that must be met for this task to be considered complete.
-      value: |
+      placeholder: |
         - [ ] Measurable, testable criterion #1
         - [ ] Measurable, testable criterion #2
         - [ ] Measurable, testable criterion #3
