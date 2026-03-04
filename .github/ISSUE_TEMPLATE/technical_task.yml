@@ -69,16 +69,32 @@ body:
     validations:
       required: true
 
+
   - type: markdown
     attributes:
       value: |
         ---
-        ## 🏁 Definition of Done
+        ## 🏁 Definition of Ready
+        
+        - [ ] The story is well-defined and clear
+        - [ ] Acceptance criteria are well-defined
+        - [ ] All dependencies are clarified
+        - [ ] The story is estimated
+        
+        ---
 
-        - [ ] Code reviewed and approved by at least 1 peer
+  - type: markdown
+    attributes:
+      value: |
+        ---
+        ## ✅ Definition of Done
+
+        - [ ] Code reviewed and approved by at least 1 person on the team
         - [ ] All acceptance criteria met and verified
-        - [ ] Tests passing — unit, integration, and/or E2E as applicable
+        - [ ] Tests passing — unit, integration as applicable
+        - [ ] Four-eyes test performed
         - [ ] Documentation updated (README, ADR, API docs, etc.)
+        - [ ] CI Pipeline is successful
         - [ ] Merged to `main` / target branch with no conflicts
 
         ---

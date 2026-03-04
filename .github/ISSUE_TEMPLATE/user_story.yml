@@ -121,18 +121,34 @@ body:
     validations:
       required: false
 
-  - type: checkboxes
-    id: definition_of_ready
+  - type: markdown
     attributes:
-      label: Definition of Ready Checklist
-      description: Ensure this story is ready for development
-      options:
-        - label: User story format is complete (As a... I want... So that...)
-        - label: Acceptance criteria are clear and testable
-        - label: Dependencies identified and linked
-        - label: Design/mockups attached (if UI related)
-        - label: Estimated by the team
-        - label: Small enough to complete in one sprint
+      value: |
+        ---
+        ## 🏁 Definition of Ready
+      
+        - [ ] The story is well-defined and clear
+        - [ ] Acceptance criteria are well-defined
+        - [ ] All dependencies are clarified
+        - [ ] The story is estimated
+        
+        ---
+
+  - type: markdown
+    attributes:
+      value: |
+        ---
+        ## ✅ Definition of Done
+
+        - [ ] Code reviewed and approved by at least 1 person on the team
+        - [ ] All acceptance criteria met and verified
+        - [ ] Tests passing — unit, integration as applicable
+        - [ ] Four-eyes test performed
+        - [ ] Documentation updated (README, ADR, API docs, etc.)
+        - [ ] CI Pipeline is successful
+        - [ ] Merged to `main` / target branch with no conflicts
+
+        ---
 
   - type: textarea
     id: notes
