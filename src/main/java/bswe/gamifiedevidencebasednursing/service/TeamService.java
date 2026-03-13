@@ -6,7 +6,10 @@ import bswe.gamifiedevidencebasednursing.domain.enums.Location;
 import bswe.gamifiedevidencebasednursing.domain.enums.Mission;
 import bswe.gamifiedevidencebasednursing.domain.enums.Status;
 import bswe.gamifiedevidencebasednursing.repository.TeamRepository;
+import bswe.gamifiedevidencebasednursing.websocket.dto.TeamProgressUpdate;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class TeamService {
@@ -29,5 +32,36 @@ public class TeamService {
       throw new IllegalStateException("Failed to create team");
     }
     return team.getId();
+  }
+
+  /**
+   * Get team progress for WebSocket updates.
+   *
+   * @param teamId the team ID
+   * @return optional containing team progress
+   */
+  public Optional<TeamProgressUpdate> getTeamProgress(Long teamId) {
+    return teamRepository.findById(teamId)
+        .map(team -> new TeamProgressUpdate(
+            team.getId(),
+            team.getMission().name(),
+            team.getLocation(),
+            team.getStatus(),
+            calculateScore(team),
+            roomService.getRoomTimer(team),
+            getCurrentQuestion(team),
+            team.isWinner(),
+            null
+        ));
+  }
+
+  private Integer calculateScore(Team team) {
+    // TODO: Implement actual score calculation based on answered questions
+    return 0;
+  }
+
+  private String getCurrentQuestion(Team team) {
+    // TODO: Implement getting current question from team's current room
+    return null;
   }
 }
