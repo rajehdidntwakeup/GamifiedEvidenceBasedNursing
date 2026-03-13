@@ -101,9 +101,10 @@ public class TeamService {
    */
   private TeamDto toTeamDto(Team team) {
     return new TeamDto(
-        team.getStatus(),
-        team.getLocation(),
-        team.getMission(),
+        team.getId(),
+        team.getMission().name(),
+        team.getStatus().name(),
+        team.getLocation().name(),
         team.isWinner(),
         team.getGame().getId()
     );
