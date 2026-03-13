@@ -71,6 +71,18 @@ public class Room {
   public void setTeam(Team team) {
     this.team = team;
   }
+
+  public void setStatus(Status status) {
+    this.status = status;
+  }
+
+  public void setLocation(Location location) {
+    this.location = location;
+  }
+
+  public void setTimer(int timer) {
+    this.timer = timer;
+  }
   public Set<Question> getQuestions() {
     return questions;
   }

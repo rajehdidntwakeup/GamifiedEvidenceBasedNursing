@@ -105,13 +105,19 @@ public class LeaderboardService {
       allEntries.addAll(buildLeaderboard(game));
     }
 
-    return allEntries.stream()
+    List<LeaderboardEntryDto> sorted = allEntries.stream()
         .sorted(Comparator.comparingInt(LeaderboardEntryDto::score).reversed())
-        .map((entry, index) -> new LeaderboardEntryDto(
+        .collect(Collectors.toList());
+    
+    // Re-rank with index
+    List<LeaderboardEntryDto> result = new ArrayList<>();
+    for (int i = 0; i < sorted.size(); i++) {
+        LeaderboardEntryDto entry = sorted.get(i);
+        result.add(new LeaderboardEntryDto(
             entry.teamId(),
             entry.teamName(),
             entry.mission(),
-            index + 1, // Re-rank globally
+            i + 1, // Re-rank globally
             entry.score(),
             entry.totalQuestions(),
             entry.correctAnswers(),
@@ -123,8 +129,9 @@ public class LeaderboardService {
             entry.gameId(),
             entry.gamePassword(),
             entry.lastUpdated()
-        ))
-        .collect(Collectors.toList());
+        ));
+    }
+    return result;
   }
 
   /**
@@ -139,14 +146,19 @@ public class LeaderboardService {
         .filter(t -> t.getMission().name().equalsIgnoreCase(missionName))
         .collect(Collectors.toList());
 
-    return teams.stream()
+    List<LeaderboardEntryDto> sorted = teams.stream()
         .map(this::toLeaderboardEntry)
         .sorted(Comparator.comparingInt(LeaderboardEntryDto::score).reversed())
-        .map((entry, index) -> new LeaderboardEntryDto(
+        .collect(Collectors.toList());
+    
+    List<LeaderboardEntryDto> result = new ArrayList<>();
+    for (int i = 0; i < sorted.size(); i++) {
+        LeaderboardEntryDto entry = sorted.get(i);
+        result.add(new LeaderboardEntryDto(
             entry.teamId(),
             entry.teamName(),
             entry.mission(),
-            index + 1,
+            i + 1,
             entry.score(),
             entry.totalQuestions(),
             entry.correctAnswers(),
@@ -158,8 +170,9 @@ public class LeaderboardService {
             entry.gameId(),
             entry.gamePassword(),
             entry.lastUpdated()
-        ))
-        .collect(Collectors.toList());
+        ));
+    }
+    return result;
   }
 
   /**
@@ -270,12 +283,14 @@ public class LeaderboardService {
     entries.sort(Comparator.comparingInt(LeaderboardEntryDto::score).reversed());
 
     // Re-assign ranks
-    return entries.stream()
-        .map((entry, index) -> new LeaderboardEntryDto(
+    List<LeaderboardEntryDto> result = new ArrayList<>();
+    for (int i = 0; i < entries.size(); i++) {
+        LeaderboardEntryDto entry = entries.get(i);
+        result.add(new LeaderboardEntryDto(
             entry.teamId(),
             entry.teamName(),
             entry.mission(),
-            index + 1,
+            i + 1,
             entry.score(),
             entry.totalQuestions(),
             entry.correctAnswers(),
@@ -286,9 +301,10 @@ public class LeaderboardService {
             entry.status(),
             entry.gameId(),
             entry.gamePassword(),
-            Instant.now()
-        ))
-        .collect(Collectors.toList());
+            entry.lastUpdated()
+        ));
+    }
+    return result;
   }
 
   private LeaderboardEntryDto toLeaderboardEntry(Team team) {

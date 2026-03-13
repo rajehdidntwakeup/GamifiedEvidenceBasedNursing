@@ -2,14 +2,18 @@ package bswe.gamifiedevidencebasednursing.service;
 
 import bswe.gamifiedevidencebasednursing.domain.Game;
 import bswe.gamifiedevidencebasednursing.domain.Team;
+import bswe.gamifiedevidencebasednursing.domain.dto.TeamDto;
 import bswe.gamifiedevidencebasednursing.domain.enums.Location;
 import bswe.gamifiedevidencebasednursing.domain.enums.Mission;
 import bswe.gamifiedevidencebasednursing.domain.enums.Status;
+import bswe.gamifiedevidencebasednursing.repository.GameRepository;
 import bswe.gamifiedevidencebasednursing.repository.TeamRepository;
 import bswe.gamifiedevidencebasednursing.websocket.dto.TeamProgressUpdate;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TeamService {
@@ -63,5 +67,47 @@ public class TeamService {
   private String getCurrentQuestion(Team team) {
     // TODO: Implement getting current question from team's current room
     return null;
+  }
+
+  /**
+   * Get team by ID.
+   *
+   * @param teamId the team ID
+   * @return team DTO
+   */
+  public TeamDto getTeamById(Long teamId) {
+    Team team = teamRepository.findById(teamId)
+        .orElseThrow(() -> new IllegalArgumentException("Team not found"));
+    return toTeamDto(team);
+  }
+
+  /**
+   * Get all teams in a game.
+   *
+   * @param gameId the game ID
+   * @return list of team DTOs
+   */
+  public List<TeamDto> getTeamsByGameId(Long gameId) {
+    return teamRepository.findAll().stream()
+        .filter(team -> team.getGame().getId().equals(gameId))
+        .map(this::toTeamDto)
+        .collect(Collectors.toList());
+  }
+
+  /**
+   * Convert Team to TeamDto.
+   *
+   * @param team the team entity
+   * @return team DTO
+   */
+  private TeamDto toTeamDto(Team team) {
+    return new TeamDto(
+        team.getId(),
+        team.getMission().name(),
+        team.getStatus().name(),
+        team.getLocation().name(),
+        team.isWinner(),
+        team.getGame().getId()
+    );
   }
 }

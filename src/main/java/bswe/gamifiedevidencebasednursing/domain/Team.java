@@ -67,6 +67,18 @@ public class Team {
     return isWinner;
   }
 
+  public void setWinner(boolean winner) {
+    this.isWinner = winner;
+  }
+
+  public void setStatus(Status status) {
+    this.status = status;
+  }
+
+  public void setLocation(Location location) {
+    this.location = location;
+  }
+
   public void setGame(Game game) {
     this.game = game;
   }
