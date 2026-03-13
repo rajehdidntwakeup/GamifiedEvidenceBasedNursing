@@ -1,10 +1,11 @@
 package bswe.gamifiedevidencebasednursing.controller;
 
+import bswe.gamifiedevidencebasednursing.domain.dto.request.CreateGameRequest;
 import bswe.gamifiedevidencebasednursing.domain.dto.response.GameResponseDto;
 import bswe.gamifiedevidencebasednursing.service.GameService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,8 +21,8 @@ public class GameController {
 
 
   @PostMapping("/create")
-  public ResponseEntity<GameResponseDto> createGame(@PathVariable String password) {
-    GameResponseDto gameResponseDto = gameService.createGame(password);
+  public ResponseEntity<GameResponseDto> createGame(@RequestBody CreateGameRequest request) {
+    GameResponseDto gameResponseDto = gameService.createGame(request.password());
     if (gameResponseDto != null) {
       return ResponseEntity.ok(gameResponseDto);
     } else {
