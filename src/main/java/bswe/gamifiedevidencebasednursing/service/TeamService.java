@@ -6,7 +6,6 @@ import bswe.gamifiedevidencebasednursing.domain.dto.TeamDto;
 import bswe.gamifiedevidencebasednursing.domain.enums.Location;
 import bswe.gamifiedevidencebasednursing.domain.enums.Mission;
 import bswe.gamifiedevidencebasednursing.domain.enums.Status;
-import bswe.gamifiedevidencebasednursing.repository.GameRepository;
 import bswe.gamifiedevidencebasednursing.repository.TeamRepository;
 import bswe.gamifiedevidencebasednursing.websocket.dto.TeamProgressUpdate;
 import org.springframework.stereotype.Service;
@@ -102,10 +101,9 @@ public class TeamService {
    */
   private TeamDto toTeamDto(Team team) {
     return new TeamDto(
-        team.getId(),
-        team.getMission().name(),
-        team.getStatus().name(),
-        team.getLocation().name(),
+        team.getStatus(),
+        team.getLocation(),
+        team.getMission(),
         team.isWinner(),
         team.getGame().getId()
     );
