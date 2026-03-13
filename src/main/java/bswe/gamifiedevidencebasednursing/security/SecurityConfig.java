@@ -2,9 +2,11 @@ package bswe.gamifiedevidencebasednursing.security;
 
 import bswe.gamifiedevidencebasednursing.repository.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -21,6 +23,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 /**
  * Security configuration for the application.
@@ -54,14 +59,15 @@ public class SecurityConfig {
     http
         .csrf(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(auth -> auth
+            .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
             .requestMatchers("/h2-console/**", "/error").permitAll()
-            .requestMatchers("/auth/**", "/v3/api-docs/**").permitAll()
+            .requestMatchers("/auth/**", "/api/auth/**", "/v3/api-docs/**").permitAll()
             .requestMatchers(HttpMethod.POST, "/admin/**").hasRole("ADMIN")
             .requestMatchers(HttpMethod.PUT, "/admin/**").hasRole("ADMIN")
             .requestMatchers(HttpMethod.DELETE, "/admin/**").hasRole("ADMIN")
             .anyRequest().authenticated()
         )
-        .cors(AbstractHttpConfigurer::disable)
+        .cors(Customizer.withDefaults())
         .headers(headers -> headers
             .frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
         .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -137,5 +143,18 @@ public class SecurityConfig {
   public UserDetailsService userDetailsService() {
     return username -> userRepository.findByUsername(username)
         .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+  }
+
+  @Bean
+  public CorsConfigurationSource corsConfigurationSource() {
+    CorsConfiguration config = new CorsConfiguration();
+    config.setAllowedOrigins(List.of("http://localhost:5173"));
+    config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+    config.setAllowedHeaders(List.of("*"));
+    config.setAllowCredentials(true);
+
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", config);
+    return source;
   }
 }
