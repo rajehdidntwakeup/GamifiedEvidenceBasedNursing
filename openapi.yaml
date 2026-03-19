@@ -1,0 +1,1545 @@
+openapi: 3.0.3
+info:
+  title: Gamified Evidence-Based Nursing API
+  version: 1.0.0
+  description: OpenAPI spec generated from Spring controller mappings in this repository.
+servers:
+  - url: http://localhost:8080
+security:
+  - bearerAuth: []
+tags:
+  - name: Auth
+  - name: Game
+  - name: Team
+  - name: Room
+  - name: Leaderboard
+  - name: Completion
+  - name: Admin
+
+paths:
+  /api/auth/register:
+    post:
+      tags: [Auth]
+      operationId: registerApiAuth
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthRequest'
+      responses:
+        '200':
+          description: Registered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+  /api/auth/login:
+    post:
+      tags: [Auth]
+      operationId: loginApiAuth
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthRequest'
+      responses:
+        '200':
+          description: Authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /api/auth/authenticate:
+    post:
+      tags: [Auth]
+      operationId: authenticateApiAuth
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthRequest'
+      responses:
+        '200':
+          description: Authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /auth/register:
+    post:
+      tags: [Auth]
+      operationId: registerLegacyAuth
+      deprecated: true
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthRequest'
+      responses:
+        '200':
+          description: Registered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+  /auth/login:
+    post:
+      tags: [Auth]
+      operationId: loginLegacyAuth
+      deprecated: true
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthRequest'
+      responses:
+        '200':
+          description: Authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /auth/authenticate:
+    post:
+      tags: [Auth]
+      operationId: authenticateLegacyAuth
+      deprecated: true
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthRequest'
+      responses:
+        '200':
+          description: Authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/game/create:
+    post:
+      tags: [Game]
+      operationId: createGame
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateGameRequest'
+      responses:
+        '200':
+          description: Game created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameResponseDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/teams/{teamId}:
+    get:
+      tags: [Team]
+      operationId: getTeam
+      parameters:
+        - $ref: '#/components/parameters/teamIdPath'
+      responses:
+        '200':
+          description: Team
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamDto'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /api/teams/game/{gameId}:
+    get:
+      tags: [Team]
+      operationId: getTeamsByGame
+      parameters:
+        - $ref: '#/components/parameters/gameIdPath'
+      responses:
+        '200':
+          description: Teams
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TeamDto'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /api/teams/{teamId}/progress:
+    get:
+      tags: [Team]
+      operationId: getTeamProgress
+      parameters:
+        - $ref: '#/components/parameters/teamIdPath'
+      responses:
+        '200':
+          description: Team progress
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamProgressResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/rooms/{roomId}/status:
+    get:
+      tags: [Room]
+      operationId: getRoomStatus
+      parameters:
+        - $ref: '#/components/parameters/roomIdPath'
+        - $ref: '#/components/parameters/teamIdQuery'
+      responses:
+        '200':
+          description: Room status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoomStatusResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /api/rooms/{roomId}/questions:
+    get:
+      tags: [Room]
+      operationId: getRoomQuestions
+      parameters:
+        - $ref: '#/components/parameters/roomIdPath'
+        - $ref: '#/components/parameters/teamIdQuery'
+      responses:
+        '200':
+          description: Questions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/QuestionDto'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /api/rooms/{roomId}/submit-answer:
+    post:
+      tags: [Room]
+      operationId: submitAnswer
+      parameters:
+        - $ref: '#/components/parameters/roomIdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmitAnswerRequest'
+      responses:
+        '200':
+          description: Submission result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubmitAnswerResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /api/rooms/{roomId}/questions/{questionId}/hint:
+    post:
+      tags: [Room]
+      operationId: getHint
+      parameters:
+        - $ref: '#/components/parameters/roomIdPath'
+        - $ref: '#/components/parameters/questionIdPath'
+        - $ref: '#/components/parameters/teamIdQuery'
+      responses:
+        '200':
+          description: Hint text
+          content:
+            text/plain:
+              schema:
+                type: string
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /api/rooms/{roomId}/questions/{questionId}/skip:
+    post:
+      tags: [Room]
+      operationId: skipQuestion
+      parameters:
+        - $ref: '#/components/parameters/roomIdPath'
+        - $ref: '#/components/parameters/questionIdPath'
+        - $ref: '#/components/parameters/teamIdQuery'
+      responses:
+        '200':
+          description: Updated room status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoomStatusResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/rooms/room-of-knowledge:
+    get:
+      tags: [Room]
+      operationId: getRoomOfKnowledgeQuestionList
+      parameters:
+        - name: gameId
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: mission
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/Mission'
+        - name: password
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of Room of Knowledge questions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RoomOfKnowledgeQuestionDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/leaderboard/games/{gameId}:
+    get:
+      tags: [Leaderboard]
+      operationId: getGameLeaderboard
+      parameters:
+        - $ref: '#/components/parameters/gameIdPath'
+      responses:
+        '200':
+          description: Leaderboard entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LeaderboardEntryDto'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /api/leaderboard/games/{gameId}/my-position:
+    get:
+      tags: [Leaderboard]
+      operationId: getMyPosition
+      parameters:
+        - $ref: '#/components/parameters/gameIdPath'
+        - $ref: '#/components/parameters/teamIdQuery'
+      responses:
+        '200':
+          description: Team position
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeaderboardEntryDto'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /api/leaderboard/games/{gameId}/top:
+    get:
+      tags: [Leaderboard]
+      operationId: getTopTeams
+      parameters:
+        - $ref: '#/components/parameters/gameIdPath'
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            format: int32
+            default: 10
+      responses:
+        '200':
+          description: Top teams
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LeaderboardEntryDto'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /api/leaderboard/global:
+    get:
+      tags: [Leaderboard]
+      operationId: getGlobalLeaderboard
+      responses:
+        '200':
+          description: Global leaderboard
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LeaderboardEntryDto'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /api/leaderboard/global/mission/{mission}:
+    get:
+      tags: [Leaderboard]
+      operationId: getMissionLeaderboard
+      parameters:
+        - name: mission
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Mission leaderboard
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LeaderboardEntryDto'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /api/leaderboard/filter:
+    post:
+      tags: [Leaderboard]
+      operationId: getFilteredLeaderboard
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LeaderboardFilterDto'
+      responses:
+        '200':
+          description: Filtered leaderboard
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LeaderboardEntryDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /api/leaderboard/games/{gameId}/teams/{teamId}/history:
+    get:
+      tags: [Leaderboard]
+      operationId: getTeamHistory
+      parameters:
+        - $ref: '#/components/parameters/gameIdPath'
+        - $ref: '#/components/parameters/teamIdPath'
+      responses:
+        '200':
+          description: Team ranking history
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LeaderboardHistoryEntry'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /api/leaderboard/games/{gameId}/teams/{teamId}/neighbors:
+    get:
+      tags: [Leaderboard]
+      operationId: getTeamNeighbors
+      parameters:
+        - $ref: '#/components/parameters/gameIdPath'
+        - $ref: '#/components/parameters/teamIdPath'
+        - name: range
+          in: query
+          schema:
+            type: integer
+            format: int32
+            default: 2
+      responses:
+        '200':
+          description: Neighbor teams
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LeaderboardEntryDto'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /api/leaderboard/games/{gameId}/live:
+    get:
+      tags: [Leaderboard]
+      operationId: getLiveSubscriptionInfo
+      parameters:
+        - $ref: '#/components/parameters/gameIdPath'
+      responses:
+        '200':
+          description: Live subscription metadata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeaderboardLiveInfoDto'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/completion/teams/{teamId}/status:
+    get:
+      tags: [Completion]
+      operationId: checkTeamCompletion
+      parameters:
+        - $ref: '#/components/parameters/teamIdPath'
+      responses:
+        '200':
+          description: Completion status
+          content:
+            application/json:
+              schema:
+                type: boolean
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /api/completion/teams/{teamId}/complete:
+    post:
+      tags: [Completion]
+      operationId: completeTeamGame
+      parameters:
+        - $ref: '#/components/parameters/teamIdPath'
+      responses:
+        '200':
+          description: Team completion details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameCompletionDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /api/completion/games/{gameId}/check:
+    get:
+      tags: [Completion]
+      operationId: checkGameCompletion
+      parameters:
+        - $ref: '#/components/parameters/gameIdPath'
+      responses:
+        '200':
+          description: Game result if complete, otherwise null
+          content:
+            application/json:
+              schema:
+                nullable: true
+                allOf:
+                  - $ref: '#/components/schemas/GameResultDto'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /api/completion/games/{gameId}/results:
+    get:
+      tags: [Completion]
+      operationId: getGameResults
+      parameters:
+        - $ref: '#/components/parameters/gameIdPath'
+      responses:
+        '200':
+          description: Final game results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameResultDto'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /api/completion/games/{gameId}/force-end:
+    post:
+      tags: [Completion]
+      operationId: forceEndGame
+      description: Requires ADMIN role.
+      parameters:
+        - $ref: '#/components/parameters/gameIdPath'
+      responses:
+        '200':
+          description: Forced final result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameResultDto'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /api/completion/games/{gameId}/winner:
+    get:
+      tags: [Completion]
+      operationId: getWinner
+      parameters:
+        - $ref: '#/components/parameters/gameIdPath'
+      responses:
+        '200':
+          description: Winner details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WinnerResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: No winner available
+  /api/admin/isThereAdmin:
+    get:
+      tags: [Admin]
+      operationId: isThereAdmin
+      security: []
+      responses:
+        '200':
+          description: Whether an administrator game exists
+          content:
+            application/json:
+              schema:
+                type: boolean
+  /api/admin/games:
+    get:
+      tags: [Admin]
+      operationId: getAllAdminGames
+      description: Requires ADMIN role.
+      responses:
+        '200':
+          description: All games for admin dashboard
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AdminGameDto'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /api/admin/games/{gameId}:
+    get:
+      tags: [Admin]
+      operationId: getAdminGameDetails
+      description: Requires ADMIN role.
+      parameters:
+        - $ref: '#/components/parameters/gameIdPath'
+      responses:
+        '200':
+          description: Game details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminGameDto'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags: [Admin]
+      operationId: deleteAdminGame
+      description: Requires ADMIN role.
+      parameters:
+        - $ref: '#/components/parameters/gameIdPath'
+      responses:
+        '204':
+          description: Deleted
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/admin/games/{gameId}/teams:
+    get:
+      tags: [Admin]
+      operationId: getAdminGameTeams
+      description: Requires ADMIN role.
+      parameters:
+        - $ref: '#/components/parameters/gameIdPath'
+      responses:
+        '200':
+          description: Teams in game
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AdminTeamDto'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /api/admin/games/{gameId}/teams/{teamId}:
+    get:
+      tags: [Admin]
+      operationId: getAdminTeamDetails
+      description: Requires ADMIN role.
+      parameters:
+        - $ref: '#/components/parameters/gameIdPath'
+        - $ref: '#/components/parameters/teamIdPath'
+      responses:
+        '200':
+          description: Team details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminTeamDto'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/admin/games/{gameId}/start:
+    post:
+      tags: [Admin]
+      operationId: startAdminGame
+      description: Requires ADMIN role.
+      parameters:
+        - $ref: '#/components/parameters/gameIdPath'
+      responses:
+        '200':
+          description: Updated game state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminGameDto'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /api/admin/games/{gameId}/end:
+    post:
+      tags: [Admin]
+      operationId: endAdminGame
+      description: Requires ADMIN role.
+      parameters:
+        - $ref: '#/components/parameters/gameIdPath'
+      responses:
+        '200':
+          description: Updated game state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminGameDto'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /api/admin/games/{gameId}/teams/{teamId}/reset:
+    post:
+      tags: [Admin]
+      operationId: resetAdminTeamProgress
+      description: Requires ADMIN role.
+      parameters:
+        - $ref: '#/components/parameters/gameIdPath'
+        - $ref: '#/components/parameters/teamIdPath'
+      responses:
+        '200':
+          description: Reset team state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminTeamDto'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /api/admin/games/{gameId}/analytics:
+    get:
+      tags: [Admin]
+      operationId: getAdminGameAnalytics
+      description: Requires ADMIN role.
+      parameters:
+        - $ref: '#/components/parameters/gameIdPath'
+      responses:
+        '200':
+          description: Game analytics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminAnalyticsDto'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /api/admin/analytics:
+    get:
+      tags: [Admin]
+      operationId: getAdminGlobalAnalytics
+      description: Requires ADMIN role.
+      responses:
+        '200':
+          description: Global analytics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminAnalyticsDto'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /api/admin/games/{gameId}/export:
+    get:
+      tags: [Admin]
+      operationId: exportAdminGameResults
+      description: Requires ADMIN role.
+      parameters:
+        - $ref: '#/components/parameters/gameIdPath'
+      responses:
+        '200':
+          description: CSV export
+          content:
+            text/csv:
+              schema:
+                type: string
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    gameIdPath:
+      name: gameId
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+    teamIdPath:
+      name: teamId
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+    roomIdPath:
+      name: roomId
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+    questionIdPath:
+      name: questionId
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+    teamIdQuery:
+      name: teamId
+      in: query
+      required: true
+      schema:
+        type: integer
+        format: int64
+
+  responses:
+    BadRequest:
+      description: Invalid request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Unauthorized:
+      description: Missing or invalid authentication
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Forbidden:
+      description: Authenticated but not authorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+  schemas:
+    AuthRequest:
+      type: object
+      required: [username, password]
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+          format: password
+
+    AuthResponse:
+      type: object
+      required: [token, isAdmin]
+      properties:
+        token:
+          type: string
+        isAdmin:
+          type: boolean
+
+    CreateGameRequest:
+      type: object
+      required: [password]
+      properties:
+        password:
+          type: string
+
+    GameResponseDto:
+      type: object
+      properties:
+        gameId:
+          type: integer
+          format: int64
+        teamMissions:
+          type: object
+          additionalProperties:
+            type: integer
+            format: int64
+
+    TeamDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        mission:
+          type: string
+        status:
+          type: string
+        location:
+          type: string
+        isWinner:
+          type: boolean
+        gameId:
+          type: integer
+          format: int64
+
+    TeamProgressResponse:
+      type: object
+      properties:
+        teamId:
+          type: integer
+          format: int64
+        currentRoom:
+          type: integer
+          format: int32
+        totalScore:
+          type: integer
+          format: int32
+        questionsAnswered:
+          type: integer
+          format: int32
+        isWinner:
+          type: boolean
+
+    QuestionDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        title:
+          type: string
+        image:
+          type: string
+          nullable: true
+        answers:
+          type: array
+          items:
+            $ref: '#/components/schemas/AnswerDto'
+
+    RoomOfKnowledgeQuestionDto:
+      type: object
+      properties:
+        question:
+          type: string
+        answers:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoomOfKnowledgeAnswerDto'
+
+    RoomOfKnowledgeAnswerDto:
+      type: object
+      properties:
+        answer:
+          type: string
+        isCorrect:
+          type: boolean
+
+    AnswerDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        text:
+          type: string
+
+    SubmitAnswerRequest:
+      type: object
+      required: [teamId, roomId, questionId, answerId]
+      properties:
+        teamId:
+          type: integer
+          format: int64
+        roomId:
+          type: integer
+          format: int64
+        questionId:
+          type: integer
+          format: int64
+        answerId:
+          type: integer
+          format: int64
+
+    SubmitAnswerResponse:
+      type: object
+      properties:
+        correct:
+          type: boolean
+        pointsEarned:
+          type: integer
+          format: int32
+        newTotalScore:
+          type: integer
+          format: int32
+        feedback:
+          type: string
+        roomCompleted:
+          type: boolean
+        nextQuestionId:
+          type: integer
+          format: int64
+          nullable: true
+
+    RoomStatusResponse:
+      type: object
+      properties:
+        roomId:
+          type: integer
+          format: int64
+        location:
+          $ref: '#/components/schemas/Location'
+        status:
+          $ref: '#/components/schemas/Status'
+        timerRemaining:
+          type: integer
+          format: int32
+        totalQuestions:
+          type: integer
+          format: int32
+        answeredQuestions:
+          type: integer
+          format: int32
+        questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuestionDto'
+        isComplete:
+          type: boolean
+
+    LeaderboardEntryDto:
+      type: object
+      properties:
+        teamId:
+          type: integer
+          format: int64
+        teamName:
+          type: string
+        mission:
+          type: string
+        rank:
+          type: integer
+          format: int32
+        score:
+          type: integer
+          format: int32
+        totalQuestions:
+          type: integer
+          format: int32
+        correctAnswers:
+          type: integer
+          format: int32
+        hintsUsed:
+          type: integer
+          format: int32
+        completionTimeMinutes:
+          type: integer
+          format: int32
+        accuracyPercentage:
+          type: number
+          format: double
+        isCurrentUser:
+          type: boolean
+        status:
+          $ref: '#/components/schemas/LeaderboardTrendStatus'
+        gameId:
+          type: integer
+          format: int64
+        gamePassword:
+          type: string
+        lastUpdated:
+          type: string
+          format: date-time
+
+    LeaderboardHistoryEntry:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        rank:
+          type: integer
+          format: int32
+        score:
+          type: integer
+          format: int32
+        event:
+          type: string
+
+    LeaderboardFilterDto:
+      type: object
+      properties:
+        gameId:
+          type: integer
+          format: int64
+        mission:
+          type: string
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+        minScore:
+          type: integer
+          format: int32
+        maxScore:
+          type: integer
+          format: int32
+        completedOnly:
+          type: boolean
+        activeOnly:
+          type: boolean
+        sortBy:
+          $ref: '#/components/schemas/SortBy'
+        sortOrder:
+          $ref: '#/components/schemas/SortOrder'
+        limit:
+          type: integer
+          format: int32
+          default: 50
+        offset:
+          type: integer
+          format: int32
+          default: 0
+
+    LeaderboardLiveInfoDto:
+      type: object
+      properties:
+        leaderboardTopic:
+          type: string
+        scoreUpdatesTopic:
+          type: string
+        description:
+          type: string
+
+    GameCompletionDto:
+      type: object
+      properties:
+        teamId:
+          type: integer
+          format: int64
+        teamName:
+          type: string
+        finalScore:
+          type: integer
+          format: int32
+        completionTimeMinutes:
+          type: integer
+          format: int32
+        gameId:
+          type: integer
+          format: int64
+        completedAt:
+          type: string
+          format: date-time
+        finalRanking:
+          type: integer
+          format: int32
+
+    GameResultDto:
+      type: object
+      properties:
+        gameId:
+          type: integer
+          format: int64
+        startTime:
+          type: string
+          format: date-time
+        endTime:
+          type: string
+          format: date-time
+        durationMinutes:
+          type: integer
+          format: int64
+        winnerId:
+          type: integer
+          format: int64
+          nullable: true
+        winnerName:
+          type: string
+          nullable: true
+        teamResults:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamResultDto'
+
+    TeamResultDto:
+      type: object
+      properties:
+        teamId:
+          type: integer
+          format: int64
+        teamName:
+          type: string
+        score:
+          type: integer
+          format: int32
+        completionTimeMinutes:
+          type: integer
+          format: int32
+        isWinner:
+          type: boolean
+        finalRanking:
+          type: integer
+          format: int32
+
+    WinnerResponse:
+      type: object
+      properties:
+        teamId:
+          type: integer
+          format: int64
+        teamName:
+          type: string
+        finalScore:
+          type: integer
+          format: int32
+        gameDurationMinutes:
+          type: integer
+          format: int64
+
+    AdminGameDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        password:
+          type: string
+        beginTime:
+          type: string
+          format: date-time
+        endTime:
+          type: string
+          format: date-time
+          nullable: true
+        status:
+          $ref: '#/components/schemas/Status'
+        teamCount:
+          type: integer
+          format: int32
+        activeTeams:
+          type: integer
+          format: int32
+        completedTeams:
+          type: integer
+          format: int32
+        teams:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdminTeamSummaryDto'
+        winningTeamId:
+          type: integer
+          format: int64
+          nullable: true
+        winningTeamName:
+          type: string
+          nullable: true
+
+    AdminTeamSummaryDto:
+      type: object
+      properties:
+        teamId:
+          type: integer
+          format: int64
+        mission:
+          type: string
+        status:
+          $ref: '#/components/schemas/Status'
+        score:
+          type: integer
+          format: int32
+
+    AdminTeamDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        mission:
+          $ref: '#/components/schemas/Mission'
+        status:
+          $ref: '#/components/schemas/Status'
+        currentLocation:
+          $ref: '#/components/schemas/Location'
+        score:
+          type: integer
+          format: int32
+        questionsAnswered:
+          type: integer
+          format: int32
+        questionsCorrect:
+          type: integer
+          format: int32
+        hintsUsed:
+          type: integer
+          format: int32
+        timeRemaining:
+          type: integer
+          format: int32
+        startTime:
+          type: string
+          format: date-time
+        completionTime:
+          type: string
+          format: date-time
+          nullable: true
+        gameId:
+          type: integer
+          format: int64
+        gamePassword:
+          type: string
+        isWinner:
+          type: boolean
+        questionAttempts:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdminQuestionAttemptDto'
+
+    AdminQuestionAttemptDto:
+      type: object
+      properties:
+        questionId:
+          type: integer
+          format: int64
+        questionTitle:
+          type: string
+        correct:
+          type: boolean
+        pointsEarned:
+          type: integer
+          format: int32
+        hintUsed:
+          type: boolean
+        answeredAt:
+          type: string
+          format: date-time
+
+    AdminAnalyticsDto:
+      type: object
+      properties:
+        totalGames:
+          type: integer
+          format: int32
+        activeGames:
+          type: integer
+          format: int32
+        completedGames:
+          type: integer
+          format: int32
+        totalTeams:
+          type: integer
+          format: int32
+        totalPlayers:
+          type: integer
+          format: int32
+        averageCompletionTime:
+          type: number
+          format: double
+        averageScore:
+          type: number
+          format: double
+        successRate:
+          type: number
+          format: double
+        missionStats:
+          type: array
+          items:
+            $ref: '#/components/schemas/MissionStatsDto'
+        questionDifficulty:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuestionDifficultyDto'
+        gamesPerDay:
+          type: object
+          additionalProperties:
+            type: integer
+            format: int32
+        topTeams:
+          type: array
+          items:
+            $ref: '#/components/schemas/TopTeamDto'
+        startTime:
+          type: string
+          format: date-time
+          nullable: true
+        endTime:
+          type: string
+          format: date-time
+          nullable: true
+
+    MissionStatsDto:
+      type: object
+      properties:
+        mission:
+          type: string
+        totalAttempts:
+          type: integer
+          format: int32
+        completions:
+          type: integer
+          format: int32
+        averageScore:
+          type: number
+          format: double
+        averageTime:
+          type: number
+          format: double
+
+    QuestionDifficultyDto:
+      type: object
+      properties:
+        questionId:
+          type: integer
+          format: int64
+        title:
+          type: string
+        totalAttempts:
+          type: integer
+          format: int32
+        correctAttempts:
+          type: integer
+          format: int32
+        successRate:
+          type: number
+          format: double
+        averageTimeToAnswer:
+          type: number
+          format: double
+
+    TopTeamDto:
+      type: object
+      properties:
+        teamId:
+          type: integer
+          format: int64
+        mission:
+          type: string
+        score:
+          type: integer
+          format: int32
+        completionTimeMinutes:
+          type: integer
+          format: int32
+        completedAt:
+          type: string
+          format: date-time
+          nullable: true
+
+    Location:
+      type: string
+      enum: [START, ROOM_OF_KNOWLEDGE, ROOM_OF_ABSTRACTS, ROOM_OF_ANALYTICS, ROOM_OF_SCIENCE_BATTLE, LAST_QUIZ, END_STATE]
+
+    Mission:
+      type: string
+      enum:
+        - WOUND_CARE_FOR_PRESSURE_ULCERS
+        - FALL_PREVENTION_IN_GERIATRICS
+        - PAIN_MANAGEMENT_IN_POSTOPERATIVE_CARE
+        - NUTRITIONAL_INTERVENTIONS_FOR_MALNUTRITION
+        - PREVENTION_OF_CATHETER_ASSOCIATED_URINARY_TRACT_INFECTIONS
+
+    Status:
+      type: string
+      enum: [READY, STARTED, WAITING_APPROVAL, FINISHED]
+
+    LeaderboardTrendStatus:
+      type: string
+      enum: [IMPROVED, DECLINED, STABLE, NEW_ENTRY]
+
+    SortBy:
+      type: string
+      enum: [SCORE, RANK, COMPLETION_TIME, ACCURACY, LAST_UPDATED]
+
+    SortOrder:
+      type: string
+      enum: [ASCENDING, DESCENDING]
+
+    ErrorResponse:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        status:
+          type: integer
+          format: int32
+        error:
+          type: string
+        message:
+          type: string
+        path:
+          type: string
+      additionalProperties: true

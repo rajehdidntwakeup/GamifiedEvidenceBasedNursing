@@ -25,6 +25,8 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
 
   @Query("SELECT r FROM Room r " +
       "JOIN r.team t " +
+      "JOIN FETCH r.questions q " +
+      "JOIN FETCH q.answers a " +
       "WHERE t.game.id = :gameId " +
       "AND t.mission =:mission ")
   Room findRoomByGameIdAndMission(Long gameId, Mission mission);

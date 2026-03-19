@@ -40,21 +40,6 @@ public class GameCompletionController {
     return ResponseEntity.ok(isComplete);
   }
 
-  /**
-   * Complete a team's game session.
-   *
-   * @param teamId    the team ID
-   * @param principal the authenticated user
-   * @return completion details
-   */
-  @PostMapping("/teams/{teamId}/complete")
-  @PreAuthorize("isAuthenticated()")
-  public ResponseEntity<GameCompletionDto> completeTeamGame(
-      @PathVariable Long teamId,
-      Principal principal) {
-    GameCompletionDto completion = completionService.completeTeamGame(teamId);
-    return ResponseEntity.ok(completion);
-  }
 
   /**
    * Check if a game is complete (all teams finished).

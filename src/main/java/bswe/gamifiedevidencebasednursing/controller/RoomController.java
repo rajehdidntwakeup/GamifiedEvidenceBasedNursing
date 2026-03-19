@@ -2,8 +2,10 @@ package bswe.gamifiedevidencebasednursing.controller;
 
 import bswe.gamifiedevidencebasednursing.domain.dto.QuestionDto;
 import bswe.gamifiedevidencebasednursing.domain.dto.request.SubmitAnswerRequest;
+import bswe.gamifiedevidencebasednursing.domain.dto.response.RoomOfKnowledgeQuestionDto;
 import bswe.gamifiedevidencebasednursing.domain.dto.response.RoomStatusResponse;
 import bswe.gamifiedevidencebasednursing.domain.dto.response.SubmitAnswerResponse;
+import bswe.gamifiedevidencebasednursing.domain.enums.Mission;
 import bswe.gamifiedevidencebasednursing.service.RoomService;
 import bswe.gamifiedevidencebasednursing.websocket.service.WebSocketService;
 import jakarta.validation.Valid;
@@ -139,5 +141,24 @@ public class RoomController {
       Principal principal) {
     RoomStatusResponse status = roomService.skipQuestion(roomId, teamId, questionId);
     return ResponseEntity.ok(status);
+  }
+
+  /**
+   * Get room of knowledge questions for a game and mission.
+   *
+   * @param gameId    the game ID
+   * @param mission   the mission
+   * @param password  the game password
+   * @param principal the authenticated user
+   * @return list of room of knowledge questions
+   */
+  @GetMapping("/room-of-knowledge")
+  public ResponseEntity<List<RoomOfKnowledgeQuestionDto>> getRoomOfKnowledgeQuestionList(
+      @RequestParam long gameId,
+      @RequestParam Mission mission,
+      @RequestParam(required = false) String password,
+      Principal principal) {
+    List<RoomOfKnowledgeQuestionDto> questions = roomService.getRoomOfKnowledgeQuestionList(gameId, mission, password);
+    return ResponseEntity.ok(questions);
   }
 }

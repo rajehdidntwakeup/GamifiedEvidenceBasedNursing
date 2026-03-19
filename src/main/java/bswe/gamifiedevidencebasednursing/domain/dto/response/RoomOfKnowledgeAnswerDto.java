@@ -9,4 +9,12 @@ public class RoomOfKnowledgeAnswerDto {
     this.answer = answer;
     this.isCorrect = isCorrect;
   }
+
+  public String getAnswer() {
+    return answer;
+  }
+
+  public boolean isCorrect() {
+    return isCorrect;
+  }
 }

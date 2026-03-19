@@ -11,4 +11,12 @@ public class RoomOfKnowledgeQuestionDto {
     this.question = question;
     this.answers = answers;
   }
+
+  public String getQuestion() {
+    return question;
+  }
+
+  public List<RoomOfKnowledgeAnswerDto> getAnswers() {
+    return answers;
+  }
 }

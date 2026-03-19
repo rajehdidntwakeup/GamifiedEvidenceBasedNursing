@@ -1,26 +1,32 @@
 package bswe.gamifiedevidencebasednursing.service;
 
 import bswe.gamifiedevidencebasednursing.domain.Answer;
+import bswe.gamifiedevidencebasednursing.domain.Game;
 import bswe.gamifiedevidencebasednursing.domain.Question;
 import bswe.gamifiedevidencebasednursing.domain.Room;
 import bswe.gamifiedevidencebasednursing.domain.Team;
 import bswe.gamifiedevidencebasednursing.domain.dto.QuestionDto;
 import bswe.gamifiedevidencebasednursing.domain.dto.QuestionDto.AnswerDto;
 import bswe.gamifiedevidencebasednursing.domain.dto.request.SubmitAnswerRequest;
+import bswe.gamifiedevidencebasednursing.domain.dto.response.RoomOfKnowledgeAnswerDto;
 import bswe.gamifiedevidencebasednursing.domain.dto.response.RoomOfKnowledgeQuestionDto;
 import bswe.gamifiedevidencebasednursing.domain.dto.response.RoomStatusResponse;
 import bswe.gamifiedevidencebasednursing.domain.dto.response.SubmitAnswerResponse;
 import bswe.gamifiedevidencebasednursing.domain.enums.Location;
 import bswe.gamifiedevidencebasednursing.domain.enums.Mission;
 import bswe.gamifiedevidencebasednursing.domain.enums.Status;
+import bswe.gamifiedevidencebasednursing.repository.GameRepository;
 import bswe.gamifiedevidencebasednursing.repository.RoomRepository;
 import bswe.gamifiedevidencebasednursing.repository.TeamRepository;
+import org.jspecify.annotations.NonNull;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -31,11 +37,13 @@ public class RoomService {
 
   private final RoomRepository roomRepository;
   private final QuestionService questionService;
+  private final GameRepository gameRepository;
   private final TeamRepository teamRepository;
 
-  public RoomService(RoomRepository roomRepository, QuestionService questionService, TeamRepository teamRepository) {
+  public RoomService(RoomRepository roomRepository, QuestionService questionService, GameRepository gameRepository, TeamRepository teamRepository) {
     this.roomRepository = roomRepository;
     this.questionService = questionService;
+    this.gameRepository = gameRepository;
     this.teamRepository = teamRepository;
   }
 
@@ -50,16 +58,18 @@ public class RoomService {
     }
   }
 
-  public List<RoomOfKnowledgeQuestionDto> getRoomOfKnowledgeQuestionList(long gameId, Mission mission) {
-    Room room = roomRepository.findRoomByTeamAndMission(gameId, mission);
-    if (room != null) {
-      if (room.getQuestions() != null || room.getQuestions().isEmpty()) {
-        for (Question question : room.getQuestions()) {
-          // Process questions
-        }
-      }
+  public List<RoomOfKnowledgeQuestionDto> getRoomOfKnowledgeQuestionList(long gameId, Mission mission, String password) {
+    Game game = gameRepository.findById(gameId).orElseThrow(() -> new IllegalArgumentException("Game not found"));
+    if (game.getPassword() != null && !game.getPassword().equals(password)) {
+      throw new ResponseStatusException(HttpStatusCode.valueOf(400), "Invalid password");
     }
 
+    Room room = roomRepository.findRoomByGameIdAndMission(gameId, mission);
+    if (room != null) {
+      if (room.getQuestions() != null || room.getQuestions().isEmpty()) {
+        return getRoomOfKnowledgeQuestionDtos(room);
+      }
+    }
     return null;
   }
 
@@ -235,6 +245,21 @@ public class RoomService {
   }
 
   // Helper methods
+
+
+  private static @NonNull List<RoomOfKnowledgeQuestionDto> getRoomOfKnowledgeQuestionDtos(Room room) {
+    List<RoomOfKnowledgeQuestionDto> roomOfKnowledgeQuestionDtos = new ArrayList<>();
+    for (Question question : room.getQuestions()) {
+      List<RoomOfKnowledgeAnswerDto> answers = new ArrayList<>();
+      for (Answer answer : question.getAnswers()) {
+        RoomOfKnowledgeAnswerDto roomOfKnowledgeAnswerDto = new RoomOfKnowledgeAnswerDto(answer.getText(), answer.isCorrect());
+        answers.add(roomOfKnowledgeAnswerDto);
+      }
+      RoomOfKnowledgeQuestionDto roomOfKnowledgeQuestionDto = new RoomOfKnowledgeQuestionDto(question.getTitle(), answers);
+      roomOfKnowledgeQuestionDtos.add(roomOfKnowledgeQuestionDto);
+    }
+    return roomOfKnowledgeQuestionDtos;
+  }
 
   private QuestionDto toQuestionDto(Question question) {
     List<AnswerDto> answerDtos = question.getAnswers().stream()

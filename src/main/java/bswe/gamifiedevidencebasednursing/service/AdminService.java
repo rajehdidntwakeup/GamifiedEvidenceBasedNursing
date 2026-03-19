@@ -2,6 +2,7 @@ package bswe.gamifiedevidencebasednursing.service;
 
 import bswe.gamifiedevidencebasednursing.domain.Game;
 import bswe.gamifiedevidencebasednursing.domain.Team;
+import bswe.gamifiedevidencebasednursing.domain.User;
 import bswe.gamifiedevidencebasednursing.domain.dto.AdminAnalyticsDto;
 import bswe.gamifiedevidencebasednursing.domain.dto.AdminAnalyticsDto.MissionStatsDto;
 import bswe.gamifiedevidencebasednursing.domain.dto.AdminAnalyticsDto.QuestionDifficultyDto;
@@ -12,6 +13,7 @@ import bswe.gamifiedevidencebasednursing.domain.dto.AdminTeamDto;
 import bswe.gamifiedevidencebasednursing.domain.enums.Status;
 import bswe.gamifiedevidencebasednursing.repository.GameRepository;
 import bswe.gamifiedevidencebasednursing.repository.TeamRepository;
+import bswe.gamifiedevidencebasednursing.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,11 +35,20 @@ public class AdminService {
 
   private final GameRepository gameRepository;
   private final TeamRepository teamRepository;
+  private final UserRepository userRepository;
 
-  public AdminService(GameRepository gameRepository, TeamRepository teamRepository) {
+  public AdminService(GameRepository gameRepository, TeamRepository teamRepository, UserRepository userRepository) {
     this.gameRepository = gameRepository;
     this.teamRepository = teamRepository;
+    this.userRepository = userRepository;
   }
+
+
+  public boolean isThereAdmin() {
+    List<User> users = userRepository.findAll();
+    return !users.isEmpty();
+  }
+
 
   /**
    * Get all games with summary statistics.
