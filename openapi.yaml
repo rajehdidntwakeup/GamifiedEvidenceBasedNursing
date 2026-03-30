@@ -162,6 +162,18 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 
+  /api/game/landing:
+    get:
+      tags: [Game]
+      operationId: isGameRunning
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: boolean
+
   /api/teams/{teamId}:
     get:
       tags: [Team]

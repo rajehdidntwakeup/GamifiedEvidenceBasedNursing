@@ -54,6 +54,106 @@ paths:
   # ──────────────────────────────────────────────
   # Authentication
   # ──────────────────────────────────────────────
+  /api/auth/register:
+    post:
+      tags:
+        - Authentication
+      summary: Register a new administrator
+      description: |
+        Creates a new user account with `ROLE_ADMIN` and returns a JWT token.
+      operationId: register
+      security: []
+      requestBody:
+        description: Admin credentials
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthRequest'
+            example:
+              username: "admin"
+              password: "secure-password-123"
+      responses:
+        '201':
+          description: Admin registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+              example:
+                token: "eyJhbGciOiJIUzI1NiJ9..."
+                admin: true
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          description: Conflict (username already taken)
+
+  /api/auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: Login as an administrator
+      description: |
+        Authenticates an existing user and returns a JWT token
+        along with the user's admin status.
+      operationId: login
+      security: []
+      requestBody:
+        description: Admin credentials
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthRequest'
+            example:
+              username: "admin"
+              password: "secure-password-123"
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+              example:
+                token: "eyJhbGciOiJIUzI1NiJ9..."
+                admin: true
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/auth/authenticate:
+    post:
+      tags:
+        - Authentication
+      summary: Authenticate an administrator (alias for login)
+      description: |
+        Alias for `/api/auth/login`. Authenticates an existing user and returns a JWT token
+        along with the user's admin status.
+      operationId: authenticate
+      security: []
+      requestBody:
+        description: Admin credentials
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthRequest'
+            example:
+              username: "admin"
+              password: "secure-password-123"
+      responses:
+        '200':
+          description: Authentication successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+              example:
+                token: "eyJhbGciOiJIUzI1NiJ9..."
+                admin: true
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
   /auth/register:
     post:
       tags:
@@ -154,9 +254,82 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
+  /api/admin/isThereAdmin:
+    get:
+      tags:
+        - Admin
+      summary: Check if any administrator exists
+      description: |
+        Returns true if at least one administrator (game) exists in the system.
+        This is typically used by the frontend to decide whether to show the registration or login page.
+      operationId: isThereAdmin
+      security: []
+      responses:
+        '200':
+          description: Status retrieved
+          content:
+            application/json:
+              schema:
+                type: boolean
+              example: true
+
   # ──────────────────────────────────────────────
   # Games
   # ──────────────────────────────────────────────
+  /api/game/create:
+    post:
+      tags:
+        - Games
+      summary: Create a new game session
+      description: |
+        Initialises a new game session.
+      operationId: createGame
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: Game session configuration
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateGameRequest'
+            example:
+              password: "GameRoom42"
+      responses:
+        '201':
+          description: Game session created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameResponseDto'
+              example:
+                gameId: 1
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/game/landing:
+    get:
+      tags:
+        - Games
+      summary: Check if a game is currently running
+      description: |
+        Returns true if there is at least one game session that has started and not yet finished.
+      operationId: isGameRunning
+      responses:
+        '200':
+          description: Status retrieved
+          content:
+            application/json:
+              schema:
+                type: boolean
+              example: true
+
   /api/games:
     post:
       tags:

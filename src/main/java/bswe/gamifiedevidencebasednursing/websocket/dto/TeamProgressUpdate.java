@@ -1,6 +1,5 @@
 package bswe.gamifiedevidencebasednursing.websocket.dto;
 
-import bswe.gamifiedevidencebasednursing.domain.enums.Location;
 import bswe.gamifiedevidencebasednursing.domain.enums.Status;
 
 import java.time.Instant;
@@ -11,7 +10,7 @@ import java.time.Instant;
 public record TeamProgressUpdate(
     Long teamId,
     String teamName,
-    Location currentLocation,
+    String currentLocation,
     Status status,
     Integer score,
     Integer timerRemaining,

@@ -4,12 +4,16 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+import bswe.gamifiedevidencebasednursing.domain.enums.GameStatus;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 public class Game {
@@ -18,6 +22,9 @@ public class Game {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
   private String password;
+  @NotNull
+  @Enumerated(EnumType.STRING)
+  private GameStatus status;
   private Instant begin;
   private Instant finish;
   @OneToMany(mappedBy = "game",
@@ -28,8 +35,9 @@ public class Game {
   public Game() {
   }
 
-  public Game(String password, Instant begin, Instant finish) {
+  public Game(String password, GameStatus status, Instant begin, Instant finish) {
     this.password = password;
+    this.status = status;
     this.begin = begin;
     this.finish = finish;
   }
@@ -40,6 +48,14 @@ public class Game {
 
   public String getPassword() {
     return password;
+  }
+
+  public GameStatus getStatus() {
+    return status;
+  }
+
+  public void setStatus(GameStatus status) {
+    this.status = status;
   }
 
   public Instant getBegin() {

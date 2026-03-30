@@ -1,12 +1,9 @@
 package bswe.gamifiedevidencebasednursing.repository;
 
-import java.util.List;
-
-import bswe.gamifiedevidencebasednursing.domain.Team;
+import bswe.gamifiedevidencebasednursing.domain.Image;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface TeamRepository extends JpaRepository<Team, Long> {
-
+public interface ImageRepository extends JpaRepository<Image, Long> {
 }
