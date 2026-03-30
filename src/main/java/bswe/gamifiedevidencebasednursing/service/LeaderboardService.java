@@ -143,7 +143,7 @@ public class LeaderboardService {
   @Transactional(readOnly = true)
   public List<LeaderboardEntryDto> getMissionLeaderboard(String missionName) {
     List<Team> teams = teamRepository.findAll().stream()
-        .filter(t -> t.getMission().name().equalsIgnoreCase(missionName))
+        .filter(t -> t.getMission().getName().equalsIgnoreCase(missionName))
         .collect(Collectors.toList());
 
     List<LeaderboardEntryDto> sorted = teams.stream()
@@ -321,8 +321,8 @@ public class LeaderboardService {
 
     return new LeaderboardEntryDto(
         team.getId(),
-        team.getMission().name(), // Using mission as team name for now
-        team.getMission().name(),
+        team.getMission().getName(), // Using mission as team name for now
+        team.getMission().getName(),
         0, // Rank assigned later
         score,
         totalQuestions,
@@ -340,8 +340,8 @@ public class LeaderboardService {
 
   private int calculateScore(Team team) {
     // TODO: Implement proper score calculation
-    // For now, return a placeholder based on mission
-    return team.getMission().ordinal() * 100;
+    // For now, return a placeholder based on mission ID or name
+    return (int) (team.getMission().getId() != null ? team.getMission().getId() * 100 : 0);
   }
 
   private int calculateCompletionTime(Team team) {

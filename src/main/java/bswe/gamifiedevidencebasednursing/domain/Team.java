@@ -3,8 +3,6 @@ package bswe.gamifiedevidencebasednursing.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-import bswe.gamifiedevidencebasednursing.domain.enums.Location;
-import bswe.gamifiedevidencebasednursing.domain.enums.Mission;
 import bswe.gamifiedevidencebasednursing.domain.enums.Status;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -25,11 +23,11 @@ public class Team {
   private Long id;
   @Enumerated(EnumType.STRING)
   private Status status;
-  @Enumerated(EnumType.STRING)
-  private Location location;
-  @Enumerated(EnumType.STRING)
-  private Mission mission;
   private boolean isWinner;
+
+  @ManyToOne
+  @JoinColumn(name = "mission_id")
+  private Mission mission;
   @ManyToOne
   @JoinColumn(name = "game_id")
   private Game game;
@@ -40,9 +38,8 @@ public class Team {
   public Team() {
   }
 
-  public Team(Status status, Location location, Mission mission, boolean isWinner) {
+  public Team(Status status, Mission mission, boolean isWinner) {
     this.status = status;
-    this.location = location;
     this.mission = mission;
     this.isWinner = isWinner;
   }
@@ -51,13 +48,14 @@ public class Team {
     return id;
   }
 
+  public void setId(Long id) {
+    this.id = id;
+  }
+
   public Status getStatus() {
     return status;
   }
 
-  public Location getLocation() {
-    return location;
-  }
 
   public Mission getMission() {
     return mission;
@@ -75,8 +73,8 @@ public class Team {
     this.status = status;
   }
 
-  public void setLocation(Location location) {
-    this.location = location;
+  public void setMission(Mission mission) {
+    this.mission = mission;
   }
 
   public void setGame(Game game) {

@@ -1,6 +1,5 @@
 package bswe.gamifiedevidencebasednursing.websocket.controller;
 
-import bswe.gamifiedevidencebasednursing.service.TeamService;
 import bswe.gamifiedevidencebasednursing.websocket.dto.TeamJoinEvent;
 import bswe.gamifiedevidencebasednursing.websocket.service.WebSocketService;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -20,11 +19,9 @@ import java.time.Instant;
 public class WebSocketGameController {
 
   private final WebSocketService webSocketService;
-  private final TeamService teamService;
 
-  public WebSocketGameController(WebSocketService webSocketService, TeamService teamService) {
+  public WebSocketGameController(WebSocketService webSocketService) {
     this.webSocketService = webSocketService;
-    this.teamService = teamService;
   }
 
   /**
@@ -81,7 +78,10 @@ public class WebSocketGameController {
       @DestinationVariable Long gameId,
       @DestinationVariable Long teamId) {
     // Fetch current team progress and send update
+    /*
     teamService.getTeamProgress(teamId)
         .ifPresent(progress -> webSocketService.sendTeamProgressUpdateToTeam(teamId, progress));
+
+     */
   }
 }

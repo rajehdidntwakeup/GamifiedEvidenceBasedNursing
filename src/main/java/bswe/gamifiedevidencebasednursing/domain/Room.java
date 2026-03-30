@@ -3,11 +3,7 @@ package bswe.gamifiedevidencebasednursing.domain;
 import java.util.HashSet;
 import java.util.Set;
 
-import bswe.gamifiedevidencebasednursing.domain.enums.Location;
-import bswe.gamifiedevidencebasednursing.domain.enums.Status;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -23,11 +19,8 @@ public class Room {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-  @Enumerated(EnumType.STRING)
-  private Location location;
-  @Enumerated(EnumType.STRING)
-  private Status status;
-  private int timer;
+
+  private int extraTime; // in minutes
   @ManyToOne
   @JoinColumn(name = "team_id")
   private Team team;
@@ -36,34 +29,27 @@ public class Room {
       joinColumns = @JoinColumn(name = "room_id"),
       inverseJoinColumns = @JoinColumn(name = "question_id"))
   private Set<Question> questions = new HashSet<>();
+  @ManyToOne
+  @JoinColumn(name = "location_id")
+  private Location location;
 
   public Room() {
   }
 
-  public Room(Location location, Status status, int timer) {
-    this.location = location;
-    this.status = status;
-    this.timer = timer;
+  public Room(int extraTime) {
+    this.extraTime = extraTime;
   }
 
-  public Room(Location location, Status status, int timer, Team team) {
-    this.location = location;
-    this.status = status;
-    this.timer = timer;
+  public Room(int extraTime, Team team) {
+    this.extraTime = extraTime;
     this.team = team;
   }
 
   public Long getId() {
     return id;
   }
-  public Location getLocation() {
-    return location;
-  }
-  public Status getStatus() {
-    return status;
-  }
-  public int getTimer() {
-    return timer;
+  public int getExtraTime() {
+    return extraTime;
   }
   public Team getTeam() {
     return team;
@@ -72,22 +58,22 @@ public class Room {
     this.team = team;
   }
 
-  public void setStatus(Status status) {
-    this.status = status;
-  }
 
-  public void setLocation(Location location) {
-    this.location = location;
-  }
-
-  public void setTimer(int timer) {
-    this.timer = timer;
+  public void setExtraTime(int timer) {
+    this.extraTime = timer;
   }
   public Set<Question> getQuestions() {
     return questions;
   }
   public void setQuestions(Set<Question> questions) {
     this.questions = questions;
+  }
+
+  public Location getLocation() {
+    return location;
+  }
+  public void setLocation(Location location) {
+    this.location = location;
   }
 
 }

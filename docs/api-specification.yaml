@@ -1,0 +1,1536 @@
+openapi: 3.0.3
+info:
+  title: Gamified Evidence-Based Nursing API
+  description: |
+    RESTful API for the Gamified Evidence-Based Nursing application — a Spring Boot backend
+    that powers a gamified learning experience for nursing students. Teams progress through
+    themed rooms (Room of Knowledge, Room of Abstracts, Room of Analytics, Room of Science Battle)
+    answering evidence-based nursing questions.
+
+    ## Authentication
+    All endpoints except `/auth/**` require a valid JWT Bearer token in the `Authorization` header.
+    Tokens are obtained via the register or authenticate endpoints and expire after **1 hour**.
+
+    Admin-only endpoints (POST, PUT, DELETE on `/admin/**`) additionally require `ROLE_ADMIN`.
+
+    ## Game Flow
+    1. An admin **creates a game** — 5 teams (one per mission) are generated automatically.
+    2. Each team starts in status `READY` at location `START`.
+    3. Teams progress through rooms: `START` → `ROOM_OF_KNOWLEDGE` → `ROOM_OF_ABSTRACTS`
+       → `ROOM_OF_ANALYTICS` → `ROOM_OF_SCIENCE_BATTLE` → `LAST_QUIZ` → `END_STATE`.
+    4. In each room, teams retrieve and answer questions within a timer.
+    5. An admin can approve teams in `WAITING_APPROVAL` status.
+
+    ## Error Handling
+    Error responses follow a consistent structure across all endpoints. Validation errors (400)
+    include field-level detail; authentication/authorization errors (401/403) return minimal
+    information to avoid leaking security details.
+
+    ## Naming Conventions
+    - URL paths use **plural nouns** and **kebab-case** (e.g., `/api/games`, `/api/teams`).
+    - Enum values use **UPPER_SNAKE_CASE**.
+    - JSON fields use **camelCase**.
+  version: 1.0.0
+  contact:
+    name: GamifiedEvidenceBasedNursing Team
+
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+
+tags:
+  - name: Authentication
+    description: User registration and login — public endpoints (no JWT required)
+  - name: Games
+    description: Game session lifecycle — create, query, and manage game sessions (admin)
+  - name: Teams
+    description: Team management within a game session — query status, update progression
+  - name: Rooms
+    description: Room instances assigned to teams — retrieve room state and manage timers
+  - name: Questions
+    description: Questions and answers within rooms — retrieve questions and submit answers
+
+paths:
+  # ──────────────────────────────────────────────
+  # Authentication
+  # ──────────────────────────────────────────────
+  /api/auth/register:
+    post:
+      tags:
+        - Authentication
+      summary: Register a new administrator
+      description: |
+        Creates a new user account with `ROLE_ADMIN` and returns a JWT token.
+      operationId: register
+      security: []
+      requestBody:
+        description: Admin credentials
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthRequest'
+            example:
+              username: "admin"
+              password: "secure-password-123"
+      responses:
+        '201':
+          description: Admin registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+              example:
+                token: "eyJhbGciOiJIUzI1NiJ9..."
+                admin: true
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          description: Conflict (username already taken)
+
+  /api/auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: Login as an administrator
+      description: |
+        Authenticates an existing user and returns a JWT token
+        along with the user's admin status.
+      operationId: login
+      security: []
+      requestBody:
+        description: Admin credentials
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthRequest'
+            example:
+              username: "admin"
+              password: "secure-password-123"
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+              example:
+                token: "eyJhbGciOiJIUzI1NiJ9..."
+                admin: true
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/auth/authenticate:
+    post:
+      tags:
+        - Authentication
+      summary: Authenticate an administrator (alias for login)
+      description: |
+        Alias for `/api/auth/login`. Authenticates an existing user and returns a JWT token
+        along with the user's admin status.
+      operationId: authenticate
+      security: []
+      requestBody:
+        description: Admin credentials
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthRequest'
+            example:
+              username: "admin"
+              password: "secure-password-123"
+      responses:
+        '200':
+          description: Authentication successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+              example:
+                token: "eyJhbGciOiJIUzI1NiJ9..."
+                admin: true
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /auth/register:
+    post:
+      tags:
+        - Authentication
+      summary: Register a new user
+      description: |
+        Creates a new user account with `ROLE_ADMIN` and returns a JWT token.
+        The password is stored using BCrypt encoding.
+      operationId: registerUser
+      requestBody:
+        description: Username and password for the new account
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthRequest'
+            example:
+              username: "nurse.jane"
+              password: "SecureP@ss123"
+      responses:
+        '201':
+          description: Registration successful — user created, JWT token returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+              example:
+                token: "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJudXJzZS5qYW5lIiwiaWF0IjoxNzExMjg4MDAwfQ.abc123"
+                admin: true
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          description: Internal server error — e.g. duplicate username (unique constraint violation)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                timestamp: "2026-03-24T10:00:00Z"
+                status: 500
+                error: "Internal Server Error"
+                message: "Could not execute statement; constraint [app_user.username unique]"
+                path: "/auth/register"
+
+  /auth/authenticate:
+    post:
+      tags:
+        - Authentication
+      summary: Authenticate an existing user
+      description: |
+        Validates credentials against the database and returns a JWT token
+        along with the user's admin status.
+      operationId: authenticateUser
+      requestBody:
+        description: Username and password of the existing account
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthRequest'
+            example:
+              username: "nurse.jane"
+              password: "SecureP@ss123"
+      responses:
+        '200':
+          description: Authentication successful — JWT token returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+              example:
+                token: "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJudXJzZS5qYW5lIiwiaWF0IjoxNzExMjg4MDAwfQ.xyz789"
+                admin: true
+        '401':
+          description: Authentication failed — invalid username or password
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                timestamp: "2026-03-24T10:00:00Z"
+                status: 401
+                error: "Unauthorized"
+                message: "Bad credentials"
+                path: "/auth/authenticate"
+        '404':
+          description: User not found — no account with the given username
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                timestamp: "2026-03-24T10:00:00Z"
+                status: 404
+                error: "Not Found"
+                message: "User not found with username: nurse.jane"
+                path: "/auth/authenticate"
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/admin/isThereAdmin:
+    get:
+      tags:
+        - Admin
+      summary: Check if any administrator exists
+      description: |
+        Returns true if at least one administrator (game) exists in the system.
+        This is typically used by the frontend to decide whether to show the registration or login page.
+      operationId: isThereAdmin
+      security: []
+      responses:
+        '200':
+          description: Status retrieved
+          content:
+            application/json:
+              schema:
+                type: boolean
+              example: true
+
+  # ──────────────────────────────────────────────
+  # Games
+  # ──────────────────────────────────────────────
+  /api/game/create:
+    post:
+      tags:
+        - Games
+      summary: Create a new game session
+      description: |
+        Initialises a new game session.
+      operationId: createGame
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: Game session configuration
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateGameRequest'
+            example:
+              password: "GameRoom42"
+      responses:
+        '201':
+          description: Game session created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameResponseDto'
+              example:
+                gameId: 1
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/game/landing:
+    get:
+      tags:
+        - Games
+      summary: Check if a game is currently running
+      description: |
+        Returns true if there is at least one game session that has started and not yet finished.
+      operationId: isGameRunning
+      responses:
+        '200':
+          description: Status retrieved
+          content:
+            application/json:
+              schema:
+                type: boolean
+              example: true
+
+  /api/games:
+    post:
+      tags:
+        - Games
+      summary: Create a new game session
+      description: |
+        Initialises a new game session with 5 teams (one per mission). Each team
+        is created in `READY` status at the `START` location, and a Room of Knowledge
+        is automatically provisioned for every team with 10 randomly selected questions.
+
+        **Missions created automatically:**
+        - `WOUND_CARE_FOR_PRESSURE_ULCERS`
+        - `FALL_PREVENTION_IN_GERIATRICS`
+        - `PAIN_MANAGEMENT_IN_POSTOPERATIVE_CARE`
+        - `NUTRITIONAL_INTERVENTIONS_FOR_MALNUTRITION`
+        - `PREVENTION_OF_CATHETER_ASSOCIATED_URINARY_TRACT_INFECTIONS`
+      operationId: createGame
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: Game session configuration
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateGameRequest'
+            example:
+              password: "GameRoom42"
+      responses:
+        '201':
+          description: Game session created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameResponseDto'
+              example:
+                gameId: 1
+                teamMissions:
+                  WOUND_CARE_FOR_PRESSURE_ULCERS: 1
+                  FALL_PREVENTION_IN_GERIATRICS: 2
+                  PAIN_MANAGEMENT_IN_POSTOPERATIVE_CARE: 3
+                  NUTRITIONAL_INTERVENTIONS_FOR_MALNUTRITION: 4
+                  PREVENTION_OF_CATHETER_ASSOCIATED_URINARY_TRACT_INFECTIONS: 5
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    get:
+      tags:
+        - Games
+      summary: List all game sessions
+      description: |
+        Returns all game sessions ordered by creation date (newest first).
+        Requires authentication.
+      operationId: listGames
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of game sessions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GameDetailDto'
+              example:
+                - gameId: 1
+                  password: "GameRoom42"
+                  begin: "2026-03-24T10:00:00Z"
+                  finish: null
+                  teamCount: 5
+                - gameId: 2
+                  password: "NurseQuiz99"
+                  begin: "2026-03-23T14:30:00Z"
+                  finish: "2026-03-23T16:00:00Z"
+                  teamCount: 5
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/games/{gameId}:
+    get:
+      tags:
+        - Games
+      summary: Get game session details
+      description: |
+        Returns full details of a game session, including its teams and their current status.
+      operationId: getGame
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/gameId'
+      responses:
+        '200':
+          description: Game session details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameDetailDto'
+              example:
+                gameId: 1
+                password: "GameRoom42"
+                begin: "2026-03-24T10:00:00Z"
+                finish: null
+                teamCount: 5
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Game not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                timestamp: "2026-03-24T10:00:00Z"
+                status: 404
+                error: "Not Found"
+                message: "Game not found with id: 99"
+                path: "/api/games/99"
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    patch:
+      tags:
+        - Games
+      summary: Update a game session
+      description: |
+        Partially updates a game session. Used primarily to set the `finish` timestamp
+        when ending a game. Only fields included in the request body are updated.
+
+        Requires `ROLE_ADMIN`.
+      operationId: updateGame
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/gameId'
+      requestBody:
+        description: Fields to update
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateGameRequest'
+            example:
+              finish: "2026-03-24T12:00:00Z"
+      responses:
+        '200':
+          description: Game session updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameDetailDto'
+              example:
+                gameId: 1
+                password: "GameRoom42"
+                begin: "2026-03-24T10:00:00Z"
+                finish: "2026-03-24T12:00:00Z"
+                teamCount: 5
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          description: Game not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                timestamp: "2026-03-24T10:00:00Z"
+                status: 404
+                error: "Not Found"
+                message: "Game not found with id: 99"
+                path: "/api/games/99"
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    delete:
+      tags:
+        - Games
+      summary: Delete a game session
+      description: |
+        Deletes a game session and all associated teams, rooms, and assignments.
+        This action is irreversible.
+
+        Requires `ROLE_ADMIN`.
+      operationId: deleteGame
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/gameId'
+      responses:
+        '204':
+          description: Game session deleted successfully
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          description: Game not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                timestamp: "2026-03-24T10:00:00Z"
+                status: 404
+                error: "Not Found"
+                message: "Game not found with id: 99"
+                path: "/api/games/99"
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  # ──────────────────────────────────────────────
+  # Teams
+  # ──────────────────────────────────────────────
+  /api/games/{gameId}/teams:
+    get:
+      tags:
+        - Teams
+      summary: List all teams in a game
+      description: |
+        Returns all teams for the given game session with their current status,
+        location, mission, and winner flag.
+      operationId: listTeamsByGame
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/gameId'
+      responses:
+        '200':
+          description: List of teams in the game
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TeamDto'
+              example:
+                - teamId: 1
+                  status: "STARTED"
+                  location: "ROOM_OF_KNOWLEDGE"
+                  mission: "WOUND_CARE_FOR_PRESSURE_ULCERS"
+                  winner: false
+                  gameId: 1
+                - teamId: 2
+                  status: "READY"
+                  location: "START"
+                  mission: "FALL_PREVENTION_IN_GERIATRICS"
+                  winner: false
+                  gameId: 1
+                - teamId: 3
+                  status: "READY"
+                  location: "START"
+                  mission: "PAIN_MANAGEMENT_IN_POSTOPERATIVE_CARE"
+                  winner: false
+                  gameId: 1
+                - teamId: 4
+                  status: "READY"
+                  location: "START"
+                  mission: "NUTRITIONAL_INTERVENTIONS_FOR_MALNUTRITION"
+                  winner: false
+                  gameId: 1
+                - teamId: 5
+                  status: "READY"
+                  location: "START"
+                  mission: "PREVENTION_OF_CATHETER_ASSOCIATED_URINARY_TRACT_INFECTIONS"
+                  winner: false
+                  gameId: 1
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Game not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                timestamp: "2026-03-24T10:00:00Z"
+                status: 404
+                error: "Not Found"
+                message: "Game not found with id: 99"
+                path: "/api/games/99/teams"
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/games/{gameId}/teams/{teamId}:
+    get:
+      tags:
+        - Teams
+      summary: Get team details
+      description: |
+        Returns the current state of a specific team within a game, including
+        status, location, assigned mission, and winner flag.
+      operationId: getTeam
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/gameId'
+        - $ref: '#/components/parameters/teamId'
+      responses:
+        '200':
+          description: Team details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamDto'
+              example:
+                teamId: 1
+                status: "STARTED"
+                location: "ROOM_OF_KNOWLEDGE"
+                mission: "WOUND_CARE_FOR_PRESSURE_ULCERS"
+                winner: false
+                gameId: 1
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Game or team not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                timestamp: "2026-03-24T10:00:00Z"
+                status: 404
+                error: "Not Found"
+                message: "Team not found with id: 99 in game: 1"
+                path: "/api/games/1/teams/99"
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    patch:
+      tags:
+        - Teams
+      summary: Update team state
+      description: |
+        Partially updates a team's state. Used to advance a team to the next location,
+        change its status (e.g., from `WAITING_APPROVAL` to `STARTED`), or mark it as winner.
+
+        Only fields included in the request body are updated.
+
+        Requires `ROLE_ADMIN`.
+      operationId: updateTeam
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/gameId'
+        - $ref: '#/components/parameters/teamId'
+      requestBody:
+        description: Fields to update on the team
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTeamRequest'
+            examples:
+              advance-location:
+                summary: Advance team to next room
+                value:
+                  location: "ROOM_OF_ABSTRACTS"
+                  status: "STARTED"
+              approve-team:
+                summary: Approve a waiting team
+                value:
+                  status: "STARTED"
+              mark-winner:
+                summary: Mark team as winner
+                value:
+                  winner: true
+      responses:
+        '200':
+          description: Team updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamDto'
+              example:
+                teamId: 1
+                status: "STARTED"
+                location: "ROOM_OF_ABSTRACTS"
+                mission: "WOUND_CARE_FOR_PRESSURE_ULCERS"
+                winner: false
+                gameId: 1
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          description: Game or team not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                timestamp: "2026-03-24T10:00:00Z"
+                status: 404
+                error: "Not Found"
+                message: "Team not found with id: 99 in game: 1"
+                path: "/api/games/1/teams/99"
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/games/{gameId}/teams/by-mission/{mission}:
+    get:
+      tags:
+        - Teams
+      summary: Get team by mission
+      description: |
+        Finds the team assigned to a specific mission within a game session.
+        Useful for players who join the game by selecting their mission topic.
+      operationId: getTeamByMission
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/gameId'
+        - name: mission
+          in: path
+          required: true
+          description: The mission enum value to look up
+          schema:
+            $ref: '#/components/schemas/Mission'
+          example: "WOUND_CARE_FOR_PRESSURE_ULCERS"
+      responses:
+        '200':
+          description: Team assigned to the mission
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamDto'
+              example:
+                teamId: 1
+                status: "READY"
+                location: "START"
+                mission: "WOUND_CARE_FOR_PRESSURE_ULCERS"
+                winner: false
+                gameId: 1
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Game not found or no team with the given mission
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                timestamp: "2026-03-24T10:00:00Z"
+                status: 404
+                error: "Not Found"
+                message: "No team found with mission WOUND_CARE_FOR_PRESSURE_ULCERS in game: 1"
+                path: "/api/games/1/teams/by-mission/WOUND_CARE_FOR_PRESSURE_ULCERS"
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  # ──────────────────────────────────────────────
+  # Rooms
+  # ──────────────────────────────────────────────
+  /api/games/{gameId}/teams/{teamId}/rooms:
+    get:
+      tags:
+        - Rooms
+      summary: List all rooms for a team
+      description: |
+        Returns all room instances assigned to a team within a game session.
+        Each room contains a location, status, and timer value.
+      operationId: listRoomsByTeam
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/gameId'
+        - $ref: '#/components/parameters/teamId'
+      responses:
+        '200':
+          description: List of rooms assigned to the team
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RoomDto'
+              example:
+                - roomId: 1
+                  location: "ROOM_OF_KNOWLEDGE"
+                  status: "FINISHED"
+                  timer: 10
+                  teamId: 1
+                - roomId: 6
+                  location: "ROOM_OF_ABSTRACTS"
+                  status: "STARTED"
+                  timer: 15
+                  teamId: 1
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Game or team not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                timestamp: "2026-03-24T10:00:00Z"
+                status: 404
+                error: "Not Found"
+                message: "Team not found with id: 99 in game: 1"
+                path: "/api/games/1/teams/99/rooms"
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/games/{gameId}/teams/{teamId}/rooms/{roomId}:
+    get:
+      tags:
+        - Rooms
+      summary: Get room details
+      description: |
+        Returns the current state of a specific room, including its location,
+        status, and remaining timer.
+      operationId: getRoom
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/gameId'
+        - $ref: '#/components/parameters/teamId'
+        - $ref: '#/components/parameters/roomId'
+      responses:
+        '200':
+          description: Room details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoomDto'
+              example:
+                roomId: 1
+                location: "ROOM_OF_KNOWLEDGE"
+                status: "STARTED"
+                timer: 10
+                teamId: 1
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Game, team, or room not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                timestamp: "2026-03-24T10:00:00Z"
+                status: 404
+                error: "Not Found"
+                message: "Room not found with id: 99"
+                path: "/api/games/1/teams/1/rooms/99"
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    patch:
+      tags:
+        - Rooms
+      summary: Update room state
+      description: |
+        Partially updates a room's state. Used to start a room (set status to `STARTED`),
+        mark it as finished, or update the timer.
+
+        Only fields included in the request body are updated.
+
+        Requires `ROLE_ADMIN`.
+      operationId: updateRoom
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/gameId'
+        - $ref: '#/components/parameters/teamId'
+        - $ref: '#/components/parameters/roomId'
+      requestBody:
+        description: Fields to update on the room
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRoomRequest'
+            examples:
+              start-room:
+                summary: Start a room
+                value:
+                  status: "STARTED"
+              finish-room:
+                summary: Mark room as finished
+                value:
+                  status: "FINISHED"
+              update-timer:
+                summary: Update the timer
+                value:
+                  timer: 15
+      responses:
+        '200':
+          description: Room updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoomDto'
+              example:
+                roomId: 1
+                location: "ROOM_OF_KNOWLEDGE"
+                status: "STARTED"
+                timer: 10
+                teamId: 1
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          description: Game, team, or room not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                timestamp: "2026-03-24T10:00:00Z"
+                status: 404
+                error: "Not Found"
+                message: "Room not found with id: 99"
+                path: "/api/games/1/teams/1/rooms/99"
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  # ──────────────────────────────────────────────
+  # Questions & Answers
+  # ──────────────────────────────────────────────
+  /api/games/{gameId}/teams/{teamId}/rooms/{roomId}/questions:
+    get:
+      tags:
+        - Questions
+      summary: Get questions for a room
+      description: |
+        Returns all questions assigned to the specified room, including their
+        answer options. Questions are shuffled when the room is created, so the
+        order is consistent per room instance but varies between teams.
+
+        Each question has exactly 4 answer options, with one marked as correct.
+        The question content is in German.
+      operationId: getRoomQuestions
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/gameId'
+        - $ref: '#/components/parameters/teamId'
+        - $ref: '#/components/parameters/roomId'
+      responses:
+        '200':
+          description: List of questions with answer options
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RoomOfKnowledgeQuestionDto'
+              example:
+                - question: "Welche Evidenzstufe hat die höchste Beweiskraft?"
+                  answers:
+                    - answer: "Systematische Reviews und Meta-Analysen von RCTs"
+                      correct: true
+                    - answer: "Einzelne RCTs mit engem Konfidenzintervall"
+                      correct: false
+                    - answer: "Kohortenstudien"
+                      correct: false
+                    - answer: "Expertenmeinungen"
+                      correct: false
+                - question: "Was kennzeichnet Evidenzstufe II?"
+                  answers:
+                    - answer: "Einzelne RCTs mit engem Konfidenzintervall"
+                      correct: true
+                    - answer: "Systematische Reviews von RCTs"
+                      correct: false
+                    - answer: "Fall-Kontroll-Studien"
+                      correct: false
+                    - answer: "Fallberichte und Fallserien"
+                      correct: false
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Game, team, or room not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                timestamp: "2026-03-24T10:00:00Z"
+                status: 404
+                error: "Not Found"
+                message: "Room not found with id: 99"
+                path: "/api/games/1/teams/1/rooms/99/questions"
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/games/{gameId}/teams/{teamId}/rooms/{roomId}/answers:
+    post:
+      tags:
+        - Questions
+      summary: Submit answers for a room
+      description: |
+        Submits the team's selected answers for all questions in the given room.
+        Each entry maps a question ID to the selected answer ID.
+
+        The server validates the answers, calculates the score, and returns the
+        result. If all answers are correct and the team qualifies, the room status
+        transitions to `FINISHED` and the team may advance.
+      operationId: submitAnswers
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/gameId'
+        - $ref: '#/components/parameters/teamId'
+        - $ref: '#/components/parameters/roomId'
+      requestBody:
+        description: Map of question IDs to selected answer IDs
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmitAnswersRequest'
+            example:
+              answers:
+                - questionId: 1
+                  answerId: 1
+                - questionId: 2
+                  answerId: 5
+                - questionId: 3
+                  answerId: 12
+      responses:
+        '200':
+          description: Answers evaluated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubmitAnswersResponse'
+              example:
+                totalQuestions: 10
+                correctAnswers: 8
+                passed: true
+                roomStatus: "FINISHED"
+        '400':
+          description: Invalid submission — e.g. missing answers or invalid IDs
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                timestamp: "2026-03-24T10:00:00Z"
+                status: 400
+                error: "Bad Request"
+                message: "All questions in the room must be answered"
+                path: "/api/games/1/teams/1/rooms/1/answers"
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Game, team, or room not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                timestamp: "2026-03-24T10:00:00Z"
+                status: 404
+                error: "Not Found"
+                message: "Room not found with id: 99"
+                path: "/api/games/1/teams/1/rooms/99/answers"
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+# ════════════════════════════════════════════════
+# Reusable Components
+# ════════════════════════════════════════════════
+components:
+  # ── Security Schemes ──────────────────────────
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: |
+        JWT token obtained from `/auth/register` or `/auth/authenticate`.
+        Include in the `Authorization` header as `Bearer <token>`.
+        Tokens expire after 1 hour (3 600 000 ms).
+        Algorithm: HS256 (HMAC-SHA256).
+
+  # ── Parameters ────────────────────────────────
+  parameters:
+    gameId:
+      name: gameId
+      in: path
+      required: true
+      description: Unique identifier of the game session
+      schema:
+        type: integer
+        format: int64
+      example: 1
+
+    teamId:
+      name: teamId
+      in: path
+      required: true
+      description: Unique identifier of the team
+      schema:
+        type: integer
+        format: int64
+      example: 1
+
+    roomId:
+      name: roomId
+      in: path
+      required: true
+      description: Unique identifier of the room
+      schema:
+        type: integer
+        format: int64
+      example: 1
+
+  # ── Reusable Responses ────────────────────────
+  responses:
+    BadRequest:
+      description: Invalid request — missing or malformed fields
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            timestamp: "2026-03-24T10:00:00Z"
+            status: 400
+            error: "Bad Request"
+            message: "Validation failed: field 'password' must not be blank"
+            path: "/api/games"
+
+    Unauthorized:
+      description: Missing or invalid JWT token
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            timestamp: "2026-03-24T10:00:00Z"
+            status: 401
+            error: "Unauthorized"
+            message: "Full authentication is required to access this resource"
+            path: "/api/games"
+
+    Forbidden:
+      description: Authenticated but insufficient permissions (requires ROLE_ADMIN)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            timestamp: "2026-03-24T10:00:00Z"
+            status: 403
+            error: "Forbidden"
+            message: "Access Denied"
+            path: "/api/games"
+
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            timestamp: "2026-03-24T10:00:00Z"
+            status: 500
+            error: "Internal Server Error"
+            message: "An unexpected error occurred"
+            path: "/api/games"
+
+  # ── Schemas ───────────────────────────────────
+  schemas:
+    # ── Authentication ──────────────────────────
+    AuthRequest:
+      type: object
+      description: Credentials for user registration or authentication
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+          description: Unique username for the account
+          example: "nurse.jane"
+        password:
+          type: string
+          format: password
+          description: Account password (stored as BCrypt hash)
+          example: "SecureP@ss123"
+
+    AuthResponse:
+      type: object
+      description: Authentication result containing a JWT token and role information
+      properties:
+        token:
+          type: string
+          description: JWT Bearer token (valid for 1 hour)
+          example: "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJudXJzZS5qYW5lIiwiaWF0IjoxNzExMjg4MDAwfQ.abc123"
+        admin:
+          type: boolean
+          description: Whether the authenticated user has the ADMIN role
+          example: true
+
+    # ── Game ────────────────────────────────────
+    CreateGameRequest:
+      type: object
+      description: Request body for creating a new game session
+      required:
+        - password
+      properties:
+        password:
+          type: string
+          description: Game session password for players to join
+          example: "GameRoom42"
+
+    GameResponseDto:
+      type: object
+      description: Response after creating a new game session
+      properties:
+        gameId:
+          type: integer
+          format: int64
+          description: Unique identifier of the created game
+          example: 1
+        teamMissions:
+          type: object
+          description: "Map of mission name → assigned team ID"
+          additionalProperties:
+            type: integer
+            format: int64
+          example:
+            WOUND_CARE_FOR_PRESSURE_ULCERS: 1
+            FALL_PREVENTION_IN_GERIATRICS: 2
+            PAIN_MANAGEMENT_IN_POSTOPERATIVE_CARE: 3
+            NUTRITIONAL_INTERVENTIONS_FOR_MALNUTRITION: 4
+            PREVENTION_OF_CATHETER_ASSOCIATED_URINARY_TRACT_INFECTIONS: 5
+
+    GameDetailDto:
+      type: object
+      description: Detailed view of a game session
+      properties:
+        gameId:
+          type: integer
+          format: int64
+          description: Unique identifier of the game
+          example: 1
+        password:
+          type: string
+          description: Game session password
+          example: "GameRoom42"
+        begin:
+          type: string
+          format: date-time
+          description: Timestamp when the game was created
+          example: "2026-03-24T10:00:00Z"
+        finish:
+          type: string
+          format: date-time
+          nullable: true
+          description: Timestamp when the game ended (null if still active)
+          example: null
+        teamCount:
+          type: integer
+          description: Number of teams in the game (always 5)
+          example: 5
+
+    UpdateGameRequest:
+      type: object
+      description: Partial update for a game session
+      properties:
+        finish:
+          type: string
+          format: date-time
+          description: Timestamp to mark the game as finished
+          example: "2026-03-24T12:00:00Z"
+
+    # ── Team ────────────────────────────────────
+    TeamDto:
+      type: object
+      description: Represents a team's current state within a game session
+      properties:
+        teamId:
+          type: integer
+          format: int64
+          description: Unique identifier of the team
+          example: 1
+        status:
+          $ref: '#/components/schemas/Status'
+        location:
+          $ref: '#/components/schemas/Location'
+        mission:
+          $ref: '#/components/schemas/Mission'
+        winner:
+          type: boolean
+          description: Whether this team has won the game
+          example: false
+        gameId:
+          type: integer
+          format: int64
+          description: ID of the game session this team belongs to
+          example: 1
+
+    UpdateTeamRequest:
+      type: object
+      description: Partial update for a team
+      properties:
+        status:
+          $ref: '#/components/schemas/Status'
+        location:
+          $ref: '#/components/schemas/Location'
+        winner:
+          type: boolean
+          description: Set to true to mark this team as winner
+          example: false
+
+    # ── Room ────────────────────────────────────
+    RoomDto:
+      type: object
+      description: Represents a room instance assigned to a team
+      properties:
+        roomId:
+          type: integer
+          format: int64
+          description: Unique identifier of the room
+          example: 1
+        location:
+          $ref: '#/components/schemas/Location'
+        status:
+          $ref: '#/components/schemas/Status'
+        timer:
+          type: integer
+          description: Time limit in minutes for the room
+          example: 10
+        teamId:
+          type: integer
+          format: int64
+          description: ID of the team assigned to this room
+          example: 1
+
+    UpdateRoomRequest:
+      type: object
+      description: Partial update for a room
+      properties:
+        status:
+          $ref: '#/components/schemas/Status'
+        timer:
+          type: integer
+          description: Updated time limit in minutes
+          example: 15
+
+    # ── Questions & Answers ─────────────────────
+    RoomOfKnowledgeQuestionDto:
+      type: object
+      description: A question in the Room of Knowledge with its answer options
+      properties:
+        question:
+          type: string
+          description: The question text (in German)
+          example: "Welche Evidenzstufe hat die höchste Beweiskraft?"
+        answers:
+          type: array
+          description: List of possible answers (exactly 4)
+          items:
+            $ref: '#/components/schemas/RoomOfKnowledgeAnswerDto'
+
+    RoomOfKnowledgeAnswerDto:
+      type: object
+      description: A single answer option for a Room of Knowledge question
+      properties:
+        answer:
+          type: string
+          description: The answer text
+          example: "Systematische Reviews und Meta-Analysen von RCTs"
+        correct:
+          type: boolean
+          description: Whether this is the correct answer
+          example: true
+
+    SubmitAnswersRequest:
+      type: object
+      description: Submission of selected answers for all questions in a room
+      required:
+        - answers
+      properties:
+        answers:
+          type: array
+          description: List of question-answer pairs
+          items:
+            $ref: '#/components/schemas/AnswerSubmission'
+
+    AnswerSubmission:
+      type: object
+      description: A single question-answer selection
+      required:
+        - questionId
+        - answerId
+      properties:
+        questionId:
+          type: integer
+          format: int64
+          description: ID of the question being answered
+          example: 1
+        answerId:
+          type: integer
+          format: int64
+          description: ID of the selected answer
+          example: 1
+
+    SubmitAnswersResponse:
+      type: object
+      description: Result of answer evaluation for a room
+      properties:
+        totalQuestions:
+          type: integer
+          description: Total number of questions in the room
+          example: 10
+        correctAnswers:
+          type: integer
+          description: Number of correctly answered questions
+          example: 8
+        passed:
+          type: boolean
+          description: Whether the team passed the room (met the passing threshold)
+          example: true
+        roomStatus:
+          $ref: '#/components/schemas/Status'
+
+    # ── Enums ───────────────────────────────────
+    Status:
+      type: string
+      description: Lifecycle status of a team or room
+      enum:
+        - READY
+        - STARTED
+        - WAITING_APPROVAL
+        - FINISHED
+      example: "READY"
+
+    Location:
+      type: string
+      description: |
+        Position in the game flow. Teams progress through locations in order:
+        `START` → `ROOM_OF_KNOWLEDGE` → `ROOM_OF_ABSTRACTS` → `ROOM_OF_ANALYTICS`
+        → `ROOM_OF_SCIENCE_BATTLE` → `LAST_QUIZ` → `END_STATE`
+      enum:
+        - START
+        - ROOM_OF_KNOWLEDGE
+        - ROOM_OF_ABSTRACTS
+        - ROOM_OF_ANALYTICS
+        - ROOM_OF_SCIENCE_BATTLE
+        - LAST_QUIZ
+        - END_STATE
+      example: "ROOM_OF_KNOWLEDGE"
+
+    Mission:
+      type: string
+      description: The nursing mission (topic) assigned to a team
+      enum:
+        - WOUND_CARE_FOR_PRESSURE_ULCERS
+        - FALL_PREVENTION_IN_GERIATRICS
+        - PAIN_MANAGEMENT_IN_POSTOPERATIVE_CARE
+        - NUTRITIONAL_INTERVENTIONS_FOR_MALNUTRITION
+        - PREVENTION_OF_CATHETER_ASSOCIATED_URINARY_TRACT_INFECTIONS
+      example: "WOUND_CARE_FOR_PRESSURE_ULCERS"
+
+    # ── Error ───────────────────────────────────
+    ErrorResponse:
+      type: object
+      description: |
+        Standard Spring Boot error response. Returned for all error conditions
+        with the appropriate HTTP status code.
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+          description: When the error occurred (ISO 8601)
+          example: "2026-03-24T10:00:00Z"
+        status:
+          type: integer
+          description: HTTP status code
+          example: 400
+        error:
+          type: string
+          description: HTTP status reason phrase
+          example: "Bad Request"
+        message:
+          type: string
+          description: Human-readable error description
+          example: "Validation failed"
+        path:
+          type: string
+          description: The request path that caused the error
+          example: "/api/games"
