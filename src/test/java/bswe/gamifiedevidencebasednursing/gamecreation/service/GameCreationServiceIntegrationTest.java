@@ -4,6 +4,7 @@ import bswe.gamifiedevidencebasednursing.domain.Question;
 import bswe.gamifiedevidencebasednursing.domain.Room;
 import bswe.gamifiedevidencebasednursing.domain.Team;
 import bswe.gamifiedevidencebasednursing.domain.enums.Status;
+import bswe.gamifiedevidencebasednursing.feature.gamecreation.service.GameCreationService;
 import bswe.gamifiedevidencebasednursing.repository.QuestionRepository;
 import bswe.gamifiedevidencebasednursing.repository.RoomRepository;
 import bswe.gamifiedevidencebasednursing.repository.TeamRepository;
@@ -13,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;

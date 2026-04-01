@@ -35,6 +35,11 @@ public class Game {
   public Game() {
   }
 
+  public Game(String password, GameStatus status) {
+    this.password = password;
+    this.status = status;
+  }
+
   public Game(String password, GameStatus status, Instant begin, Instant finish) {
     this.password = password;
     this.status = status;
@@ -60,6 +65,10 @@ public class Game {
 
   public Instant getBegin() {
     return begin;
+  }
+
+  public void setBegin(Instant begin) {
+    this.begin = begin;
   }
 
   public Instant getFinish() {

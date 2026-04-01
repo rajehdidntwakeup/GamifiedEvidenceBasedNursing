@@ -4,7 +4,7 @@ import bswe.gamifiedevidencebasednursing.domain.Game;
 import bswe.gamifiedevidencebasednursing.domain.Mission;
 import bswe.gamifiedevidencebasednursing.domain.Team;
 import bswe.gamifiedevidencebasednursing.domain.enums.GameStatus;
-import bswe.gamifiedevidencebasednursing.gamecreation.service.GameCreationService;
+import bswe.gamifiedevidencebasednursing.feature.gamecreation.service.GameCreationService;
 import bswe.gamifiedevidencebasednursing.repository.GameRepository;
 import bswe.gamifiedevidencebasednursing.repository.MissionRepository;
 import bswe.gamifiedevidencebasednursing.repository.TeamRepository;

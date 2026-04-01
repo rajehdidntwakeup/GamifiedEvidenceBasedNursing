@@ -1,6 +1,7 @@
 package bswe.gamifiedevidencebasednursing.landingpage.service;
 
 import bswe.gamifiedevidencebasednursing.domain.Game;
+import bswe.gamifiedevidencebasednursing.feature.landingpage.service.LandingPageService;
 import bswe.gamifiedevidencebasednursing.repository.GameRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

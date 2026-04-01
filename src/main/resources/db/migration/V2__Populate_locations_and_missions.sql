@@ -10,11 +10,11 @@ INSERT INTO location (name, location_key, timer) VALUES ('Last Quiz', null, 0);
 INSERT INTO location (name, location_key, timer) VALUES ('End State', null, 0);
 
 -- Insert Missions
-INSERT INTO mission (name) VALUES ('WOUND_CARE_FOR_PRESSURE_ULCERS');
-INSERT INTO mission (name) VALUES ('FALL_PREVENTION_IN_GERIATRICS');
-INSERT INTO mission (name) VALUES ('PAIN_MANAGEMENT_IN_POSTOPERATIVE_CARE');
-INSERT INTO mission (name) VALUES ('NUTRITIONAL_INTERVENTIONS_FOR_MALNUTRITION');
-INSERT INTO mission (name) VALUES ('PREVENTION_OF_CATHETER_ASSOCIATED_URINARY_TRACT_INFECTIONS');
+INSERT INTO mission (name) VALUES ('Wundversorgung bei Dekubitus');
+INSERT INTO mission (name) VALUES ('Sturzprävention in der Geriatrie');
+INSERT INTO mission (name) VALUES ('Schmerzmanagement in der postoperativen Pflege');
+INSERT INTO mission (name) VALUES ('Ernährungsinterventionen bei Mangelernährung');
+INSERT INTO mission (name) VALUES ('Vermeidung von Katheter-assoziierten Harnwegsinfektionen');
 
 -- Update all existing questions to get 'Room of Knowledge' as Location
 -- We need to find the id of 'Room of Knowledge' first.
@@ -23,16 +23,16 @@ UPDATE question SET location_id = (SELECT id FROM location WHERE name = 'Room of
 
 -- Distribute Room of Knowledge questions among missions
 INSERT INTO mission_question (mission_id, question_id)
-SELECT (SELECT id FROM mission WHERE name = 'WOUND_CARE_FOR_PRESSURE_ULCERS'), id FROM question WHERE id BETWEEN 1 AND 20;
+SELECT (SELECT id FROM mission WHERE name = 'Wundversorgung bei Dekubitus'), id FROM question WHERE id BETWEEN 1 AND 20;
 
 INSERT INTO mission_question (mission_id, question_id)
-SELECT (SELECT id FROM mission WHERE name = 'FALL_PREVENTION_IN_GERIATRICS'), id FROM question WHERE id BETWEEN 1 AND 20;
+SELECT (SELECT id FROM mission WHERE name = 'Sturzprävention in der Geriatrie'), id FROM question WHERE id BETWEEN 1 AND 20;
 
 INSERT INTO mission_question (mission_id, question_id)
-SELECT (SELECT id FROM mission WHERE name = 'PAIN_MANAGEMENT_IN_POSTOPERATIVE_CARE'), id FROM question WHERE id BETWEEN 1 AND 20;
+SELECT (SELECT id FROM mission WHERE name = 'Schmerzmanagement in der postoperativen Pflege'), id FROM question WHERE id BETWEEN 1 AND 20;
 
 INSERT INTO mission_question (mission_id, question_id)
-SELECT (SELECT id FROM mission WHERE name = 'NUTRITIONAL_INTERVENTIONS_FOR_MALNUTRITION'), id FROM question WHERE id BETWEEN 1 AND 20;
+SELECT (SELECT id FROM mission WHERE name = 'Ernährungsinterventionen bei Mangelernährung'), id FROM question WHERE id BETWEEN 1 AND 20;
 
 INSERT INTO mission_question (mission_id, question_id)
-SELECT (SELECT id FROM mission WHERE name = 'PREVENTION_OF_CATHETER_ASSOCIATED_URINARY_TRACT_INFECTIONS'), id FROM question WHERE id BETWEEN 1 AND 20;
+SELECT (SELECT id FROM mission WHERE name = 'Vermeidung von Katheter-assoziierten Harnwegsinfektionen'), id FROM question WHERE id BETWEEN 1 AND 20;

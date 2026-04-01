@@ -19,7 +19,7 @@ public class Room {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-
+  private int progress = 0;
   private int extraTime; // in minutes
   @ManyToOne
   @JoinColumn(name = "team_id")
@@ -45,26 +45,39 @@ public class Room {
     this.team = team;
   }
 
+
   public Long getId() {
     return id;
   }
+
   public int getExtraTime() {
     return extraTime;
   }
-  public Team getTeam() {
-    return team;
-  }
-  public void setTeam(Team team) {
-    this.team = team;
-  }
-
 
   public void setExtraTime(int timer) {
     this.extraTime = timer;
   }
+
+  public int getProgress() {
+    return progress;
+  }
+
+  public void setProgress(int progress) {
+    this.progress = progress;
+  }
+
+  public Team getTeam() {
+    return team;
+  }
+
+  public void setTeam(Team team) {
+    this.team = team;
+  }
+
   public Set<Question> getQuestions() {
     return questions;
   }
+
   public void setQuestions(Set<Question> questions) {
     this.questions = questions;
   }
@@ -72,6 +85,7 @@ public class Room {
   public Location getLocation() {
     return location;
   }
+
   public void setLocation(Location location) {
     this.location = location;
   }
