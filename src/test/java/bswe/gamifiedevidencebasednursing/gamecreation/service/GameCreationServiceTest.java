@@ -1,5 +1,6 @@
 package bswe.gamifiedevidencebasednursing.gamecreation.service;
 
+import bswe.gamifiedevidencebasednursing.domain.Location;
 import bswe.gamifiedevidencebasednursing.domain.Question;
 import bswe.gamifiedevidencebasednursing.domain.Room;
 import bswe.gamifiedevidencebasednursing.domain.Team;
@@ -52,7 +53,9 @@ class GameCreationServiceTest {
         team1.setId(1L);
         Team team2 = new Team();
         team2.setId(2L);
+        Location location = new Location("Room of Knowledge", "E-C", 10);
 
+        when(locationRepository.findByName("Room of Knowledge")).thenReturn(Optional.of(location));
         when(teamRepository.findById(1L)).thenReturn(Optional.of(team1));
         when(teamRepository.findById(2L)).thenReturn(Optional.of(team2));
 
@@ -60,14 +63,14 @@ class GameCreationServiceTest {
         for (int i = 0; i < 15; i++) {
             questions.add(new Question());
         }
-        when(questionRepository.findAll()).thenReturn(questions);
+        when(questionRepository.findQuestionsForRoomOfKnowledge()).thenReturn(questions);
 
         when(roomRepository.save(any(Room.class))).thenAnswer(invocation -> {
             Room room = invocation.getArgument(0);
             // Simulate saving by setting an ID
             java.lang.reflect.Field idField = Room.class.getDeclaredField("id");
             idField.setAccessible(true);
-            idField.set(room, 1L); 
+            idField.set(room, 1L);
             return room;
         });
 
@@ -84,6 +87,9 @@ class GameCreationServiceTest {
     void createRoomOfKnowledge_shouldThrowException_whenTeamNotFound() {
         // Given
         List<Long> teamIds = List.of(1L);
+        Location location = new Location("Room of Knowledge", "E-C", 10);
+
+        when(locationRepository.findByName("Room of Knowledge")).thenReturn(Optional.of(location));
         when(teamRepository.findById(1L)).thenReturn(Optional.empty());
 
         // When & Then
@@ -96,13 +102,16 @@ class GameCreationServiceTest {
         List<Long> teamIds = List.of(1L);
         Team team = new Team();
         team.setId(1L);
+        Location location = new Location("Room of Knowledge", "E-C", 10);
+
+        when(locationRepository.findByName("Room of Knowledge")).thenReturn(Optional.of(location));
         when(teamRepository.findById(1L)).thenReturn(Optional.of(team));
-        
+
         List<Question> questions = new ArrayList<>();
         for (int i = 0; i < 15; i++) {
             questions.add(new Question());
         }
-        when(questionRepository.findAll()).thenReturn(questions);
+        when(questionRepository.findQuestionsForRoomOfKnowledge()).thenReturn(questions);
 
         // Room save returns room without ID
         when(roomRepository.save(any(Room.class))).thenReturn(new Room());

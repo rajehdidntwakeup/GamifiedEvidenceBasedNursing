@@ -1,10 +1,13 @@
 package bswe.gamifiedevidencebasednursing.gamecreation.service;
 
+import bswe.gamifiedevidencebasednursing.domain.Location;
 import bswe.gamifiedevidencebasednursing.domain.Question;
 import bswe.gamifiedevidencebasednursing.domain.Room;
 import bswe.gamifiedevidencebasednursing.domain.Team;
 import bswe.gamifiedevidencebasednursing.domain.enums.Status;
 import bswe.gamifiedevidencebasednursing.feature.gamecreation.service.GameCreationService;
+import bswe.gamifiedevidencebasednursing.repository.ImageRepository;
+import bswe.gamifiedevidencebasednursing.repository.LocationRepository;
 import bswe.gamifiedevidencebasednursing.repository.QuestionRepository;
 import bswe.gamifiedevidencebasednursing.repository.RoomRepository;
 import bswe.gamifiedevidencebasednursing.repository.TeamRepository;
@@ -43,20 +46,34 @@ class GameCreationServiceIntegrationTest {
     @Autowired
     private bswe.gamifiedevidencebasednursing.repository.GameRepository gameRepository;
 
+    @Autowired
+    private ImageRepository imageRepository;
+
+    @Autowired
+    private LocationRepository locationRepository;
+
     @BeforeEach
     void setUp() {
+        // Delete in correct order: tables with foreign keys first
         roomRepository.deleteAll();
         answerRepository.deleteAll();
-        teamRepository.deleteAll();
-        gameRepository.deleteAll();
-        missionRepository.deleteAll();
         questionRepository.deleteAll();
+        imageRepository.deleteAll();
+        // mission_question is a join table - delete viaQuestionRepository or skip if no delete method
+        teamRepository.deleteAll();
+        missionRepository.deleteAll();
+        locationRepository.deleteAll();
+        gameRepository.deleteAll();
     }
 
     @Test
     void createRoomOfKnowledge_shouldCreateRoomsWithTenQuestionsForValidTeams() {
         // Given
-        // 1. Create 15 questions
+        // 1. Create "Room of Knowledge" location
+        Location location = new Location("Room of Knowledge", "E-C", 10);
+        location = locationRepository.save(location);
+
+        // 2. Create 15 questions with the location
         for (long i = 1; i <= 15; i++) {
             Question q = new Question();
             // Using reflection to set ID as Question does not have a @GeneratedValue
@@ -68,10 +85,11 @@ class GameCreationServiceIntegrationTest {
                 // Ignore
             }
             q.setTitle("Question " + i);
+            q.setLocation(location);
             questionRepository.save(q);
         }
 
-        // 2. Create 2 teams
+        // 3. Create 2 teams
         Team team1 = new Team();
         team1.setStatus(Status.READY);
         team1.setWinner(false);

@@ -65,6 +65,10 @@ public class Location {
     return timer;
   }
 
+  public void setTimer(int timer) {
+    this.timer = timer;
+  }
+
   public List<Question> getQuestions() {
     return questions;
   }

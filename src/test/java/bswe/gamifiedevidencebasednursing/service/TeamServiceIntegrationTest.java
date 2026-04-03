@@ -6,6 +6,7 @@ import bswe.gamifiedevidencebasednursing.domain.Team;
 import bswe.gamifiedevidencebasednursing.domain.enums.GameStatus;
 import bswe.gamifiedevidencebasednursing.feature.gamecreation.service.GameCreationService;
 import bswe.gamifiedevidencebasednursing.repository.GameRepository;
+import bswe.gamifiedevidencebasednursing.repository.ImageRepository;
 import bswe.gamifiedevidencebasednursing.repository.MissionRepository;
 import bswe.gamifiedevidencebasednursing.repository.TeamRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,11 +42,16 @@ public class TeamServiceIntegrationTest {
     @Autowired
     private bswe.gamifiedevidencebasednursing.repository.AnswerRepository answerRepository;
 
+    @Autowired
+    private ImageRepository imageRepository;
+
     @BeforeEach
     void setUp() {
+        // Delete in correct order: tables with foreign keys first
         teamRepository.deleteAll();
         answerRepository.deleteAll();
         questionRepository.deleteAll();
+        imageRepository.deleteAll();
         missionRepository.deleteAll();
         gameRepository.deleteAll();
     }
@@ -74,6 +80,6 @@ public class TeamServiceIntegrationTest {
             assertEquals(game.getId(), team.getGame().getId());
             assertTrue(team.getMission().getName().startsWith("Mission"));
         }
-        
+
     }
 }
