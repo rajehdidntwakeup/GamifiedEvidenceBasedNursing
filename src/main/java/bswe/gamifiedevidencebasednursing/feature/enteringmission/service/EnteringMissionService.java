@@ -41,7 +41,7 @@ public class EnteringMissionService {
 
 
   public ResponseEntity<EnteringGameResponse> enterMission(EnteringGameRequest request) {
-    Optional<Game> game = gameRepository.findById(request.getGameId());
+    Optional<Game> game = gameRepository.findCreatedOrRunningGame();
     if (game.isEmpty()) {
       throw new ResponseStatusException(HttpStatusCode.valueOf(404), "Game not found");
     }
@@ -49,7 +49,7 @@ public class EnteringMissionService {
     if (gameInstance.getPassword().equals(request.getPassword())) {
       startGame(gameInstance);
       return ResponseEntity
-          .ok(enterRoomOfKnowledge(request.getGameId(), request.getMissionId()));
+          .ok(enterRoomOfKnowledge(gameInstance.getId(), request.getMissionId()));
     } else {
       throw new ResponseStatusException(HttpStatusCode.valueOf(401), "Invalid game password");
     }

@@ -10,12 +10,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 @Entity
-public class Image {
+public class Document {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -23,16 +22,16 @@ public class Image {
   @Size(max = 255)
   private String path;
   @ManyToMany
-  @JoinTable(name = "image_question",
-      joinColumns = @JoinColumn(name = "image_id"),
+  @JoinTable(name = "document_question",
+      joinColumns = @JoinColumn(name = "document_id"),
       inverseJoinColumns = @JoinColumn(name = "question_id"))
   private Set<Question> questions = new HashSet<>();
 
 
-  public Image() {
+  public Document() {
   }
 
-  public Image(String path) {
+  public Document(String path) {
     this.path = path;
   }
 

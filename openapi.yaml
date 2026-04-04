@@ -1,109 +1,106 @@
 openapi: 3.0.3
 info:
   title: Gamified Evidence-Based Nursing API
+  description: |
+    RESTful API for the Gamified Evidence-Based Nursing application — a Spring Boot backend
+    that powers a gamified learning experience for nursing students. Teams progress through
+    themed rooms (Room of Knowledge, Room of Abstracts, Room of Analytics, Room of Science Battle)
+    answering evidence-based nursing questions.
+
+    ## Authentication
+    All endpoints require a valid JWT Bearer token in the `Authorization` header.
+    Tokens are obtained via the register or authenticate endpoints and expire after **1 hour**.
+
+    ## Game Flow
+    1. An admin **creates a game** — 5 teams (one per mission) are generated automatically.
+    2. Each team starts in status `READY` at location `START`.
+    3. Teams progress through rooms: `START` → `ROOM_OF_KNOWLEDGE` → `ROOM_OF_ABSTRACTS`
+       → `ROOM_OF_ANALYTICS` → `ROOM_OF_SCIENCE_BATTLE` → `LAST_QUIZ` → `END_STATE`.
+    4. In each room, teams retrieve and answer questions within a timer.
+
+    ## Error Handling
+    Error responses follow a consistent structure across all endpoints. Validation errors (400)
+    include field-level detail; authentication/authorization errors (401/403) return minimal
+    information to avoid leaking security details.
+
+    ## Naming Conventions
+    - URL paths use **kebab-case** (e.g., `/api/game/create`).
+    - Enum values use **UPPER_SNAKE_CASE**.
+    - JSON fields use **camelCase**.
   version: 1.0.0
-  description: OpenAPI spec generated from Spring controller mappings in this repository.
+  contact:
+    name: GamifiedEvidenceBasedNursing Team
+
 servers:
   - url: http://localhost:8080
-security:
-  - bearerAuth: []
+    description: Local development server
+
 tags:
-  - name: Auth
-  - name: Game
-  - name: Team
-  - name: Room
-  - name: Leaderboard
-  - name: Completion
+  - name: Authentication
+    description: User registration and login — public endpoints (no JWT required)
+  - name: Games
+    description: Game session lifecycle — create, query, and manage game sessions
   - name: Admin
+    description: Admin operations — check for existing admins
+  - name: Landing Page
+    description: Landing page endpoints — check game status and show missions
+  - name: Entering Mission
+    description: Mission entry endpoints — teams enter the game with their chosen mission
+  - name: Room of Knowledge
+    description: Room of Knowledge specific endpoints — verify answers and get results
+  - name: Room of Abstracts
+    description: Room of Abstracts specific endpoints — verify answers and track progress
+  - name: Proceed to Next Room
+    description: Proceed to next room endpoints — advance to Room of Abstracts or Analytics
 
 paths:
-  /api/auth/register:
+  # ──────────────────────────────────────────────
+  # Authentication
+  # ──────────────────────────────────────────────
+  /auth/register:
     post:
-      tags: [Auth]
-      operationId: registerApiAuth
-      security: []
+      tags:
+        - Authentication
+      summary: Register a new user
+      description: |
+        Creates a new user account and returns a JWT token.
+      operationId: register
       requestBody:
+        description: Username and password for the new account
         required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/AuthRequest'
+            example:
+              username: "nurse.jane"
+              password: "SecureP@ss123"
       responses:
         '200':
-          description: Registered
+          description: Registration successful — JWT token returned
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/AuthResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
-  /api/auth/login:
-    post:
-      tags: [Auth]
-      operationId: loginApiAuth
-      security: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AuthRequest'
-      responses:
-        '200':
-          description: Authenticated
+        '500':
+          description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AuthResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-  /api/auth/authenticate:
-    post:
-      tags: [Auth]
-      operationId: authenticateApiAuth
-      security: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AuthRequest'
-      responses:
-        '200':
-          description: Authenticated
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AuthResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
+                $ref: '#/components/schemas/ErrorResponse'
 
-  /auth/register:
-    post:
-      tags: [Auth]
-      operationId: registerLegacyAuth
-      deprecated: true
-      security: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AuthRequest'
-      responses:
-        '200':
-          description: Registered
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AuthResponse'
   /auth/login:
     post:
-      tags: [Auth]
-      operationId: loginLegacyAuth
-      deprecated: true
-      security: []
+      tags:
+        - Authentication
+      summary: Login as a user
+      description: |
+        Authenticates an existing user and returns a JWT token.
+      operationId: login
       requestBody:
+        description: User credentials
         required: true
         content:
           application/json:
@@ -111,28 +108,7 @@ paths:
               $ref: '#/components/schemas/AuthRequest'
       responses:
         '200':
-          description: Authenticated
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AuthResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-  /auth/authenticate:
-    post:
-      tags: [Auth]
-      operationId: authenticateLegacyAuth
-      deprecated: true
-      security: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AuthRequest'
-      responses:
-        '200':
-          description: Authenticated
+          description: Login successful
           content:
             application/json:
               schema:
@@ -140,749 +116,401 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 
+  /auth/authenticate:
+    post:
+      tags:
+        - Authentication
+      summary: Authenticate an existing user
+      description: |
+        Alias for `/auth/login`. Authenticates an existing user and returns a JWT token.
+      operationId: authenticate
+      requestBody:
+        description: User credentials
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthRequest'
+      responses:
+        '200':
+          description: Authentication successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/auth/register:
+    post:
+      tags:
+        - Authentication
+      summary: Register a new user (API prefix)
+      description: |
+        Alias for `/auth/register`.
+      operationId: registerApi
+      requestBody:
+        description: User credentials
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthRequest'
+      responses:
+        '200':
+          description: Registration successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /api/auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: Login as a user (API prefix)
+      description: |
+        Alias for `/auth/login`.
+      operationId: loginApi
+      requestBody:
+        description: User credentials
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthRequest'
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/auth/authenticate:
+    post:
+      tags:
+        - Authentication
+      summary: Authenticate a user (API prefix)
+      description: |
+        Alias for `/auth/authenticate`.
+      operationId: authenticateApi
+      requestBody:
+        description: User credentials
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthRequest'
+      responses:
+        '200':
+          description: Authentication successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # ──────────────────────────────────────────────
+  # Admin
+  # ──────────────────────────────────────────────
+  /api/admin/isThereAdmin:
+    get:
+      tags:
+        - Admin
+      summary: Check if any administrator exists
+      description: |
+        Returns true if at least one administrator exists in the system.
+      operationId: isThereAdmin
+      responses:
+        '200':
+          description: Status retrieved
+          content:
+            application/json:
+              schema:
+                type: boolean
+              example: true
+
+  # ──────────────────────────────────────────────
+  # Games
+  # ──────────────────────────────────────────────
   /api/game/create:
     post:
-      tags: [Game]
+      tags:
+        - Games
+      summary: Create a new game session
+      description: |
+        Initialises a new game session.
       operationId: createGame
+      security:
+        - bearerAuth: []
       requestBody:
+        description: Game session configuration
         required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/CreateGameRequest'
+            example:
+              password: "GameRoom42"
       responses:
         '200':
-          description: Game created
+          description: Game session created successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/GameResponseDto'
+              example:
+                gameId: 1
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
 
+  # ──────────────────────────────────────────────
+  # Landing Page
+  # ──────────────────────────────────────────────
   /api/game/landing:
     get:
-      tags: [Game]
+      tags:
+        - Landing Page
+      summary: Check if a game is currently running
+      description: |
+        Returns true if there is at least one game session that has started and not yet finished.
       operationId: isGameRunning
       responses:
         '200':
-          description: OK
+          description: Status retrieved
           content:
             application/json:
               schema:
                 type: boolean
+              example: true
 
-  /api/teams/{teamId}:
+  /api/game/landing/missions:
     get:
-      tags: [Team]
-      operationId: getTeam
-      parameters:
-        - $ref: '#/components/parameters/teamIdPath'
+      tags:
+        - Landing Page
+      summary: Get available missions for landing page
+      description: |
+        Returns a list of available missions for team selection.
+      operationId: showMissions
       responses:
         '200':
-          description: Team
+          description: Missions retrieved
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TeamDto'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-  /api/teams/game/{gameId}:
-    get:
-      tags: [Team]
-      operationId: getTeamsByGame
-      parameters:
-        - $ref: '#/components/parameters/gameIdPath'
-      responses:
-        '200':
-          description: Teams
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/TeamDto'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-  /api/teams/{teamId}/progress:
-    get:
-      tags: [Team]
-      operationId: getTeamProgress
-      parameters:
-        - $ref: '#/components/parameters/teamIdPath'
-      responses:
-        '200':
-          description: Team progress
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TeamProgressResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
+                $ref: '#/components/schemas/LandingPageResponse'
+              example:
+                gameId: 1
+                missions:
+                  - "Wound Care for Pressure Ulcers"
+                  - "Fall Prevention in Geriatrics"
 
-  /api/rooms/{roomId}/status:
-    get:
-      tags: [Room]
-      operationId: getRoomStatus
-      parameters:
-        - $ref: '#/components/parameters/roomIdPath'
-        - $ref: '#/components/parameters/teamIdQuery'
-      responses:
-        '200':
-          description: Room status
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/RoomStatusResponse'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-  /api/rooms/{roomId}/questions:
-    get:
-      tags: [Room]
-      operationId: getRoomQuestions
-      parameters:
-        - $ref: '#/components/parameters/roomIdPath'
-        - $ref: '#/components/parameters/teamIdQuery'
-      responses:
-        '200':
-          description: Questions
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/QuestionDto'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-  /api/rooms/{roomId}/submit-answer:
+  # ──────────────────────────────────────────────
+  # Entering Mission
+  # ──────────────────────────────────────────────
+  /api/game/mission/enter:
     post:
-      tags: [Room]
-      operationId: submitAnswer
-      parameters:
-        - $ref: '#/components/parameters/roomIdPath'
+      tags:
+        - Entering Mission
+      summary: Enter the game with a mission
+      description: |
+        Allows a team to enter the game by selecting their mission.
+      operationId: enterMission
       requestBody:
+        description: Mission entry request
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SubmitAnswerRequest'
+              $ref: '#/components/schemas/EnteringGameRequest'
+            example:
+              password: "GameRoom42"
+              missionId: 1
       responses:
         '200':
-          description: Submission result
+          description: Successfully entered mission
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SubmitAnswerResponse'
+                $ref: '#/components/schemas/EnteringGameResponse'
+              example:
+                missionId: 1
+                roomId: 1
+                questions:
+                  - questionId: 1
+                    question: "What is the primary sign of a pressure ulcer?"
+                    answers:
+                      - answerId: 1
+                        answer: "Redness"
+                      - answerId: 2
+                        answer: "Blue tint"
         '400':
           $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-  /api/rooms/{roomId}/questions/{questionId}/hint:
-    post:
-      tags: [Room]
-      operationId: getHint
-      parameters:
-        - $ref: '#/components/parameters/roomIdPath'
-        - $ref: '#/components/parameters/questionIdPath'
-        - $ref: '#/components/parameters/teamIdQuery'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # ──────────────────────────────────────────────
+  # Room of Knowledge
+  # ──────────────────────────────────────────────
+  /api/rooms/roomofknowledge/isTheAnswerCorrect:
+    put:
+      tags:
+        - Room of Knowledge
+      summary: Verify if an answer is correct (Room of Knowledge)
+      description: |
+        Checks if a selected answer is correct for Room of Knowledge.
+      operationId: isTheAnswerCorrect
+      requestBody:
+        description: Answer verification request
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerifyAnswerDto'
+            example:
+              questionId: 1
+              answerId: 1
+              roomId: 1
       responses:
         '200':
-          description: Hint text
-          content:
-            text/plain:
-              schema:
-                type: string
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-  /api/rooms/{roomId}/questions/{questionId}/skip:
-    post:
-      tags: [Room]
-      operationId: skipQuestion
-      parameters:
-        - $ref: '#/components/parameters/roomIdPath'
-        - $ref: '#/components/parameters/questionIdPath'
-        - $ref: '#/components/parameters/teamIdQuery'
-      responses:
-        '200':
-          description: Updated room status
+          description: Answer verification result
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RoomStatusResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
+                type: boolean
+              example: true
 
-  /api/rooms/room-of-knowledge:
+  /api/rooms/roomofknowledge/getResult:
     get:
-      tags: [Room]
-      operationId: getRoomOfKnowledgeQuestionList
+      tags:
+        - Room of Knowledge
+      summary: Get result for Room of Knowledge
+      description: |
+        Returns the result for the Room of Knowledge room including progress and key.
+      operationId: getResult
       parameters:
-        - name: gameId
+        - name: roomId
           in: query
           required: true
+          description: ID of the room
           schema:
             type: integer
             format: int64
-        - name: mission
-          in: query
-          required: true
-          schema:
-            $ref: '#/components/schemas/Mission'
-        - name: password
-          in: query
-          required: false
-          schema:
-            type: string
+            example: 1
       responses:
         '200':
-          description: List of Room of Knowledge questions
+          description: Room result retrieved
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/RoomOfKnowledgeQuestionDto'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
+                $ref: '#/components/schemas/ResultDto'
+              example:
+                progress: 80
+                key: "KEY-123"
 
-  /api/leaderboard/games/{gameId}:
-    get:
-      tags: [Leaderboard]
-      operationId: getGameLeaderboard
-      parameters:
-        - $ref: '#/components/parameters/gameIdPath'
-      responses:
-        '200':
-          description: Leaderboard entries
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/LeaderboardEntryDto'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-  /api/leaderboard/games/{gameId}/my-position:
-    get:
-      tags: [Leaderboard]
-      operationId: getMyPosition
-      parameters:
-        - $ref: '#/components/parameters/gameIdPath'
-        - $ref: '#/components/parameters/teamIdQuery'
-      responses:
-        '200':
-          description: Team position
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LeaderboardEntryDto'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-  /api/leaderboard/games/{gameId}/top:
-    get:
-      tags: [Leaderboard]
-      operationId: getTopTeams
-      parameters:
-        - $ref: '#/components/parameters/gameIdPath'
-        - name: limit
-          in: query
-          schema:
-            type: integer
-            format: int32
-            default: 10
-      responses:
-        '200':
-          description: Top teams
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/LeaderboardEntryDto'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-  /api/leaderboard/global:
-    get:
-      tags: [Leaderboard]
-      operationId: getGlobalLeaderboard
-      responses:
-        '200':
-          description: Global leaderboard
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/LeaderboardEntryDto'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-  /api/leaderboard/global/mission/{mission}:
-    get:
-      tags: [Leaderboard]
-      operationId: getMissionLeaderboard
-      parameters:
-        - name: mission
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Mission leaderboard
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/LeaderboardEntryDto'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-  /api/leaderboard/filter:
+  # ──────────────────────────────────────────────
+  # Room of Abstracts
+  # ──────────────────────────────────────────────
+  /api/rooms/roomofabstracts/verify:
     post:
-      tags: [Leaderboard]
-      operationId: getFilteredLeaderboard
+      tags:
+        - Room of Abstracts
+      summary: Verify answers for Room of Abstracts
+      description: |
+        Verifies the team's selected answers for the Room of Abstracts.
+      operationId: verifyRoomOfAbstractsAnswers
       requestBody:
+        description: Verify answers request for Room of Abstracts
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/LeaderboardFilterDto'
+              $ref: '#/components/schemas/VerifyRoomOfAbstractsAnswersDto'
+            example:
+              roomId: 1
+              missionId: 1
+              answers:
+                - questionId: 1
+                  answerId: 1
+                - questionId: 2
+                  answerId: 2
       responses:
         '200':
-          description: Filtered leaderboard
+          description: Answers verified successfully
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/LeaderboardEntryDto'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-  /api/leaderboard/games/{gameId}/teams/{teamId}/history:
-    get:
-      tags: [Leaderboard]
-      operationId: getTeamHistory
-      parameters:
-        - $ref: '#/components/parameters/gameIdPath'
-        - $ref: '#/components/parameters/teamIdPath'
-      responses:
-        '200':
-          description: Team ranking history
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/LeaderboardHistoryEntry'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-  /api/leaderboard/games/{gameId}/teams/{teamId}/neighbors:
-    get:
-      tags: [Leaderboard]
-      operationId: getTeamNeighbors
-      parameters:
-        - $ref: '#/components/parameters/gameIdPath'
-        - $ref: '#/components/parameters/teamIdPath'
-        - name: range
-          in: query
-          schema:
-            type: integer
-            format: int32
-            default: 2
-      responses:
-        '200':
-          description: Neighbor teams
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/LeaderboardEntryDto'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-  /api/leaderboard/games/{gameId}/live:
-    get:
-      tags: [Leaderboard]
-      operationId: getLiveSubscriptionInfo
-      parameters:
-        - $ref: '#/components/parameters/gameIdPath'
-      responses:
-        '200':
-          description: Live subscription metadata
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LeaderboardLiveInfoDto'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
+                $ref: '#/components/schemas/ResultDto'
+              example:
+                progress: 100
+                key: "SECRET-KEY"
 
-  /api/completion/teams/{teamId}/status:
-    get:
-      tags: [Completion]
-      operationId: checkTeamCompletion
-      parameters:
-        - $ref: '#/components/parameters/teamIdPath'
-      responses:
-        '200':
-          description: Completion status
-          content:
-            application/json:
-              schema:
-                type: boolean
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-  /api/completion/teams/{teamId}/complete:
+  # ──────────────────────────────────────────────
+  # Proceed to Next Room
+  # ──────────────────────────────────────────────
+  /api/game/proceed:
     post:
-      tags: [Completion]
-      operationId: completeTeamGame
-      parameters:
-        - $ref: '#/components/parameters/teamIdPath'
+      tags:
+        - Proceed to Next Room
+      summary: Proceed to the next room
+      description: |
+        Advances a team from Room of Knowledge to Room of Abstracts.
+      operationId: proceedToNextRoom
+      requestBody:
+        description: Proceed request
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProceedDto'
+            example:
+              roomId: 1
       responses:
         '200':
-          description: Team completion details
+          description: Proceeded to next room successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GameCompletionDto'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-  /api/completion/games/{gameId}/check:
-    get:
-      tags: [Completion]
-      operationId: checkGameCompletion
-      parameters:
-        - $ref: '#/components/parameters/gameIdPath'
-      responses:
-        '200':
-          description: Game result if complete, otherwise null
-          content:
-            application/json:
-              schema:
-                nullable: true
-                allOf:
-                  - $ref: '#/components/schemas/GameResultDto'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-  /api/completion/games/{gameId}/results:
-    get:
-      tags: [Completion]
-      operationId: getGameResults
-      parameters:
-        - $ref: '#/components/parameters/gameIdPath'
-      responses:
-        '200':
-          description: Final game results
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GameResultDto'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-  /api/completion/games/{gameId}/force-end:
-    post:
-      tags: [Completion]
-      operationId: forceEndGame
-      description: Requires ADMIN role.
-      parameters:
-        - $ref: '#/components/parameters/gameIdPath'
-      responses:
-        '200':
-          description: Forced final result
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GameResultDto'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-  /api/completion/games/{gameId}/winner:
-    get:
-      tags: [Completion]
-      operationId: getWinner
-      parameters:
-        - $ref: '#/components/parameters/gameIdPath'
-      responses:
-        '200':
-          description: Winner details
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/WinnerResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '404':
-          description: No winner available
-  /api/admin/isThereAdmin:
-    get:
-      tags: [Admin]
-      operationId: isThereAdmin
-      security: []
-      responses:
-        '200':
-          description: Whether an administrator game exists
-          content:
-            application/json:
-              schema:
-                type: boolean
-  /api/admin/games:
-    get:
-      tags: [Admin]
-      operationId: getAllAdminGames
-      description: Requires ADMIN role.
-      responses:
-        '200':
-          description: All games for admin dashboard
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/AdminGameDto'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-  /api/admin/games/{gameId}:
-    get:
-      tags: [Admin]
-      operationId: getAdminGameDetails
-      description: Requires ADMIN role.
-      parameters:
-        - $ref: '#/components/parameters/gameIdPath'
-      responses:
-        '200':
-          description: Game details
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AdminGameDto'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '404':
-          $ref: '#/components/responses/NotFound'
-    delete:
-      tags: [Admin]
-      operationId: deleteAdminGame
-      description: Requires ADMIN role.
-      parameters:
-        - $ref: '#/components/parameters/gameIdPath'
-      responses:
-        '204':
-          description: Deleted
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '404':
-          $ref: '#/components/responses/NotFound'
-  /api/admin/games/{gameId}/teams:
-    get:
-      tags: [Admin]
-      operationId: getAdminGameTeams
-      description: Requires ADMIN role.
-      parameters:
-        - $ref: '#/components/parameters/gameIdPath'
-      responses:
-        '200':
-          description: Teams in game
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/AdminTeamDto'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-  /api/admin/games/{gameId}/teams/{teamId}:
-    get:
-      tags: [Admin]
-      operationId: getAdminTeamDetails
-      description: Requires ADMIN role.
-      parameters:
-        - $ref: '#/components/parameters/gameIdPath'
-        - $ref: '#/components/parameters/teamIdPath'
-      responses:
-        '200':
-          description: Team details
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AdminTeamDto'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '404':
-          $ref: '#/components/responses/NotFound'
-  /api/admin/games/{gameId}/start:
-    post:
-      tags: [Admin]
-      operationId: startAdminGame
-      description: Requires ADMIN role.
-      parameters:
-        - $ref: '#/components/parameters/gameIdPath'
-      responses:
-        '200':
-          description: Updated game state
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AdminGameDto'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-  /api/admin/games/{gameId}/end:
-    post:
-      tags: [Admin]
-      operationId: endAdminGame
-      description: Requires ADMIN role.
-      parameters:
-        - $ref: '#/components/parameters/gameIdPath'
-      responses:
-        '200':
-          description: Updated game state
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AdminGameDto'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-  /api/admin/games/{gameId}/teams/{teamId}/reset:
-    post:
-      tags: [Admin]
-      operationId: resetAdminTeamProgress
-      description: Requires ADMIN role.
-      parameters:
-        - $ref: '#/components/parameters/gameIdPath'
-        - $ref: '#/components/parameters/teamIdPath'
-      responses:
-        '200':
-          description: Reset team state
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AdminTeamDto'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-  /api/admin/games/{gameId}/analytics:
-    get:
-      tags: [Admin]
-      operationId: getAdminGameAnalytics
-      description: Requires ADMIN role.
-      parameters:
-        - $ref: '#/components/parameters/gameIdPath'
-      responses:
-        '200':
-          description: Game analytics
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AdminAnalyticsDto'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-  /api/admin/analytics:
-    get:
-      tags: [Admin]
-      operationId: getAdminGlobalAnalytics
-      description: Requires ADMIN role.
-      responses:
-        '200':
-          description: Global analytics
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AdminAnalyticsDto'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-  /api/admin/games/{gameId}/export:
-    get:
-      tags: [Admin]
-      operationId: exportAdminGameResults
-      description: Requires ADMIN role.
-      parameters:
-        - $ref: '#/components/parameters/gameIdPath'
-      responses:
-        '200':
-          description: CSV export
-          content:
-            text/csv:
-              schema:
-                type: string
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '404':
-          $ref: '#/components/responses/NotFound'
+                $ref: '#/components/schemas/RoomOfAbstractsResponseDto'
+              example:
+                roomId: 2
+                missionId: 1
+                mainQuestion: "Welcome to Room of Abstracts"
+                images:
+                  - "/images/abstracts.jpg"
+                questions:
+                  - questionId: 1
+                    question: "What is the main topic?"
+                    answers:
+                      - "Topic A"
+                      - "Topic B"
+                      - "Topic C"
+                      - "Topic D"
 
+# ════════════════════════════════════════════════
+# Reusable Components
+# ════════════════════════════════════════════════
 components:
+  # ── Security Schemes ──────────────────────────
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
+      description: |
+        JWT token obtained from `/auth/register` or `/auth/authenticate`.
+        Include in the `Authorization` header as `Bearer <token>`.
+        Tokens expire after 1 hour (3 600 000 ms).
 
-  parameters:
-    gameIdPath:
-      name: gameId
-      in: path
-      required: true
-      schema:
-        type: integer
-        format: int64
-    teamIdPath:
-      name: teamId
-      in: path
-      required: true
-      schema:
-        type: integer
-        format: int64
-    roomIdPath:
-      name: roomId
-      in: path
-      required: true
-      schema:
-        type: integer
-        format: int64
-    questionIdPath:
-      name: questionId
-      in: path
-      required: true
-      schema:
-        type: integer
-        format: int64
-    teamIdQuery:
-      name: teamId
-      in: query
-      required: true
-      schema:
-        type: integer
-        format: int64
-
+  # ── Reusable Responses ────────────────────────
   responses:
     BadRequest:
       description: Invalid request
@@ -890,18 +518,14 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
+
     Unauthorized:
-      description: Missing or invalid authentication
+      description: Missing or invalid JWT token
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
-    Forbidden:
-      description: Authenticated but not authorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
+
     NotFound:
       description: Resource not found
       content:
@@ -909,649 +533,277 @@ components:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
 
+  # ── Schemas ───────────────────────────────────
   schemas:
+    # ── Authentication ──────────────────────────
     AuthRequest:
       type: object
-      required: [username, password]
+      description: Credentials for user registration or authentication
+      required:
+        - username
+        - password
       properties:
         username:
           type: string
+          description: Unique username for the account
+          example: "nurse.jane"
         password:
           type: string
           format: password
+          description: Account password
+          example: "SecureP@ss123"
 
     AuthResponse:
       type: object
-      required: [token, isAdmin]
+      description: Authentication result containing a JWT token and role information
       properties:
         token:
           type: string
-        isAdmin:
+          description: JWT Bearer token
+          example: "eyJhbGciOiJIUzI1NiJ9..."
+        admin:
           type: boolean
+          description: Whether the authenticated user has the ADMIN role
+          example: true
 
+    # ── Game ────────────────────────────────────
     CreateGameRequest:
       type: object
-      required: [password]
+      description: Request body for creating a new game session
+      required:
+        - password
       properties:
         password:
           type: string
+          description: Game session password
+          example: "GameRoom42"
 
     GameResponseDto:
       type: object
+      description: Response after creating a new game session
       properties:
         gameId:
           type: integer
           format: int64
-        teamMissions:
-          type: object
-          additionalProperties:
-            type: integer
-            format: int64
+          description: Unique identifier of the created game
+          example: 1
 
-    TeamDto:
+    # ── Landing Page ────────────────────────────
+    LandingPageResponse:
       type: object
+      description: Response containing available missions
       properties:
-        id:
-          type: integer
-          format: int64
-        mission:
-          type: string
-        status:
-          type: string
-        location:
-          type: string
-        isWinner:
-          type: boolean
         gameId:
           type: integer
           format: int64
+          example: 1
+        missions:
+          type: array
+          items:
+            type: string
 
-    TeamProgressResponse:
+    # ── Entering Mission ────────────────────────
+    EnteringGameRequest:
       type: object
+      required:
+        - password
+        - missionId
       properties:
-        teamId:
+        password:
+          type: string
+          example: "GameRoom42"
+        missionId:
           type: integer
           format: int64
-        currentRoom:
-          type: integer
-          format: int32
-        totalScore:
-          type: integer
-          format: int32
-        questionsAnswered:
-          type: integer
-          format: int32
-        isWinner:
-          type: boolean
+          example: 1
 
-    QuestionDto:
+    EnteringGameResponse:
       type: object
       properties:
-        id:
+        missionId:
           type: integer
           format: int64
-        title:
+          example: 1
+        roomId:
+          type: integer
+          format: int64
+          example: 1
+        questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoomOfKnowledgeQuestionsDto'
+
+    RoomOfKnowledgeQuestionsDto:
+      type: object
+      properties:
+        questionId:
+          type: integer
+          format: int64
+          example: 1
+        question:
           type: string
-        image:
-          type: string
-          nullable: true
+          example: "What is the primary sign of a pressure ulcer?"
         answers:
           type: array
           items:
             $ref: '#/components/schemas/AnswerDto'
 
-    RoomOfKnowledgeQuestionDto:
-      type: object
-      properties:
-        question:
-          type: string
-        answers:
-          type: array
-          items:
-            $ref: '#/components/schemas/RoomOfKnowledgeAnswerDto'
-
-    RoomOfKnowledgeAnswerDto:
-      type: object
-      properties:
-        answer:
-          type: string
-        isCorrect:
-          type: boolean
-
     AnswerDto:
       type: object
       properties:
-        id:
-          type: integer
-          format: int64
-        text:
-          type: string
-
-    SubmitAnswerRequest:
-      type: object
-      required: [teamId, roomId, questionId, answerId]
-      properties:
-        teamId:
-          type: integer
-          format: int64
-        roomId:
-          type: integer
-          format: int64
-        questionId:
-          type: integer
-          format: int64
         answerId:
           type: integer
           format: int64
-
-    SubmitAnswerResponse:
-      type: object
-      properties:
-        correct:
-          type: boolean
-        pointsEarned:
-          type: integer
-          format: int32
-        newTotalScore:
-          type: integer
-          format: int32
-        feedback:
+          example: 1
+        answer:
           type: string
-        roomCompleted:
-          type: boolean
-        nextQuestionId:
+          example: "Redness"
+
+    # ── Room of Knowledge ───────────────────────
+    VerifyAnswerDto:
+      type: object
+      required:
+        - questionId
+        - answerId
+        - roomId
+      properties:
+        questionId:
           type: integer
           format: int64
-          nullable: true
+          example: 1
+        answerId:
+          type: integer
+          format: int64
+          example: 1
+        roomId:
+          type: integer
+          format: int64
+          example: 1
 
-    RoomStatusResponse:
+    # ── Room of Abstracts ───────────────────────
+    VerifyRoomOfAbstractsAnswersDto:
       type: object
+      description: Request to verify answers for Room of Abstracts
+      required:
+        - roomId
+        - missionId
+        - answers
       properties:
         roomId:
           type: integer
           format: int64
-        location:
-          $ref: '#/components/schemas/Location'
-        status:
-          $ref: '#/components/schemas/Status'
-        timerRemaining:
+          description: ID of the room
+          example: 1
+        missionId:
+          type: integer
+          format: int64
+          description: ID of the mission
+          example: 1
+        answers:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuestionAnswerDto'
+
+    QuestionAnswerDto:
+      type: object
+      description: A single question-answer pair
+      required:
+        - questionId
+        - answerId
+      properties:
+        questionId:
+          type: integer
+          format: int64
+          example: 1
+        answerId:
+          type: integer
+          format: int64
+          example: 1
+
+    ResultDto:
+      type: object
+      description: Result of answer verification
+      properties:
+        progress:
           type: integer
           format: int32
-        totalQuestions:
+          description: Progress percentage (0-100)
+          example: 100
+        key:
+          type: string
+          nullable: true
+          description: The room key if progress is 100%, null otherwise
+          example: "SECRET-KEY"
+
+    # ── Proceed to Next Room ────────────────────
+    ProceedDto:
+      type: object
+      required:
+        - roomId
+      properties:
+        roomId:
           type: integer
-          format: int32
-        answeredQuestions:
+          format: int64
+          description: ID of the current room
+          example: 1
+
+    RoomOfAbstractsResponseDto:
+      type: object
+      description: Response for proceeding to Room of Abstracts
+      properties:
+        roomId:
           type: integer
-          format: int32
+          format: int64
+          example: 2
+        missionId:
+          type: integer
+          format: int64
+          example: 1
+        mainQuestion:
+          type: string
+          example: "Welcome to Room of Abstracts"
+        images:
+          type: array
+          items:
+            type: string
         questions:
           type: array
           items:
-            $ref: '#/components/schemas/QuestionDto'
-        isComplete:
-          type: boolean
+            $ref: '#/components/schemas/TableQuestionDto'
 
-    LeaderboardEntryDto:
-      type: object
-      properties:
-        teamId:
-          type: integer
-          format: int64
-        teamName:
-          type: string
-        mission:
-          type: string
-        rank:
-          type: integer
-          format: int32
-        score:
-          type: integer
-          format: int32
-        totalQuestions:
-          type: integer
-          format: int32
-        correctAnswers:
-          type: integer
-          format: int32
-        hintsUsed:
-          type: integer
-          format: int32
-        completionTimeMinutes:
-          type: integer
-          format: int32
-        accuracyPercentage:
-          type: number
-          format: double
-        isCurrentUser:
-          type: boolean
-        status:
-          $ref: '#/components/schemas/LeaderboardTrendStatus'
-        gameId:
-          type: integer
-          format: int64
-        gamePassword:
-          type: string
-        lastUpdated:
-          type: string
-          format: date-time
-
-    LeaderboardHistoryEntry:
-      type: object
-      properties:
-        timestamp:
-          type: string
-          format: date-time
-        rank:
-          type: integer
-          format: int32
-        score:
-          type: integer
-          format: int32
-        event:
-          type: string
-
-    LeaderboardFilterDto:
-      type: object
-      properties:
-        gameId:
-          type: integer
-          format: int64
-        mission:
-          type: string
-        startDate:
-          type: string
-          format: date-time
-        endDate:
-          type: string
-          format: date-time
-        minScore:
-          type: integer
-          format: int32
-        maxScore:
-          type: integer
-          format: int32
-        completedOnly:
-          type: boolean
-        activeOnly:
-          type: boolean
-        sortBy:
-          $ref: '#/components/schemas/SortBy'
-        sortOrder:
-          $ref: '#/components/schemas/SortOrder'
-        limit:
-          type: integer
-          format: int32
-          default: 50
-        offset:
-          type: integer
-          format: int32
-          default: 0
-
-    LeaderboardLiveInfoDto:
-      type: object
-      properties:
-        leaderboardTopic:
-          type: string
-        scoreUpdatesTopic:
-          type: string
-        description:
-          type: string
-
-    GameCompletionDto:
-      type: object
-      properties:
-        teamId:
-          type: integer
-          format: int64
-        teamName:
-          type: string
-        finalScore:
-          type: integer
-          format: int32
-        completionTimeMinutes:
-          type: integer
-          format: int32
-        gameId:
-          type: integer
-          format: int64
-        completedAt:
-          type: string
-          format: date-time
-        finalRanking:
-          type: integer
-          format: int32
-
-    GameResultDto:
-      type: object
-      properties:
-        gameId:
-          type: integer
-          format: int64
-        startTime:
-          type: string
-          format: date-time
-        endTime:
-          type: string
-          format: date-time
-        durationMinutes:
-          type: integer
-          format: int64
-        winnerId:
-          type: integer
-          format: int64
-          nullable: true
-        winnerName:
-          type: string
-          nullable: true
-        teamResults:
-          type: array
-          items:
-            $ref: '#/components/schemas/TeamResultDto'
-
-    TeamResultDto:
-      type: object
-      properties:
-        teamId:
-          type: integer
-          format: int64
-        teamName:
-          type: string
-        score:
-          type: integer
-          format: int32
-        completionTimeMinutes:
-          type: integer
-          format: int32
-        isWinner:
-          type: boolean
-        finalRanking:
-          type: integer
-          format: int32
-
-    WinnerResponse:
-      type: object
-      properties:
-        teamId:
-          type: integer
-          format: int64
-        teamName:
-          type: string
-        finalScore:
-          type: integer
-          format: int32
-        gameDurationMinutes:
-          type: integer
-          format: int64
-
-    AdminGameDto:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int64
-        password:
-          type: string
-        beginTime:
-          type: string
-          format: date-time
-        endTime:
-          type: string
-          format: date-time
-          nullable: true
-        status:
-          $ref: '#/components/schemas/Status'
-        teamCount:
-          type: integer
-          format: int32
-        activeTeams:
-          type: integer
-          format: int32
-        completedTeams:
-          type: integer
-          format: int32
-        teams:
-          type: array
-          items:
-            $ref: '#/components/schemas/AdminTeamSummaryDto'
-        winningTeamId:
-          type: integer
-          format: int64
-          nullable: true
-        winningTeamName:
-          type: string
-          nullable: true
-
-    AdminTeamSummaryDto:
-      type: object
-      properties:
-        teamId:
-          type: integer
-          format: int64
-        mission:
-          type: string
-        status:
-          $ref: '#/components/schemas/Status'
-        score:
-          type: integer
-          format: int32
-
-    AdminTeamDto:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int64
-        mission:
-          $ref: '#/components/schemas/Mission'
-        status:
-          $ref: '#/components/schemas/Status'
-        currentLocation:
-          $ref: '#/components/schemas/Location'
-        score:
-          type: integer
-          format: int32
-        questionsAnswered:
-          type: integer
-          format: int32
-        questionsCorrect:
-          type: integer
-          format: int32
-        hintsUsed:
-          type: integer
-          format: int32
-        timeRemaining:
-          type: integer
-          format: int32
-        startTime:
-          type: string
-          format: date-time
-        completionTime:
-          type: string
-          format: date-time
-          nullable: true
-        gameId:
-          type: integer
-          format: int64
-        gamePassword:
-          type: string
-        isWinner:
-          type: boolean
-        questionAttempts:
-          type: array
-          items:
-            $ref: '#/components/schemas/AdminQuestionAttemptDto'
-
-    AdminQuestionAttemptDto:
+    TableQuestionDto:
       type: object
       properties:
         questionId:
           type: integer
           format: int64
-        questionTitle:
+          example: 1
+        question:
           type: string
-        correct:
-          type: boolean
-        pointsEarned:
-          type: integer
-          format: int32
-        hintUsed:
-          type: boolean
-        answeredAt:
-          type: string
-          format: date-time
-
-    AdminAnalyticsDto:
-      type: object
-      properties:
-        totalGames:
-          type: integer
-          format: int32
-        activeGames:
-          type: integer
-          format: int32
-        completedGames:
-          type: integer
-          format: int32
-        totalTeams:
-          type: integer
-          format: int32
-        totalPlayers:
-          type: integer
-          format: int32
-        averageCompletionTime:
-          type: number
-          format: double
-        averageScore:
-          type: number
-          format: double
-        successRate:
-          type: number
-          format: double
-        missionStats:
+          example: "What is the main topic?"
+        answers:
           type: array
           items:
-            $ref: '#/components/schemas/MissionStatsDto'
-        questionDifficulty:
-          type: array
-          items:
-            $ref: '#/components/schemas/QuestionDifficultyDto'
-        gamesPerDay:
-          type: object
-          additionalProperties:
-            type: integer
-            format: int32
-        topTeams:
-          type: array
-          items:
-            $ref: '#/components/schemas/TopTeamDto'
-        startTime:
-          type: string
-          format: date-time
-          nullable: true
-        endTime:
-          type: string
-          format: date-time
-          nullable: true
+            type: string
+            example: "Topic A"
 
-    MissionStatsDto:
-      type: object
-      properties:
-        mission:
-          type: string
-        totalAttempts:
-          type: integer
-          format: int32
-        completions:
-          type: integer
-          format: int32
-        averageScore:
-          type: number
-          format: double
-        averageTime:
-          type: number
-          format: double
-
-    QuestionDifficultyDto:
-      type: object
-      properties:
-        questionId:
-          type: integer
-          format: int64
-        title:
-          type: string
-        totalAttempts:
-          type: integer
-          format: int32
-        correctAttempts:
-          type: integer
-          format: int32
-        successRate:
-          type: number
-          format: double
-        averageTimeToAnswer:
-          type: number
-          format: double
-
-    TopTeamDto:
-      type: object
-      properties:
-        teamId:
-          type: integer
-          format: int64
-        mission:
-          type: string
-        score:
-          type: integer
-          format: int32
-        completionTimeMinutes:
-          type: integer
-          format: int32
-        completedAt:
-          type: string
-          format: date-time
-          nullable: true
-
-    Location:
-      type: string
-      enum: [START, ROOM_OF_KNOWLEDGE, ROOM_OF_ABSTRACTS, ROOM_OF_ANALYTICS, ROOM_OF_SCIENCE_BATTLE, LAST_QUIZ, END_STATE]
-
-    Mission:
-      type: string
-      enum:
-        - WOUND_CARE_FOR_PRESSURE_ULCERS
-        - FALL_PREVENTION_IN_GERIATRICS
-        - PAIN_MANAGEMENT_IN_POSTOPERATIVE_CARE
-        - NUTRITIONAL_INTERVENTIONS_FOR_MALNUTRITION
-        - PREVENTION_OF_CATHETER_ASSOCIATED_URINARY_TRACT_INFECTIONS
-
-    Status:
-      type: string
-      enum: [READY, STARTED, WAITING_APPROVAL, FINISHED]
-
-    LeaderboardTrendStatus:
-      type: string
-      enum: [IMPROVED, DECLINED, STABLE, NEW_ENTRY]
-
-    SortBy:
-      type: string
-      enum: [SCORE, RANK, COMPLETION_TIME, ACCURACY, LAST_UPDATED]
-
-    SortOrder:
-      type: string
-      enum: [ASCENDING, DESCENDING]
-
+    # ── Error ───────────────────────────────────
     ErrorResponse:
       type: object
       properties:
         timestamp:
           type: string
           format: date-time
+          example: "2026-03-24T10:00:00Z"
         status:
           type: integer
-          format: int32
+          example: 400
         error:
           type: string
+          example: "Bad Request"
         message:
           type: string
+          example: "Validation failed"
         path:
           type: string
-      additionalProperties: true
+          example: "/api/games"

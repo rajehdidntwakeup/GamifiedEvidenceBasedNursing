@@ -18,7 +18,7 @@ public class Question {
   private Long id;
   private String title;
   @ManyToMany(mappedBy = "questions")
-  private Set<Image> images = new HashSet<>();
+  private Set<Document> documents = new HashSet<>();
   @ManyToMany(mappedBy = "questions")
   private Set<Room> rooms = new HashSet<>();
   @OneToMany(mappedBy = "question", fetch = FetchType.EAGER)
@@ -53,12 +53,12 @@ public class Question {
     this.title = title;
   }
 
-  public Set<Image> getImages() {
-    return images;
+  public Set<Document> getImages() {
+    return documents;
   }
 
-  public void setImages(Set<Image> images) {
-    this.images = images;
+  public void setImages(Set<Document> documents) {
+    this.documents = documents;
   }
 
   public Set<Room> getRooms() {

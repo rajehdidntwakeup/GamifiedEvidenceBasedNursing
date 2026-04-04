@@ -7,7 +7,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import bswe.gamifiedevidencebasednursing.domain.Answer;
-import bswe.gamifiedevidencebasednursing.domain.Image;
+import bswe.gamifiedevidencebasednursing.domain.Document;
 import bswe.gamifiedevidencebasednursing.domain.Location;
 import bswe.gamifiedevidencebasednursing.domain.Question;
 import bswe.gamifiedevidencebasednursing.domain.Room;
@@ -31,6 +31,7 @@ public class ProceedService {
   private final QuestionRepository questionRepository;
   private static final String ROOM_OF_KNOWLEDGE = "Room of Knowledge";
   private static final String ROOM_OF_ABSTRACTS = "Room of Abstracts";
+  private static final String ROOM_OF_ANALYTICS = "Room of Analytics";
 
 
   public ProceedService(RoomRepository roomRepository, TeamRepository teamRepository,
@@ -49,9 +50,25 @@ public class ProceedService {
       if (location.getName().equals(ROOM_OF_KNOWLEDGE)) {
         proceedToRoomOfAbstracts(currentRoom.getTeam().getId());
         return ResponseEntity.ok(proceedToRoomOfAbstracts(currentRoom.getTeam().getId()));
+      } else if (location.getName().equals(ROOM_OF_ABSTRACTS)) {
+        proceedToRoomOfAnalytics(currentRoom.getTeam().getId());
       }
     }
     return ResponseEntity.notFound().build();
+  }
+
+  private void proceedToRoomOfAnalytics(long teamId) {
+    Optional<Team> team = teamRepository.findById(teamId);
+    Optional<Location> location = locationRepository.findByName(ROOM_OF_ANALYTICS);
+    if (team.isPresent() && location.isPresent()) {
+      Team currentTeam = team.get();
+      Location nextLocation = location.get();
+      Room roomOfAnalytics = new Room();
+      roomOfAnalytics.setLocation(nextLocation);
+      nextLocation.getRooms().add(roomOfAnalytics);
+
+      teamRepository.save(currentTeam);
+    }
   }
 
   private RoomOfAbstractsResponseDto proceedToRoomOfAbstracts(long teamId) {
@@ -90,8 +107,8 @@ public class ProceedService {
       if (question.getAnswers().isEmpty()) {
         roomOfAbstractsResponseDto.setMainQuestion(question.getTitle());
         List<String> images = new ArrayList<>();
-        for (Image image : question.getImages()) {
-          images.add(image.getPath());
+        for (Document document : question.getImages()) {
+          images.add(document.getPath());
         }
         roomOfAbstractsResponseDto.setImages(images);
       } else {

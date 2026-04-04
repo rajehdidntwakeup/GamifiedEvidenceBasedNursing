@@ -64,6 +64,7 @@ public class SecurityConfig {
             .requestMatchers(HttpMethod.POST, "/api/rooms/**").permitAll()
             .requestMatchers(HttpMethod.PUT, "/api/rooms/**").permitAll()
             .requestMatchers(HttpMethod.POST, "/api/game/**").permitAll()
+            .requestMatchers(HttpMethod.GET, "/api/game/**").permitAll()
             .requestMatchers("/h2-console/**", "/error").permitAll()
             .requestMatchers("/auth/**", "/api/auth/**", "/v3/api-docs/**").permitAll()
             .requestMatchers(HttpMethod.GET, "/api/admin/isThereAdmin").permitAll()
