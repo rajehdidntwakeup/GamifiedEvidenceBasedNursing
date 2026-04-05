@@ -7,6 +7,7 @@ import bswe.gamifiedevidencebasednursing.domain.Question;
 import bswe.gamifiedevidencebasednursing.domain.Room;
 import bswe.gamifiedevidencebasednursing.feature.roomofknowledge.dto.request.VerifyAnswerDto;
 import bswe.gamifiedevidencebasednursing.feature.roomofknowledge.dto.response.ResultDto;
+import bswe.gamifiedevidencebasednursing.repository.AnswerRepository;
 import bswe.gamifiedevidencebasednursing.repository.QuestionRepository;
 import bswe.gamifiedevidencebasednursing.repository.RoomRepository;
 import org.springframework.http.HttpStatus;
@@ -19,10 +20,13 @@ public class RoomOfKnowledgeService {
 
   private final RoomRepository roomRepository;
   private final QuestionRepository questionRepository;
+  private final AnswerRepository answerRepository;
 
-  public RoomOfKnowledgeService(RoomRepository roomRepository, QuestionRepository questionRepository) {
+  public RoomOfKnowledgeService(RoomRepository roomRepository, QuestionRepository questionRepository,
+                                AnswerRepository answerRepository) {
     this.roomRepository = roomRepository;
     this.questionRepository = questionRepository;
+    this.answerRepository = answerRepository;
   }
 
   public ResponseEntity<Boolean> isTheAnswerCorrect(VerifyAnswerDto verifyAnswerDto) {
@@ -42,6 +46,16 @@ public class RoomOfKnowledgeService {
       }
     } else {
      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid question or room ID");
+    }
+    return new ResponseEntity<>(false, HttpStatus.OK);
+  }
+
+  public ResponseEntity<Boolean> verifyAnswer(long questionId, long answerId) {
+    Optional<Answer> answer = answerRepository.findById(answerId);
+    if (answer.isPresent()
+        && answer.get().getQuestion().getId() == questionId
+        && answer.get().isCorrect()) {
+      return new ResponseEntity<>(true, HttpStatus.OK);
     }
     return new ResponseEntity<>(false, HttpStatus.OK);
   }

@@ -1,9 +1,11 @@
 package bswe.gamifiedevidencebasednursing.feature.landingpage.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import bswe.gamifiedevidencebasednursing.domain.Game;
 import bswe.gamifiedevidencebasednursing.feature.landingpage.dto.response.LandingPageResponse;
+import bswe.gamifiedevidencebasednursing.feature.landingpage.dto.response.MissionDto;
 import bswe.gamifiedevidencebasednursing.repository.GameRepository;
 import bswe.gamifiedevidencebasednursing.repository.MissionRepository;
 import org.springframework.http.HttpStatusCode;
@@ -31,11 +33,12 @@ public class LandingPageService {
     if (game == null) {
       throw new ResponseStatusException(HttpStatusCode.valueOf(404), "No running game found");
     }
-    List<String> missionNames = missionRepository.findAllMissionNames();
-    if (missionNames.isEmpty()) {
+    List<MissionDto> missionDtos = missionRepository.findAllMissionDtos();
+    if (missionDtos.isEmpty()) {
       return ResponseEntity.notFound().build();
     }
-    LandingPageResponse response = new LandingPageResponse(game.getId(), missionNames);
+
+    LandingPageResponse response = new LandingPageResponse(game.getId(), missionDtos);
     return ResponseEntity.ok(response);
   }
 }

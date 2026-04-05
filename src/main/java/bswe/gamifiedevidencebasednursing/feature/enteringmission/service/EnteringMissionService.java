@@ -41,7 +41,7 @@ public class EnteringMissionService {
 
 
   public ResponseEntity<EnteringGameResponse> enterMission(EnteringGameRequest request) {
-    Optional<Game> game = gameRepository.findCreatedOrRunningGame();
+    Optional<Game> game = gameRepository.findById(request.getGameId());
     if (game.isEmpty()) {
       throw new ResponseStatusException(HttpStatusCode.valueOf(404), "Game not found");
     }

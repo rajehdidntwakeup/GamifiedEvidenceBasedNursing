@@ -5,6 +5,7 @@ import bswe.gamifiedevidencebasednursing.feature.roomofknowledge.dto.response.Re
 import bswe.gamifiedevidencebasednursing.feature.roomofknowledge.service.RoomOfKnowledgeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,6 +25,11 @@ public class RoomOfKnowledgeController {
   @PutMapping("/isTheAnswerCorrect")
   public ResponseEntity<Boolean> isTheAnswerCorrect(@RequestBody VerifyAnswerDto verifyAnswerDto) {
     return roomOfKnowledgeService.isTheAnswerCorrect(verifyAnswerDto);
+  }
+  
+  @GetMapping("/question/{questionId}/answer/{answerId}")
+  public ResponseEntity<Boolean> verifyAnswer(@PathVariable long questionId, @PathVariable long answerId) {
+    return roomOfKnowledgeService.verifyAnswer(questionId, answerId);
   }
 
   @GetMapping("/getResult")

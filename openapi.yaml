@@ -310,8 +310,10 @@ paths:
               example:
                 gameId: 1
                 missions:
-                  - "Wound Care for Pressure Ulcers"
-                  - "Fall Prevention in Geriatrics"
+                  - missionId: 1
+                    missionName: "Wound Care for Pressure Ulcers"
+                  - missionId: 2
+                    missionName: "Fall Prevention in Geriatrics"
 
   # ──────────────────────────────────────────────
   # Entering Mission
@@ -333,6 +335,7 @@ paths:
               $ref: '#/components/schemas/EnteringGameRequest'
             example:
               password: "GameRoom42"
+              gameId: 1
               missionId: 1
       responses:
         '200':
@@ -379,6 +382,40 @@ paths:
               questionId: 1
               answerId: 1
               roomId: 1
+      responses:
+        '200':
+          description: Answer verification result
+          content:
+            application/json:
+              schema:
+                type: boolean
+              example: true
+
+  /api/rooms/roomofknowledge/question/{questionId}/answer/{answerId}:
+    get:
+      tags:
+        - Room of Knowledge
+      summary: Verify if an answer is correct for a specific question (Room of Knowledge)
+      description: |
+        Checks if a selected answer is correct for a given question in the Room of Knowledge.
+      operationId: verifyAnswer
+      parameters:
+        - name: questionId
+          in: path
+          required: true
+          description: ID of the question
+          schema:
+            type: integer
+            format: int64
+            example: 1
+        - name: answerId
+          in: path
+          required: true
+          description: ID of the answer
+          schema:
+            type: integer
+            format: int64
+            example: 1
       responses:
         '200':
           description: Answer verification result
@@ -600,18 +637,34 @@ components:
         missions:
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/MissionDto'
+
+    MissionDto:
+      type: object
+      properties:
+        missionId:
+          type: integer
+          format: int64
+          example: 1
+        missionName:
+          type: string
+          example: "Wound Care for Pressure Ulcers"
 
     # ── Entering Mission ────────────────────────
     EnteringGameRequest:
       type: object
       required:
         - password
+        - gameId
         - missionId
       properties:
         password:
           type: string
           example: "GameRoom42"
+        gameId:
+          type: integer
+          format: int64
+          example: 1
         missionId:
           type: integer
           format: int64
