@@ -16,26 +16,26 @@ INSERT INTO document_question (document_id, question_id) VALUES (2, 21);
 INSERT INTO document_question (document_id, question_id) VALUES (3, 21);
 
 -- Room of Abstracts questions for mission 1: first column
-INSERT INTO question (id, title, location_id) VALUES (22, '1_Autor?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (22, '1_1_Autor?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Wundversorgung bei Dekubitus'), 22);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (81, 'J BLACK', true, 22);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (82, 'Joyce BLACK', true, 22);
 
-INSERT INTO question (id, title, location_id) VALUES (23, '2_Autor?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (23, '1_2_Autor?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Wundversorgung bei Dekubitus'), 23);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (83, 'Santamaria', true, 23);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (84, 'Nick Santamaria', true, 23);
 
-INSERT INTO question (id, title, location_id) VALUES (24, '3_Autor?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (24, '1_3_Autor?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Wundversorgung bei Dekubitus'), 24);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (85, 'Zhang', true, 24);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (86, 'Chunjin Zhang', true, 24);
 
 -- Room of Abstracts questions for mission 1: second column
-INSERT INTO question (id, title, location_id) VALUES (25, '1_Pyramide (LoE)?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (25, '2_1_Pyramide (LoE)?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Wundversorgung bei Dekubitus'), 25);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (87, 'Level I — Systematic Reviews / Meta-analyses', true, 25);
@@ -46,7 +46,7 @@ INSERT INTO answer (id, text, is_correct, question_id) VALUES (160, 'Level V —
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (161, 'Level VI — Single Descriptive / Qualitative Study', false, 25);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (162, 'Level VII — Expert Opinion', false, 25);
 
-INSERT INTO question (id, title, location_id) VALUES (26, '2_Pyramide (LoE)?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (26, '2_2_Pyramide (LoE)?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Wundversorgung bei Dekubitus'), 26);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (88, 'Level II — Randomized Controlled Trials', true, 26);
@@ -57,7 +57,7 @@ INSERT INTO answer (id, text, is_correct, question_id) VALUES (166, 'Level V —
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (167, 'Level VI — Single Descriptive / Qualitative Study', false, 26);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (168, 'Level VII — Expert Opinion', false, 26);
 
-INSERT INTO question (id, title, location_id) VALUES (27, '3_Pyramide (LoE)?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (27, '2_3_Pyramide (LoE)?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Wundversorgung bei Dekubitus'), 27);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (89, 'Level VII — Expert Opinion', true, 27);
@@ -69,7 +69,7 @@ INSERT INTO answer (id, text, is_correct, question_id) VALUES (173, 'Level V —
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (174, 'Level VI — Single Descriptive / Qualitative Study', false, 27);
 
 -- Room of Abstracts questions for mission 1: third column
-INSERT INTO question (id, title, location_id) VALUES (28, '1_AHCPR?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (28, '3_1_AHCPR?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Wundversorgung bei Dekubitus'), 28);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (90, 'Ia — Meta-analysis of RCTs', true, 28);
@@ -79,7 +79,7 @@ INSERT INTO answer (id, text, is_correct, question_id) VALUES (302, 'IIb — Qua
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (303, 'III — Non-experimental descriptive studies', false, 28);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (304, 'IV — Expert committee reports / opinions', false, 28);
 
-INSERT INTO question (id, title, location_id) VALUES (29, '2_AHCPR?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (29, '3_2_AHCPR?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Wundversorgung bei Dekubitus'), 29);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (91, 'Ib — At least one RCT', true, 29);
@@ -89,7 +89,7 @@ INSERT INTO answer (id, text, is_correct, question_id) VALUES (307, 'IIb — Qua
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (308, 'III — Non-experimental descriptive studies', false, 29);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (309, 'IV — Expert committee reports / opinions', false, 29);
 
-INSERT INTO question (id, title, location_id) VALUES (30, '3_AHCPR?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (30, '3_3_AHCPR?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Wundversorgung bei Dekubitus'), 30);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (92, 'IV — Expert committee reports / opinions', true, 30);
@@ -100,7 +100,7 @@ INSERT INTO answer (id, text, is_correct, question_id) VALUES (313, 'IIb — Qua
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (314, 'III — Non-experimental descriptive studies', false, 30);
 
 -- Room of Abstracts questions for mission 1: fourth column
-INSERT INTO question (id, title, location_id) VALUES (31, '1_Study Design?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (31, '4_1_Study Design?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Wundversorgung bei Dekubitus'), 31);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (93, 'Systematic Review', true, 31);
@@ -110,7 +110,7 @@ INSERT INTO answer (id, text, is_correct, question_id) VALUES (377, 'Retrospecti
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (378, 'Cross-Sectional Study', false, 31);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (379, 'Expert Opinion / Editorial', false, 31);
 
-INSERT INTO question (id, title, location_id) VALUES (32, '2_Study Design?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (32, '4_2_Study Design?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Wundversorgung bei Dekubitus'), 32);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (94, 'Randomized Controlled Trial (RCT)', true, 32);
@@ -120,7 +120,7 @@ INSERT INTO answer (id, text, is_correct, question_id) VALUES (382, 'Retrospecti
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (383, 'Cross-Sectional Study', false, 32);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (384, 'Expert Opinion / Editorial', false, 32);
 
-INSERT INTO question (id, title, location_id) VALUES (33, '3_Study Design?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (33, '4_3_Study Design?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Wundversorgung bei Dekubitus'), 33);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (95, 'Expert Opinion / Editorial', true, 33);
@@ -145,19 +145,19 @@ INSERT INTO document_question (document_id, question_id) VALUES (5, 34);
 INSERT INTO document_question (document_id, question_id) VALUES (6, 34);
 
 -- Room of Abstracts questions for mission 2: first column
-INSERT INTO question (id, title, location_id) VALUES (35, '1_Autor?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (35, '1_1_Autor?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Sturzprävention in der Geriatrie'), 35);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (96, 'Yuanyuan', true, 35);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (97, 'Ren Yuanyuan', true, 35);
 
-INSERT INTO question (id, title, location_id) VALUES (36, '2_Autor?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (36, '1_2_Autor?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Sturzprävention in der Geriatrie'), 36);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (98, 'Huynh', true, 36);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (99, 'David Huynh', true, 36);
 
-INSERT INTO question (id, title, location_id) VALUES (37, '3_Autor?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (37, '1_3_Autor?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Sturzprävention in der Geriatrie'), 37);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (100, 'Heschl', true, 37);
@@ -165,7 +165,7 @@ INSERT INTO answer (id, text, is_correct, question_id) VALUES (100, 'Heschl', tr
 -- TODO: INSERT INTO answer (id, text, is_correct, question_id) VALUES (101, 'David Huynh', true, 37);
 
 -- Room of Abstracts questions for mission 2: second column
-INSERT INTO question (id, title, location_id) VALUES (38, '1_Pyramide (LoE)?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (38, '2_1_Pyramide (LoE)?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Sturzprävention in der Geriatrie'), 38);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (102, 'Level I — Systematic Reviews / Meta-analyses', true, 38);
@@ -176,7 +176,7 @@ INSERT INTO answer (id, text, is_correct, question_id) VALUES (178, 'Level V —
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (179, 'Level VI — Single Descriptive / Qualitative Study', false, 38);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (180, 'Level VII — Expert Opinion', false, 38);
 
-INSERT INTO question (id, title, location_id) VALUES (39, '2_Pyramide (LoE)?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (39, '2_2_Pyramide (LoE)?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Sturzprävention in der Geriatrie'), 39);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (103, 'Level I — Systematic Reviews / Meta-analyses', true, 39);
@@ -187,7 +187,7 @@ INSERT INTO answer (id, text, is_correct, question_id) VALUES (184, 'Level V —
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (185, 'Level VI — Single Descriptive / Qualitative Study', false, 39);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (186, 'Level VII — Expert Opinion', false, 39);
 
-INSERT INTO question (id, title, location_id) VALUES (40, '3_Pyramide (LoE)?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (40, '2_3_Pyramide (LoE)?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Sturzprävention in der Geriatrie'), 40);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (104, 'Level VII — Expert Opinion', true, 40);
@@ -199,7 +199,7 @@ INSERT INTO answer (id, text, is_correct, question_id) VALUES (191, 'Level V —
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (192, 'Level VI — Single Descriptive / Qualitative Study', false, 40);
 
 -- Room of Abstracts questions for mission 2: third column
-INSERT INTO question (id, title, location_id) VALUES (41, '1_AHCPR?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (41, '3_1_AHCPR?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Sturzprävention in der Geriatrie'), 41);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (105, 'Ia — Meta-analysis of RCTs', true, 41);
@@ -209,7 +209,7 @@ INSERT INTO answer (id, text, is_correct, question_id) VALUES (317, 'IIb — Qua
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (318, 'III — Non-experimental descriptive studies', false, 41);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (319, 'IV — Expert committee reports / opinions', false, 41);
 
-INSERT INTO question (id, title, location_id) VALUES (42, '2_AHCPR?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (42, '3_2_AHCPR?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Sturzprävention in der Geriatrie'), 42);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (106, 'Ia — Meta-analysis of RCTs', true, 42);
@@ -219,7 +219,7 @@ INSERT INTO answer (id, text, is_correct, question_id) VALUES (322, 'IIb — Qua
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (323, 'III — Non-experimental descriptive studies', false, 42);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (324, 'IV — Expert committee reports / opinions', false, 42);
 
-INSERT INTO question (id, title, location_id) VALUES (43, '3_AHCPR?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (43, '3_3_AHCPR?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Sturzprävention in der Geriatrie'), 43);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (107, 'IV — Expert committee reports / opinions', true, 43);
@@ -230,7 +230,7 @@ INSERT INTO answer (id, text, is_correct, question_id) VALUES (328, 'IIb — Qua
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (329, 'III — Non-experimental descriptive studies', false, 43);
 
 -- Room of Abstracts questions for mission 2: fourth column
-INSERT INTO question (id, title, location_id) VALUES (44, '1_Study Design?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (44, '4_1_Study Design?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Sturzprävention in der Geriatrie'), 44);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (108, 'Systematic Review', true, 44);
@@ -240,7 +240,7 @@ INSERT INTO answer (id, text, is_correct, question_id) VALUES (392, 'Retrospecti
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (393, 'Cross-Sectional Study', false, 44);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (394, 'Expert Opinion / Editorial', false, 44);
 
-INSERT INTO question (id, title, location_id) VALUES (45, '2_Study Design?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (45, '4_2_Study Design?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Sturzprävention in der Geriatrie'), 45);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (109, 'Systematic Review', true, 45);
@@ -250,7 +250,7 @@ INSERT INTO answer (id, text, is_correct, question_id) VALUES (397, 'Retrospecti
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (398, 'Cross-Sectional Study', false, 45);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (399, 'Expert Opinion / Editorial', false, 45);
 
-INSERT INTO question (id, title, location_id) VALUES (46, '3_Study Design?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (46, '4_3_Study Design?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Sturzprävention in der Geriatrie'), 46);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (110, 'Expert Opinion / Editorial', true, 46);
@@ -274,26 +274,26 @@ INSERT INTO document_question (document_id, question_id) VALUES (8, 47);
 INSERT INTO document_question (document_id, question_id) VALUES (9, 47);
 
 -- Room of Abstracts questions for mission 3: first column
-INSERT INTO question (id, title, location_id) VALUES (48, '1_Autor?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (48, '1_1_Autor?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Schmerzmanagement in der postoperativen Pflege'), 48);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (111, 'Nobuo Sakata, Yasuyuki Okumura, Asao Ogawa', true, 48);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (112, 'Sakata, Okumura, Ogawa', true, 48);
 
-INSERT INTO question (id, title, location_id) VALUES (49, '2_Autor?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (49, '1_2_Autor?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Schmerzmanagement in der postoperativen Pflege'), 49);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (113, 'Huong Dang, Siv K. Stafseth', true, 49);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (114, 'Huong, Stafseth', true, 49);
 
-INSERT INTO question (id, title, location_id) VALUES (50, '3_Autor?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (50, '1_3_Autor?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Schmerzmanagement in der postoperativen Pflege'), 50);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (115, 'Michael J. Poulsen, Jeffrey Coto', true, 50);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (116, 'Poulsen, Coto', true, 50);
 
 -- Room of Abstracts questions for mission 3: second column
-INSERT INTO question (id, title, location_id) VALUES (51, '1_Pyramide (LoE)?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (51, '2_1_Pyramide (LoE)?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Schmerzmanagement in der postoperativen Pflege'), 51);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (117, 'Level III — Controlled Trials (no randomization)', true, 51);
@@ -304,7 +304,7 @@ INSERT INTO answer (id, text, is_correct, question_id) VALUES (196, 'Level V —
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (197, 'Level VI — Single Descriptive / Qualitative Study', false, 51);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (198, 'Level VII — Expert Opinion', false, 51);
 
-INSERT INTO question (id, title, location_id) VALUES (52, '2_Pyramide (LoE)?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (52, '2_2_Pyramide (LoE)?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Schmerzmanagement in der postoperativen Pflege'), 52);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (118, 'Level IV — Case-Control / Cohort Studies', true, 52);
@@ -315,7 +315,7 @@ INSERT INTO answer (id, text, is_correct, question_id) VALUES (202, 'Level V —
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (203, 'Level VI — Single Descriptive / Qualitative Study', false, 52);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (204, 'Level VII — Expert Opinion', false, 52);
 
-INSERT INTO question (id, title, location_id) VALUES (53, '3_Pyramide (LoE)?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (53, '2_3_Pyramide (LoE)?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Schmerzmanagement in der postoperativen Pflege'), 53);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (119, 'Level VII — Expert Opinion', true, 53);
@@ -327,7 +327,7 @@ INSERT INTO answer (id, text, is_correct, question_id) VALUES (209, 'Level V —
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (210, 'Level VI — Single Descriptive / Qualitative Study', false, 53);
 
 -- Room of Abstracts questions for mission 3: third column
-INSERT INTO question (id, title, location_id) VALUES (54, '1_AHCPR?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (54, '3_1_AHCPR?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Schmerzmanagement in der postoperativen Pflege'), 54);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (120, 'IIb — Quasi-experimental study', true, 54);
@@ -337,7 +337,7 @@ INSERT INTO answer (id, text, is_correct, question_id) VALUES (332, 'IIa — Con
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (333, 'III — Non-experimental descriptive studies', false, 54);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (334, 'IV — Expert committee reports / opinions', false, 54);
 
-INSERT INTO question (id, title, location_id) VALUES (55, '2_AHCPR?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (55, '3_2_AHCPR?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Schmerzmanagement in der postoperativen Pflege'), 55);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (121, 'IIb — Quasi-experimental study', true, 55);
@@ -347,7 +347,7 @@ INSERT INTO answer (id, text, is_correct, question_id) VALUES (337, 'IIa — Con
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (338, 'III — Non-experimental descriptive studies', false, 55);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (339, 'IV — Expert committee reports / opinions', false, 55);
 
-INSERT INTO question (id, title, location_id) VALUES (56, '3_AHCPR?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (56, '3_3_AHCPR?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Schmerzmanagement in der postoperativen Pflege'), 56);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (122, 'IV — Expert committee reports / opinions', true, 56);
@@ -358,7 +358,7 @@ INSERT INTO answer (id, text, is_correct, question_id) VALUES (343, 'IIb — Qua
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (344, 'III — Non-experimental descriptive studies', false, 56);
 
 -- Room of Abstracts questions for mission 3: fourth column
-INSERT INTO question (id, title, location_id) VALUES (57, '1_Study Design?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (57, '4_1_Study Design?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Schmerzmanagement in der postoperativen Pflege'), 57);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (123, 'Retrospective cohort study', true, 57);
@@ -368,7 +368,7 @@ INSERT INTO answer (id, text, is_correct, question_id) VALUES (407, 'Randomized 
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (408, 'Cross-Sectional Study', false, 57);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (409, 'Expert Opinion / Editorial', false, 57);
 
-INSERT INTO question (id, title, location_id) VALUES (58, '2_Study Design?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (58, '4_2_Study Design?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Schmerzmanagement in der postoperativen Pflege'), 58);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (124, 'Pre-post intervention study', true, 58);
@@ -379,7 +379,7 @@ INSERT INTO answer (id, text, is_correct, question_id) VALUES (413, 'Retrospecti
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (414, 'Cross-Sectional Study', false, 58);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (415, 'Expert Opinion / Editorial', false, 58);
 
-INSERT INTO question (id, title, location_id) VALUES (59, '3_Study Design?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (59, '4_3_Study Design?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Schmerzmanagement in der postoperativen Pflege'), 59);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (125, 'Expert Opinion / Editorial', true, 59);
@@ -405,26 +405,26 @@ INSERT INTO document_question (document_id, question_id) VALUES (12, 60);
 
 
 -- Room of Abstracts questions for mission 4: first column
-INSERT INTO question (id, title, location_id) VALUES (61, '1_Autor?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (61, '1_1_Autor?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Ernährungsinterventionen bei Mangelernährung'), 61);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (126, 'Debbie ten Cate', true, 61);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (127, 'ten Cate', true, 61);
 
-INSERT INTO question (id, title, location_id) VALUES (62, '2_Autor?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (62, '1_2_Autor?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Ernährungsinterventionen bei Mangelernährung'), 62);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (128, 'Weerasak Muangpaisan', true, 62);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (129, 'Muangpaisan', true, 62);
 
-INSERT INTO question (id, title, location_id) VALUES (63, '3_Autor?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (63, '1_3_Autor?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Ernährungsinterventionen bei Mangelernährung'), 63);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (130, 'Silvia Brunner', true, 63);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (131, 'Brunner', true, 63);
 
 -- Room of Abstracts questions for mission 4: second column
-INSERT INTO question (id, title, location_id) VALUES (64, '1_Pyramide (LoE)?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (64, '2_1_Pyramide (LoE)?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Ernährungsinterventionen bei Mangelernährung'), 64);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (132, 'Level I — Systematic Reviews / Meta-analyses', true, 64);
@@ -435,7 +435,7 @@ INSERT INTO answer (id, text, is_correct, question_id) VALUES (214, 'Level V —
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (215, 'Level VI — Single Descriptive / Qualitative Study', false, 64);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (216, 'Level VII — Expert Opinion', false, 64);
 
-INSERT INTO question (id, title, location_id) VALUES (65, '2_Pyramide (LoE)?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (65, '2_2_Pyramide (LoE)?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Ernährungsinterventionen bei Mangelernährung'), 65);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (133, 'Level II — Randomized Controlled Trials', true, 65);
@@ -446,7 +446,7 @@ INSERT INTO answer (id, text, is_correct, question_id) VALUES (220, 'Level V —
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (221, 'Level VI — Single Descriptive / Qualitative Study', false, 65);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (222, 'Level VII — Expert Opinion', false, 65);
 
-INSERT INTO question (id, title, location_id) VALUES (66, '3_Pyramide (LoE)?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (66, '2_3_Pyramide (LoE)?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Ernährungsinterventionen bei Mangelernährung'), 66);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (134, 'Level IV — Case-Control / Cohort Studies', true, 66);
@@ -458,7 +458,7 @@ INSERT INTO answer (id, text, is_correct, question_id) VALUES (227, 'Level VI �
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (228, 'Level VII — Expert Opinion', false, 66);
 
 -- Room of Abstracts questions for mission 4: third column
-INSERT INTO question (id, title, location_id) VALUES (67, '1_AHCPR?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (67, '3_1_AHCPR?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Ernährungsinterventionen bei Mangelernährung'), 67);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (135, 'Ia — Meta-analysis of RCTs', true, 67);
@@ -468,7 +468,7 @@ INSERT INTO answer (id, text, is_correct, question_id) VALUES (347, 'IIb — Qua
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (348, 'III — Non-experimental descriptive studies', false, 67);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (349, 'IV — Expert committee reports / opinions', false, 67);
 
-INSERT INTO question (id, title, location_id) VALUES (68, '2_AHCPR?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (68, '3_2_AHCPR?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Ernährungsinterventionen bei Mangelernährung'), 68);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (136, 'Ib — At least one RCT', true, 68);
@@ -478,7 +478,7 @@ INSERT INTO answer (id, text, is_correct, question_id) VALUES (352, 'IIb — Qua
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (353, 'III — Non-experimental descriptive studies', false, 68);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (354, 'IV — Expert committee reports / opinions', false, 68);
 
-INSERT INTO question (id, title, location_id) VALUES (69, '3_AHCPR?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (69, '3_3_AHCPR?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Ernährungsinterventionen bei Mangelernährung'), 69);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (137, 'III — Non-experimental descriptive studies', true, 69);
@@ -489,7 +489,7 @@ INSERT INTO answer (id, text, is_correct, question_id) VALUES (358, 'IIb — Qua
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (359, 'IV — Expert committee reports / opinions', false, 69);
 
 -- Room of Abstracts questions for mission 4: fourth column
-INSERT INTO question (id, title, location_id) VALUES (70, '1_Study Design?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (70, '4_1_Study Design?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Ernährungsinterventionen bei Mangelernährung'), 70);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (138, 'Systematic Review', true, 70);
@@ -499,7 +499,7 @@ INSERT INTO answer (id, text, is_correct, question_id) VALUES (423, 'Retrospecti
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (424, 'Cross-Sectional Study', false, 70);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (425, 'Expert Opinion / Editorial', false, 70);
 
-INSERT INTO question (id, title, location_id) VALUES (71, '2_Study Design?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (71, '4_2_Study Design?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Ernährungsinterventionen bei Mangelernährung'), 71);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (139, 'Randomized Controlled Trial (RCT)', true, 71);
@@ -509,7 +509,7 @@ INSERT INTO answer (id, text, is_correct, question_id) VALUES (428, 'Retrospecti
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (429, 'Cross-Sectional Study', false, 71);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (430, 'Expert Opinion / Editorial', false, 71);
 
-INSERT INTO question (id, title, location_id) VALUES (72, '3_Study Design?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (72, '4_3_Study Design?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Ernährungsinterventionen bei Mangelernährung'), 72);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (141, 'Cross-Sectional Study', true, 72);
@@ -535,26 +535,26 @@ INSERT INTO document_question (document_id, question_id) VALUES (15, 73);
 
 
 -- Room of Abstracts questions for mission 5: first column
-INSERT INTO question (id, title, location_id) VALUES (74, '1_Autor?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (74, '1_1_Autor?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Vermeidung von Katheter-assoziierten Harnwegsinfektionen'), 74);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (142, 'Jennifer A. Frontera', true, 74);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (143, 'Frontera', true, 74);
 
-INSERT INTO question (id, title, location_id) VALUES (75, '2_Autor?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (75, '1_2_Autor?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Vermeidung von Katheter-assoziierten Harnwegsinfektionen'), 75);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (144, 'Lauren Fish', true, 75);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (145, 'Fish', true, 75);
 
-INSERT INTO question (id, title, location_id) VALUES (76, '3_Autor?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (76, '1_3_Autor?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Vermeidung von Katheter-assoziierten Harnwegsinfektionen'), 76);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (146, 'Payal K. Patel', true, 76);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (147, 'Patel', true, 76);
 
 -- Room of Abstracts questions for mission 5: second column
-INSERT INTO question (id, title, location_id) VALUES (77, '1_Pyramide (LoE)?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (77, '2_1_Pyramide (LoE)?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Vermeidung von Katheter-assoziierten Harnwegsinfektionen'), 77);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (148, 'Level III — Controlled Trials (no randomization)', true, 77);
@@ -565,7 +565,7 @@ INSERT INTO answer (id, text, is_correct, question_id) VALUES (232, 'Level V —
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (233, 'Level VI — Single Descriptive / Qualitative Study', false, 77);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (234, 'Level VII — Expert Opinion', false, 77);
 
-INSERT INTO question (id, title, location_id) VALUES (78, '2_Pyramide (LoE)?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (78, '2_2_Pyramide (LoE)?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Vermeidung von Katheter-assoziierten Harnwegsinfektionen'), 78);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (149, 'Level III — Controlled Trials (no randomization)', true, 78);
@@ -576,7 +576,7 @@ INSERT INTO answer (id, text, is_correct, question_id) VALUES (238, 'Level V —
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (239, 'Level VI — Single Descriptive / Qualitative Study', false, 78);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (240, 'Level VII — Expert Opinion', false, 78);
 
-INSERT INTO question (id, title, location_id) VALUES (79, '3_Pyramide (LoE)?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (79, '2_3_Pyramide (LoE)?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Vermeidung von Katheter-assoziierten Harnwegsinfektionen'), 79);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (150, 'Level VII — Expert Opinion', true, 79);
@@ -588,7 +588,7 @@ INSERT INTO answer (id, text, is_correct, question_id) VALUES (245, 'Level V —
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (246, 'Level VI — Single Descriptive / Qualitative Study', false, 79);
 
 -- Room of Abstracts questions for mission 5: third column
-INSERT INTO question (id, title, location_id) VALUES (80, '1_AHCPR?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (80, '3_1_AHCPR?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Vermeidung von Katheter-assoziierten Harnwegsinfektionen'), 80);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (151, 'IIb — Quasi-experimental study', true, 80);
@@ -598,7 +598,7 @@ INSERT INTO answer (id, text, is_correct, question_id) VALUES (362, 'IIa — Con
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (363, 'III — Non-experimental descriptive studies', false, 80);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (364, 'IV — Expert committee reports / opinions', false, 80);
 
-INSERT INTO question (id, title, location_id) VALUES (81, '2_AHCPR?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (81, '3_2_AHCPR?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Vermeidung von Katheter-assoziierten Harnwegsinfektionen'), 81);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (152, 'IIb — Quasi-experimental study', true, 81);
@@ -608,7 +608,7 @@ INSERT INTO answer (id, text, is_correct, question_id) VALUES (367, 'IIa — Con
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (368, 'III — Non-experimental descriptive studies', false, 81);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (369, 'IV — Expert committee reports / opinions', false, 81);
 
-INSERT INTO question (id, title, location_id) VALUES (82, '3_AHCPR?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (82, '3_3_AHCPR?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Vermeidung von Katheter-assoziierten Harnwegsinfektionen'), 82);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (153, 'IV — Expert committee reports / opinions', true, 82);
@@ -619,7 +619,7 @@ INSERT INTO answer (id, text, is_correct, question_id) VALUES (373, 'IIb — Qua
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (374, 'III — Non-experimental descriptive studies', false, 82);
 
 -- Room of Abstracts questions for mission 5: fourth column
-INSERT INTO question (id, title, location_id) VALUES (83, '1_Study Design?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (83, '4_1_Study Design?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Vermeidung von Katheter-assoziierten Harnwegsinfektionen'), 83);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (154, 'Pre-post intervention study', true, 83);
@@ -630,7 +630,7 @@ INSERT INTO answer (id, text, is_correct, question_id) VALUES (439, 'Retrospecti
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (440, 'Cross-Sectional Study', false, 83);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (441, 'Expert Opinion / Editorial', false, 83);
 
-INSERT INTO question (id, title, location_id) VALUES (84, '2_Study Design?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (84, '4_2_Study Design?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Vermeidung von Katheter-assoziierten Harnwegsinfektionen'), 84);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (155, 'Retrospective cohort study', true, 84);
@@ -640,7 +640,7 @@ INSERT INTO answer (id, text, is_correct, question_id) VALUES (444, 'Randomized 
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (445, 'Cross-Sectional Study', false, 84);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (446, 'Expert Opinion / Editorial', false, 84);
 
-INSERT INTO question (id, title, location_id) VALUES (85, '3_Study Design?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
+INSERT INTO question (id, title, location_id) VALUES (85, '4_3_Study Design?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Vermeidung von Katheter-assoziierten Harnwegsinfektionen'), 85);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (156, 'Expert Opinion / Editorial', true, 85);
