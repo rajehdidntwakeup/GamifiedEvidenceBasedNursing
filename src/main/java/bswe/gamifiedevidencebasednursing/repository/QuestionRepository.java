@@ -11,7 +11,15 @@ import org.springframework.stereotype.Repository;
 public interface QuestionRepository extends JpaRepository<Question, Long> {
 
   @Query("SELECT q FROM Question q " +
-      "JOIN q.rooms m " +
-      "WHERE m.id = :roomId")
-  List<Question> findQuestionsByRoomId(Long roomId);
+      "JOIN q.location l " +
+      "WHERE l.name = 'Room of Knowledge'")
+  List<Question> findQuestionsForRoomOfKnowledge();
+
+
+  @Query("SELECT q FROM Question q " +
+      "JOIN q.missions m " +
+      "WHERE q.location.id = :locationId " +
+      "AND m.id = :missionId")
+  List<Question> findByLocationIdAndMissionId(long locationId, long missionId);
+
 }

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
  * Handles user registration and login requests.
  */
 @RestController
-@RequestMapping("/auth")
+@RequestMapping({"/auth", "/api/auth"})
 public class AuthenticationController {
 
   private final AuthenticationService authenticationService;
@@ -48,7 +48,7 @@ public class AuthenticationController {
    * @param request the authentication request containing username and password
    * @return response entity containing JWT token and user role information
    */
-  @PostMapping("/authenticate")
+  @PostMapping({"/login", "/authenticate"})
   public ResponseEntity<AuthResponse> authenticate(
       @RequestBody AuthRequest request
   ) {

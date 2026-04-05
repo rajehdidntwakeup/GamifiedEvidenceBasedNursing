@@ -1,6 +1,6 @@
 package bswe.gamifiedevidencebasednursing.domain.dto;
 
-import bswe.gamifiedevidencebasednursing.domain.enums.Location;
+import bswe.gamifiedevidencebasednursing.domain.Location;
 import bswe.gamifiedevidencebasednursing.domain.enums.Status;
 
 public class RoomDto {
@@ -11,7 +11,7 @@ public class RoomDto {
   private long teamId;
 
   public RoomDto(Location location, Status status, int timer, long teamId) {
-    this.location = location.toString();
+    this.location = location.getName();
     this.status = status;
     this.timer = timer;
     this.teamId = teamId;

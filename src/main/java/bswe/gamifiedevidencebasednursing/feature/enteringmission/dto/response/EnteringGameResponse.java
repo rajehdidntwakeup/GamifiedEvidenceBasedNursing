@@ -1,0 +1,30 @@
+package bswe.gamifiedevidencebasednursing.feature.enteringmission.dto.response;
+
+import java.util.List;
+
+public class EnteringGameResponse {
+  private long missionId;
+  private long roomId;
+  private List<RoomOfKnowledgeQuestionsDto> questions;
+
+  public EnteringGameResponse() {
+  }
+
+  public EnteringGameResponse(long missionId, long roomId, List<RoomOfKnowledgeQuestionsDto> questions) {
+    this.missionId = missionId;
+    this.roomId = roomId;
+    this.questions = questions;
+  }
+
+  public long getMissionId() {
+    return missionId;
+  }
+
+  public long getRoomId() {
+    return roomId;
+  }
+
+  public List<RoomOfKnowledgeQuestionsDto> getQuestions() {
+    return questions;
+  }
+}
