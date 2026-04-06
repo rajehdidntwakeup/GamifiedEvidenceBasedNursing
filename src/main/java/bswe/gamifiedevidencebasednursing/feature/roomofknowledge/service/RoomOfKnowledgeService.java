@@ -50,11 +50,20 @@ public class RoomOfKnowledgeService {
     return new ResponseEntity<>(false, HttpStatus.OK);
   }
 
-  public ResponseEntity<Boolean> verifyAnswer(long questionId, long answerId) {
+  public ResponseEntity<Boolean> verifyAnswer(long roomId, long questionId, long answerId) {
     Optional<Answer> answer = answerRepository.findById(answerId);
     if (answer.isPresent()
         && answer.get().getQuestion().getId() == questionId
         && answer.get().isCorrect()) {
+      Optional<Room> room = roomRepository.findById(roomId);
+      if (room.isPresent()) {
+        if (room.get().getProgress() < 100) {
+          room.get().setProgress(room.get().getProgress() + 10);
+          roomRepository.save(room.get());
+        }
+      } else {
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid question or room ID");
+      }
       return new ResponseEntity<>(true, HttpStatus.OK);
     }
     return new ResponseEntity<>(false, HttpStatus.OK);

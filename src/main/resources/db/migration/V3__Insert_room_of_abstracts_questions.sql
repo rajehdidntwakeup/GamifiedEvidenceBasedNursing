@@ -8,9 +8,9 @@ VALUES (21, 'Analysieren diese Abstracts und identifiziert den höchsten Level o
         (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Wundversorgung bei Dekubitus'), 21);
-INSERT INTO document (id, path) VALUES (1, 'resources/abstracts/mission1/1_Abstract_Expertenkommentar.PNG');
-INSERT INTO document (id, path) VALUES (2, 'resources/abstracts/mission1/2_Abstract_Santamarie_et_al_RCT.PNG');
-INSERT INTO document (id, path) VALUES (3, 'resources/abstracts/mission1/3_Abstract_Zhang_et_al.PNG');
+INSERT INTO document (id, path) VALUES (1, 'abstracts/mission1/1_Abstract_Expertenkommentar.PNG');
+INSERT INTO document (id, path) VALUES (2, 'abstracts/mission1/2_Abstract_Santamarie_et_al_RCT.PNG');
+INSERT INTO document (id, path) VALUES (3, 'abstracts/mission1/3_Abstract_Zhang_et_al.PNG');
 INSERT INTO document_question (document_id, question_id) VALUES (1, 21);
 INSERT INTO document_question (document_id, question_id) VALUES (2, 21);
 INSERT INTO document_question (document_id, question_id) VALUES (3, 21);
@@ -137,9 +137,9 @@ VALUES (34, 'Analysieren diese Abstracts und identifiziert den höchsten Level o
         (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Sturzprävention in der Geriatrie'), 34);
-INSERT INTO document (id, path) VALUES (4, 'resources/abstracts/mission2/1_Abstract_Effects_of_VR_Games.PNG');
-INSERT INTO document (id, path) VALUES (5, 'resources/abstracts/mission2/2_Abstract_Bedrails_and_Falls_in_Nursing_Homes.PNG');
-INSERT INTO document (id, path) VALUES (6, 'resources/abstracts/mission2/3_Abstract_Expertenkommentar.PNG');
+INSERT INTO document (id, path) VALUES (4, 'abstracts/mission2/1_Abstract_Effects_of_VR_Games.PNG');
+INSERT INTO document (id, path) VALUES (5, 'abstracts/mission2/2_Abstract_Bedrails_and_Falls_in_Nursing_Homes.PNG');
+INSERT INTO document (id, path) VALUES (6, 'abstracts/mission2/3_Abstract_Expertenkommentar.PNG');
 INSERT INTO document_question (document_id, question_id) VALUES (4, 34);
 INSERT INTO document_question (document_id, question_id) VALUES (5, 34);
 INSERT INTO document_question (document_id, question_id) VALUES (6, 34);
@@ -266,9 +266,9 @@ VALUES (47, 'Analysieren diese Abstracts und identifiziert den höchsten Level o
         (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Schmerzmanagement in der postoperativen Pflege'), 47);
-INSERT INTO document (id, path) VALUES (7, 'resources/abstracts/mission3/2_Abstract_Documentaton_for_Assessing_Pain_inPostoperative.PNG');
-INSERT INTO document (id, path) VALUES (8, 'resources/abstracts/mission3/3_Abstract_Nursing_Music_Protocol_and_Postoperative_Pain.PNG');
-INSERT INTO document (id, path) VALUES (9, 'resources/abstracts/mission3/1_Abstract_PostoperstivePaintreatmentwithDementia.PNG');
+INSERT INTO document (id, path) VALUES (7, 'abstracts/mission3/2_Abstract_Documentaton_for_Assessing_Pain_inPostoperative.PNG');
+INSERT INTO document (id, path) VALUES (8, 'abstracts/mission3/3_Abstract_Nursing_Music_Protocol_and_Postoperative_Pain.PNG');
+INSERT INTO document (id, path) VALUES (9, 'abstracts/mission3/1_Abstract_PostoperstivePaintreatmentwithDementia.PNG');
 INSERT INTO document_question (document_id, question_id) VALUES (7, 47);
 INSERT INTO document_question (document_id, question_id) VALUES (8, 47);
 INSERT INTO document_question (document_id, question_id) VALUES (9, 47);
@@ -396,9 +396,9 @@ VALUES (60, 'Analysieren diese Abstracts und identifiziert den höchsten Level o
         (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Ernährungsinterventionen bei Mangelernährung'), 60);
-INSERT INTO document (id, path) VALUES (10, 'resources/abstracts/mission4/3_Abstract_Gefahr_einer_Mangelernährung_Querschnittstudie.PNG');
-INSERT INTO document (id, path) VALUES (11, 'resources/abstracts/mission4/1_Abstract_Ten_Cate_et_al_Systematic_Review.PNG');
-INSERT INTO document (id, path) VALUES (12, 'resources/abstracts/mission4/2_Abstract_weerasag_et_al_RCT.PNG');
+INSERT INTO document (id, path) VALUES (10, 'abstracts/mission4/3_Abstract_Gefahr_einer_Mangelernährung_Querschnittstudie.PNG');
+INSERT INTO document (id, path) VALUES (11, 'abstracts/mission4/1_Abstract_Ten_Cate_et_al_Systematic_Review.PNG');
+INSERT INTO document (id, path) VALUES (12, 'abstracts/mission4/2_Abstract_weerasag_et_al_RCT.PNG');
 INSERT INTO document_question (document_id, question_id) VALUES (10, 60);
 INSERT INTO document_question (document_id, question_id) VALUES (11, 60);
 INSERT INTO document_question (document_id, question_id) VALUES (12, 60);
@@ -526,9 +526,9 @@ VALUES (73, 'Analysieren diese Abstracts und identifiziert den höchsten Level o
         (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Vermeidung von Katheter-assoziierten Harnwegsinfektionen'), 73);
-INSERT INTO document (id, path) VALUES (13, 'resources/abstracts/mission5/2_Abstract_Implementation_of_a_multi_modal_inervention_CAUTI2024.PNG');
-INSERT INTO document (id, path) VALUES (14, 'resources/abstracts/mission5/1_Abstract_Urin_Sampling_is_associated_with_reduced_CAUTI_2021.PNG');
-INSERT INTO document (id, path) VALUES (15, 'resources/abstracts/mission5/3_Abstracxt_PRactice_REcommendation_CAUTI2023.PNG');
+INSERT INTO document (id, path) VALUES (13, 'abstracts/mission5/2_Abstract_Implementation_of_a_multi_modal_inervention_CAUTI2024.PNG');
+INSERT INTO document (id, path) VALUES (14, 'abstracts/mission5/1_Abstract_Urin_Sampling_is_associated_with_reduced_CAUTI_2021.PNG');
+INSERT INTO document (id, path) VALUES (15, 'abstracts/mission5/3_Abstracxt_PRactice_REcommendation_CAUTI2023.PNG');
 INSERT INTO document_question (document_id, question_id) VALUES (13, 73);
 INSERT INTO document_question (document_id, question_id) VALUES (14, 73);
 INSERT INTO document_question (document_id, question_id) VALUES (15, 73);

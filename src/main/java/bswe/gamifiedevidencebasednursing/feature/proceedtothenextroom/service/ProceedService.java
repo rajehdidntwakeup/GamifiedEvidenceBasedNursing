@@ -108,7 +108,7 @@ public class ProceedService {
         for (Document document : question.getImages()) {
           images.add(document.getPath());
         }
-        roomOfAbstractsResponseDto.setImages(images);
+        roomOfAbstractsResponseDto.setDocs(images);
       } else {
         TableQuestionDto tableQuestionDto = new TableQuestionDto();
         tableQuestionDto.setQuestionId(question.getId());
