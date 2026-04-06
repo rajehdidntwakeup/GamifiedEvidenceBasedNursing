@@ -19,9 +19,9 @@ public class ProceedController {
     this.proceedService = proceedService;
   }
 
-  @PostMapping
-  public ResponseEntity<RoomOfAbstractsResponseDto> proceedToTheNextRoom(
+  @PostMapping("/abstracts")
+  public ResponseEntity<RoomOfAbstractsResponseDto> proceedToTheRoomOfAbstracts(
       @RequestBody ProceedDto proceedDto) {
-    return proceedService.proceedToTheNextRoom(proceedDto);
+    return proceedService.proceedToTheRoomOfAbstracts(proceedDto);
   }
 }

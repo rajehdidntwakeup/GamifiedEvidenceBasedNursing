@@ -5,12 +5,12 @@ import java.util.List;
 public class TableQuestionDto {
   private long questionId;
   private String question;
-  private List<String> answers;
+  private List<AnswerDto> answers;
 
   public TableQuestionDto() {
   }
 
-  public TableQuestionDto(String question, List<String> answers) {
+  public TableQuestionDto(String question, List<AnswerDto> answers) {
     this.question = question;
     this.answers = answers;
   }
@@ -25,14 +25,14 @@ public class TableQuestionDto {
   public String getQuestion() {
     return question;
   }
-  public List<String> getAnswers() {
+  public List<AnswerDto> getAnswers() {
     return answers;
   }
 
   public void setQuestion(String question) {
     this.question = question;
   }
-  public void setAnswers(List<String> answers) {
+  public void setAnswers(List<AnswerDto> answers) {
     this.answers = answers;
   }
 }

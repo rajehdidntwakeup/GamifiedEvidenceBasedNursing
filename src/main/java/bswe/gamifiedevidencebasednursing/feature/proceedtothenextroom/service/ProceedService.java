@@ -13,6 +13,7 @@ import bswe.gamifiedevidencebasednursing.domain.Question;
 import bswe.gamifiedevidencebasednursing.domain.Room;
 import bswe.gamifiedevidencebasednursing.domain.Team;
 import bswe.gamifiedevidencebasednursing.feature.proceedtothenextroom.dto.request.ProceedDto;
+import bswe.gamifiedevidencebasednursing.feature.proceedtothenextroom.dto.response.AnswerDto;
 import bswe.gamifiedevidencebasednursing.feature.proceedtothenextroom.dto.response.RoomOfAbstractsResponseDto;
 import bswe.gamifiedevidencebasednursing.feature.proceedtothenextroom.dto.response.TableQuestionDto;
 import bswe.gamifiedevidencebasednursing.repository.LocationRepository;
@@ -42,16 +43,13 @@ public class ProceedService {
     this.questionRepository = questionRepository;
   }
 
-  public ResponseEntity<RoomOfAbstractsResponseDto> proceedToTheNextRoom(ProceedDto proceedDto) {
+  public ResponseEntity<RoomOfAbstractsResponseDto> proceedToTheRoomOfAbstracts(ProceedDto proceedDto) {
     Optional<Room> room = roomRepository.findById(proceedDto.roomId());
     if (room.isPresent()) {
       Room currentRoom = room.get();
       Location location = currentRoom.getLocation();
       if (location.getName().equals(ROOM_OF_KNOWLEDGE)) {
-        proceedToRoomOfAbstracts(currentRoom.getTeam().getId());
         return ResponseEntity.ok(proceedToRoomOfAbstracts(currentRoom.getTeam().getId()));
-      } else if (location.getName().equals(ROOM_OF_ABSTRACTS)) {
-        proceedToRoomOfAnalytics(currentRoom.getTeam().getId());
       }
     }
     return ResponseEntity.notFound().build();
@@ -110,14 +108,15 @@ public class ProceedService {
         for (Document document : question.getImages()) {
           images.add(document.getPath());
         }
-        roomOfAbstractsResponseDto.setImages(images);
+        roomOfAbstractsResponseDto.setDocs(images);
       } else {
         TableQuestionDto tableQuestionDto = new TableQuestionDto();
         tableQuestionDto.setQuestionId(question.getId());
         tableQuestionDto.setQuestion(question.getTitle());
-        List<String> answers = new ArrayList<>();
+        List<AnswerDto> answers = new ArrayList<>();
         for (Answer answer : question.getAnswers()) {
-          answers.add(answer.getText());
+          AnswerDto answerDto = new AnswerDto(answer.getId(), answer.getText());
+          answers.add(answerDto);
         }
         tableQuestionDto.setAnswers(answers);
         tableQuestionDtos.add(tableQuestionDto);

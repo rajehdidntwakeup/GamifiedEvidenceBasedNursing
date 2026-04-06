@@ -6,13 +6,13 @@ public class RoomOfAbstractsResponseDto {
   private long roomId;
   private long missionId;
   private String mainQuestion;
-  private List<String> images;
+  private List<String> docs;
   private List<TableQuestionDto> questions;
 
   public RoomOfAbstractsResponseDto() {
   }
 
-  public RoomOfAbstractsResponseDto(long roomId, long missionId, String mainQuestion, List<String> images) {
+  public RoomOfAbstractsResponseDto(long roomId, long missionId, String mainQuestion, List<String> docs) {
     this.roomId = roomId;
     this.missionId = missionId;
     this.mainQuestion = mainQuestion;
@@ -35,12 +35,12 @@ public class RoomOfAbstractsResponseDto {
     return questions;
   }
 
-  public List<String> getImages() {
-    return images;
+  public List<String> getDocs() {
+    return docs;
   }
 
-  public void setImages(List<String> images) {
-    this.images = images;
+  public void setDocs(List<String> docs) {
+    this.docs = docs;
   }
 
   public void setQuestions(List<TableQuestionDto> questions) {

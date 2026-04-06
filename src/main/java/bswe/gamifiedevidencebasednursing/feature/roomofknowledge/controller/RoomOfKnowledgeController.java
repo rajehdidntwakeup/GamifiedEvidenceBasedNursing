@@ -27,9 +27,9 @@ public class RoomOfKnowledgeController {
     return roomOfKnowledgeService.isTheAnswerCorrect(verifyAnswerDto);
   }
   
-  @GetMapping("/question/{questionId}/answer/{answerId}")
-  public ResponseEntity<Boolean> verifyAnswer(@PathVariable long questionId, @PathVariable long answerId) {
-    return roomOfKnowledgeService.verifyAnswer(questionId, answerId);
+  @GetMapping("/{roomId}/question/{questionId}/answer/{answerId}")
+  public ResponseEntity<Boolean> verifyAnswer(@PathVariable long roomId, @PathVariable long questionId, @PathVariable long answerId) {
+    return roomOfKnowledgeService.verifyAnswer(roomId, questionId, answerId);
   }
 
   @GetMapping("/getResult")
