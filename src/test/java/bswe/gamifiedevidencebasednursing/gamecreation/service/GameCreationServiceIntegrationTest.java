@@ -89,15 +89,21 @@ class GameCreationServiceIntegrationTest {
             questionRepository.save(q);
         }
 
-        // 3. Create 2 teams
+        // 3. Create a game
+        bswe.gamifiedevidencebasednursing.domain.Game game = new bswe.gamifiedevidencebasednursing.domain.Game("password", bswe.gamifiedevidencebasednursing.domain.enums.GameStatus.CREATED);
+        game = gameRepository.save(game);
+
+        // 4. Create 2 teams
         Team team1 = new Team();
         team1.setStatus(Status.READY);
         team1.setWinner(false);
+        team1.setGame(game);
         team1 = teamRepository.save(team1);
 
         Team team2 = new Team();
         team2.setStatus(Status.READY);
         team2.setWinner(false);
+        team2.setGame(game);
         team2 = teamRepository.save(team2);
 
         List<Long> teamIds = List.of(team1.getId(), team2.getId());
