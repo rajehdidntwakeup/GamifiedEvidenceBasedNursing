@@ -6,7 +6,7 @@ import bswe.gamifiedevidencebasednursing.domain.Room;
 import bswe.gamifiedevidencebasednursing.domain.Team;
 import bswe.gamifiedevidencebasednursing.domain.enums.Status;
 import bswe.gamifiedevidencebasednursing.feature.gamecreation.service.GameCreationService;
-import bswe.gamifiedevidencebasednursing.repository.ImageRepository;
+import bswe.gamifiedevidencebasednursing.repository.DocumentRepository;
 import bswe.gamifiedevidencebasednursing.repository.LocationRepository;
 import bswe.gamifiedevidencebasednursing.repository.QuestionRepository;
 import bswe.gamifiedevidencebasednursing.repository.RoomRepository;
@@ -47,7 +47,7 @@ class GameCreationServiceIntegrationTest {
     private bswe.gamifiedevidencebasednursing.repository.GameRepository gameRepository;
 
     @Autowired
-    private ImageRepository imageRepository;
+    private DocumentRepository documentRepository;
 
     @Autowired
     private LocationRepository locationRepository;
@@ -58,7 +58,7 @@ class GameCreationServiceIntegrationTest {
         roomRepository.deleteAll();
         answerRepository.deleteAll();
         questionRepository.deleteAll();
-        imageRepository.deleteAll();
+        documentRepository.deleteAll();
         // mission_question is a join table - delete viaQuestionRepository or skip if no delete method
         teamRepository.deleteAll();
         missionRepository.deleteAll();

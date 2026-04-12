@@ -14,6 +14,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 public class Team {
@@ -22,14 +23,15 @@ public class Team {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
   @Enumerated(EnumType.STRING)
+  @NotNull
   private Status status;
   private boolean isWinner;
-
   @ManyToOne
   @JoinColumn(name = "mission_id")
   private Mission mission;
   @ManyToOne
   @JoinColumn(name = "game_id")
+  @NotNull
   private Game game;
   @OneToMany(mappedBy = "team",
       orphanRemoval = true, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})

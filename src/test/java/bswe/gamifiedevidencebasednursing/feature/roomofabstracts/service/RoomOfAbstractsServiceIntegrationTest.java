@@ -51,7 +51,7 @@ class RoomOfAbstractsServiceIntegrationTest {
     private MissionRepository missionRepository;
 
     @Autowired
-    private ImageRepository imageRepository;
+    private DocumentRepository documentRepository;
 
     @BeforeEach
     void setUp() {
@@ -63,7 +63,7 @@ class RoomOfAbstractsServiceIntegrationTest {
         gameRepository.deleteAll();
         missionRepository.deleteAll();
         locationRepository.deleteAll();
-        imageRepository.deleteAll();
+        documentRepository.deleteAll();
     }
 
     @Test

@@ -7,15 +7,19 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 public class Question {
 
   @Id
   private Long id;
+  @NotBlank
+  @Lob
   private String title;
   @ManyToMany(mappedBy = "questions")
   private Set<Document> documents = new HashSet<>();
@@ -53,11 +57,11 @@ public class Question {
     this.title = title;
   }
 
-  public Set<Document> getImages() {
+  public Set<Document> getDocuments() {
     return documents;
   }
 
-  public void setImages(Set<Document> documents) {
+  public void setDocuments(Set<Document> documents) {
     this.documents = documents;
   }
 

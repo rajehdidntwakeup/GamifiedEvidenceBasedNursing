@@ -1,19 +1,26 @@
 package bswe.gamifiedevidencebasednursing.domain;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 public class Answer {
 
   @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
+  @Lob
   private String text;
   private boolean isCorrect;
   @ManyToOne
   @JoinColumn(name = "question_id")
+  @NotNull
   private Question question;
 
   public Answer() {

@@ -12,6 +12,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 
 @Entity
 public class Room {
@@ -19,7 +21,10 @@ public class Room {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
+  @Min(0)
+  @Max(100)
   private int progress = 0;
+  @Min(0)
   private int extraTime; // in minutes
   @ManyToOne
   @JoinColumn(name = "team_id")

@@ -1,6 +1,5 @@
 package bswe.gamifiedevidencebasednursing.feature.landingpage.controller;
 
-import java.util.List;
 
 import bswe.gamifiedevidencebasednursing.feature.landingpage.dto.response.LandingPageResponse;
 import bswe.gamifiedevidencebasednursing.feature.landingpage.service.LandingPageService;

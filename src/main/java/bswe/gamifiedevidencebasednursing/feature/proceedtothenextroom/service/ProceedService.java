@@ -45,7 +45,7 @@ public class ProceedService {
 
   public ResponseEntity<RoomOfAbstractsResponseDto> proceedToTheRoomOfAbstracts(ProceedDto proceedDto) {
     Optional<Room> room = roomRepository.findById(proceedDto.roomId());
-    if (room.isPresent()) {
+    if (room.isPresent() && room.get().getProgress() == 100) {
       Room currentRoom = room.get();
       Location location = currentRoom.getLocation();
       if (location.getName().equals(ROOM_OF_KNOWLEDGE)) {
@@ -105,7 +105,7 @@ public class ProceedService {
       if (question.getAnswers().isEmpty()) {
         roomOfAbstractsResponseDto.setMainQuestion(question.getTitle());
         List<String> images = new ArrayList<>();
-        for (Document document : question.getImages()) {
+        for (Document document : question.getDocuments()) {
           images.add(document.getPath());
         }
         roomOfAbstractsResponseDto.setDocs(images);

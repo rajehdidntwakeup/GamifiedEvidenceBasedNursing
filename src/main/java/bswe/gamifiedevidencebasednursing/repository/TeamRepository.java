@@ -1,6 +1,5 @@
 package bswe.gamifiedevidencebasednursing.repository;
 
-import java.util.List;
 
 import bswe.gamifiedevidencebasednursing.domain.Team;
 import org.springframework.data.jpa.repository.JpaRepository;
