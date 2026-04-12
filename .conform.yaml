@@ -34,7 +34,6 @@ policies:
           - plugin
           - pom
           - database
-          - docker
           - release
           - deployment
           - deps
