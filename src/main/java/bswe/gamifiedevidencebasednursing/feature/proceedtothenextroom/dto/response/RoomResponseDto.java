@@ -2,21 +2,21 @@ package bswe.gamifiedevidencebasednursing.feature.proceedtothenextroom.dto.respo
 
 import java.util.List;
 
-public class RoomOfAbstractsResponseDto {
+public class RoomResponseDto {
   private long roomId;
   private long missionId;
   private String mainQuestion;
   private List<String> docs;
   private List<TableQuestionDto> questions;
 
-  public RoomOfAbstractsResponseDto() {
+  public RoomResponseDto() {
   }
 
-  public RoomOfAbstractsResponseDto(long roomId, long missionId, String mainQuestion, List<String> docs) {
+  public RoomResponseDto(long roomId, long missionId, String mainQuestion, List<String> docs) {
     this.roomId = roomId;
     this.missionId = missionId;
     this.mainQuestion = mainQuestion;
-
+    this.docs = docs;
   }
 
   public long getRoomId() {

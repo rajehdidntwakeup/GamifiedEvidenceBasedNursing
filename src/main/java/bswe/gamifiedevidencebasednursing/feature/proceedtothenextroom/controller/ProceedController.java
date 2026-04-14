@@ -1,7 +1,7 @@
 package bswe.gamifiedevidencebasednursing.feature.proceedtothenextroom.controller;
 
 import bswe.gamifiedevidencebasednursing.feature.proceedtothenextroom.dto.request.ProceedDto;
-import bswe.gamifiedevidencebasednursing.feature.proceedtothenextroom.dto.response.RoomOfAbstractsResponseDto;
+import bswe.gamifiedevidencebasednursing.feature.proceedtothenextroom.dto.response.RoomResponseDto;
 import bswe.gamifiedevidencebasednursing.feature.proceedtothenextroom.service.ProceedService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,8 +20,14 @@ public class ProceedController {
   }
 
   @PostMapping("/abstracts")
-  public ResponseEntity<RoomOfAbstractsResponseDto> proceedToTheRoomOfAbstracts(
+  public ResponseEntity<RoomResponseDto> proceedToTheRoomOfAbstracts(
       @RequestBody ProceedDto proceedDto) {
     return proceedService.proceedToTheRoomOfAbstracts(proceedDto);
+  }
+
+  @PostMapping("/analytics")
+  public ResponseEntity<RoomResponseDto> proceedToTheRoomOfAnalytics(
+      @RequestBody ProceedDto proceedDto) {
+    return proceedService.proceedToTheRoomOfAnalytics(proceedDto);
   }
 }
