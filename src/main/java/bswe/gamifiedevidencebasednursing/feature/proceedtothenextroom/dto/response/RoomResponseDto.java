@@ -1,5 +1,7 @@
 package bswe.gamifiedevidencebasednursing.feature.proceedtothenextroom.dto.response;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class RoomResponseDto {
@@ -16,7 +18,7 @@ public class RoomResponseDto {
     this.roomId = roomId;
     this.missionId = missionId;
     this.mainQuestion = mainQuestion;
-    this.docs = docs;
+    this.docs = docs != null ? new ArrayList<>(docs) : null;
   }
 
   public long getRoomId() {
@@ -32,19 +34,19 @@ public class RoomResponseDto {
   }
 
   public List<TableQuestionDto> getQuestions() {
-    return questions;
+    return questions != null ? Collections.unmodifiableList(questions) : null;
   }
 
   public List<String> getDocs() {
-    return docs;
+    return docs != null ? Collections.unmodifiableList(docs) : null;
   }
 
   public void setDocs(List<String> docs) {
-    this.docs = docs;
+    this.docs = docs != null ? new ArrayList<>(docs) : null;
   }
 
   public void setQuestions(List<TableQuestionDto> questions) {
-    this.questions = questions;
+    this.questions = questions != null ? new ArrayList<>(questions) : null;
   }
 
   public void setRoomId(long roomId) {

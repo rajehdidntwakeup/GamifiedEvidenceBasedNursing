@@ -23,11 +23,7 @@ public class GameCreationController {
   @PostMapping("/create")
   public ResponseEntity<GameResponseDto> createGame(@RequestBody CreateGameRequest request) {
     GameResponseDto gameResponseDto = gameCreationService.createGame(request.password());
-    if (gameResponseDto != null) {
-      return ResponseEntity.ok(gameResponseDto);
-    } else {
-      return ResponseEntity.badRequest().build();
-    }
+    return ResponseEntity.ok(gameResponseDto);
   }
 
 }

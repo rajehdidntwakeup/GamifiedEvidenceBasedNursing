@@ -1,5 +1,7 @@
 package bswe.gamifiedevidencebasednursing.feature.enteringmission.dto.response;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class EnteringGameResponse {
@@ -13,7 +15,7 @@ public class EnteringGameResponse {
   public EnteringGameResponse(long missionId, long roomId, List<RoomOfKnowledgeQuestionsDto> questions) {
     this.missionId = missionId;
     this.roomId = roomId;
-    this.questions = questions;
+    this.questions = questions != null ? new ArrayList<>(questions) : null;
   }
 
   public long getMissionId() {
@@ -25,6 +27,6 @@ public class EnteringGameResponse {
   }
 
   public List<RoomOfKnowledgeQuestionsDto> getQuestions() {
-    return questions;
+    return questions != null ? Collections.unmodifiableList(questions) : null;
   }
 }
