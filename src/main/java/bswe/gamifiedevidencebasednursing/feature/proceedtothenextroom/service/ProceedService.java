@@ -32,7 +32,7 @@ public class ProceedService {
   private static final String ROOM_OF_KNOWLEDGE = "Room of Knowledge";
   private static final String ROOM_OF_ABSTRACTS = "Room of Abstracts";
   private static final String ROOM_OF_ANALYTICS = "Room of Analytics";
-
+  private static final String ROOM_OF_SCIENCE_BATTLE = "Room of Science Battle";
 
   public ProceedService(RoomRepository roomRepository, TeamRepository teamRepository,
                         LocationRepository locationRepository, QuestionRepository questionRepository) {
@@ -48,6 +48,10 @@ public class ProceedService {
 
   public ResponseEntity<RoomResponseDto> proceedToTheRoomOfAnalytics(ProceedDto proceedDto) {
     return proceedToNextRoom(proceedDto, ROOM_OF_ABSTRACTS, ROOM_OF_ANALYTICS);
+  }
+
+  public ResponseEntity<RoomResponseDto> proceedToTheRoomOfScienceBattle(ProceedDto proceedDto) {
+    return proceedToNextRoom(proceedDto, ROOM_OF_ANALYTICS, ROOM_OF_SCIENCE_BATTLE);
   }
 
   private ResponseEntity<RoomResponseDto> proceedToNextRoom(ProceedDto proceedDto, String currentRoomName,

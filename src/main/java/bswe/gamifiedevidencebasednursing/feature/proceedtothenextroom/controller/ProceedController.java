@@ -30,4 +30,10 @@ public class ProceedController {
       @RequestBody ProceedDto proceedDto) {
     return proceedService.proceedToTheRoomOfAnalytics(proceedDto);
   }
+
+  @PostMapping("/scienebattle")
+  public ResponseEntity<RoomResponseDto> proceedToTheRoomOfScienceBattle(
+      @RequestBody ProceedDto proceedDto) {
+    return proceedService.proceedToTheRoomOfScienceBattle(proceedDto);
+  }
 }
