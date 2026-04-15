@@ -1,10 +1,9 @@
-package bswe.gamifiedevidencebasednursing.gamecreation.service;
+package bswe.gamifiedevidencebasednursing.feature.gamecreation.service;
 
 import bswe.gamifiedevidencebasednursing.domain.Location;
 import bswe.gamifiedevidencebasednursing.domain.Question;
 import bswe.gamifiedevidencebasednursing.domain.Room;
 import bswe.gamifiedevidencebasednursing.domain.Team;
-import bswe.gamifiedevidencebasednursing.feature.gamecreation.service.GameCreationService;
 import bswe.gamifiedevidencebasednursing.repository.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

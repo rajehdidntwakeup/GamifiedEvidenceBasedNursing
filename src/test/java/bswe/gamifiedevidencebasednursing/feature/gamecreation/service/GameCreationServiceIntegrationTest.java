@@ -1,11 +1,10 @@
-package bswe.gamifiedevidencebasednursing.gamecreation.service;
+package bswe.gamifiedevidencebasednursing.feature.gamecreation.service;
 
 import bswe.gamifiedevidencebasednursing.domain.Location;
 import bswe.gamifiedevidencebasednursing.domain.Question;
 import bswe.gamifiedevidencebasednursing.domain.Room;
 import bswe.gamifiedevidencebasednursing.domain.Team;
 import bswe.gamifiedevidencebasednursing.domain.enums.Status;
-import bswe.gamifiedevidencebasednursing.feature.gamecreation.service.GameCreationService;
 import bswe.gamifiedevidencebasednursing.repository.DocumentRepository;
 import bswe.gamifiedevidencebasednursing.repository.LocationRepository;
 import bswe.gamifiedevidencebasednursing.repository.QuestionRepository;

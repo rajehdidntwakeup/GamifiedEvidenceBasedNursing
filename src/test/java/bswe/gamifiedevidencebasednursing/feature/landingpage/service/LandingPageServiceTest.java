@@ -1,4 +1,4 @@
-package bswe.gamifiedevidencebasednursing.landingpage.service;
+package bswe.gamifiedevidencebasednursing.feature.landingpage.service;
 
 import bswe.gamifiedevidencebasednursing.domain.Game;
 import bswe.gamifiedevidencebasednursing.feature.landingpage.service.LandingPageService;

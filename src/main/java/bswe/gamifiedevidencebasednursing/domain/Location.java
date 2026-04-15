@@ -41,6 +41,10 @@ public class Location {
     this.timer = timer;
   }
 
+  public void setId(Long id) {
+    this.id = id;
+  }
+
   public Long getId() {
     return id;
   }
