@@ -1,12 +1,11 @@
-package bswe.gamifiedevidencebasednursing.gamecreation.service;
+package bswe.gamifiedevidencebasednursing.feature.gamecreation.service;
 
 import bswe.gamifiedevidencebasednursing.domain.Location;
 import bswe.gamifiedevidencebasednursing.domain.Question;
 import bswe.gamifiedevidencebasednursing.domain.Room;
 import bswe.gamifiedevidencebasednursing.domain.Team;
 import bswe.gamifiedevidencebasednursing.domain.enums.Status;
-import bswe.gamifiedevidencebasednursing.feature.gamecreation.service.GameCreationService;
-import bswe.gamifiedevidencebasednursing.repository.ImageRepository;
+import bswe.gamifiedevidencebasednursing.repository.DocumentRepository;
 import bswe.gamifiedevidencebasednursing.repository.LocationRepository;
 import bswe.gamifiedevidencebasednursing.repository.QuestionRepository;
 import bswe.gamifiedevidencebasednursing.repository.RoomRepository;
@@ -47,7 +46,7 @@ class GameCreationServiceIntegrationTest {
     private bswe.gamifiedevidencebasednursing.repository.GameRepository gameRepository;
 
     @Autowired
-    private ImageRepository imageRepository;
+    private DocumentRepository documentRepository;
 
     @Autowired
     private LocationRepository locationRepository;
@@ -58,7 +57,7 @@ class GameCreationServiceIntegrationTest {
         roomRepository.deleteAll();
         answerRepository.deleteAll();
         questionRepository.deleteAll();
-        imageRepository.deleteAll();
+        documentRepository.deleteAll();
         // mission_question is a join table - delete viaQuestionRepository or skip if no delete method
         teamRepository.deleteAll();
         missionRepository.deleteAll();
@@ -89,15 +88,21 @@ class GameCreationServiceIntegrationTest {
             questionRepository.save(q);
         }
 
-        // 3. Create 2 teams
+        // 3. Create a game
+        bswe.gamifiedevidencebasednursing.domain.Game game = new bswe.gamifiedevidencebasednursing.domain.Game("password", bswe.gamifiedevidencebasednursing.domain.enums.GameStatus.CREATED);
+        game = gameRepository.save(game);
+
+        // 4. Create 2 teams
         Team team1 = new Team();
         team1.setStatus(Status.READY);
         team1.setWinner(false);
+        team1.setGame(game);
         team1 = teamRepository.save(team1);
 
         Team team2 = new Team();
         team2.setStatus(Status.READY);
         team2.setWinner(false);
+        team2.setGame(game);
         team2 = teamRepository.save(team2);
 
         List<Long> teamIds = List.of(team1.getId(), team2.getId());

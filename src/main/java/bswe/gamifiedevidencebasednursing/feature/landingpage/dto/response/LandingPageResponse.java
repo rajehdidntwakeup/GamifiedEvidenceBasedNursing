@@ -1,5 +1,7 @@
 package bswe.gamifiedevidencebasednursing.feature.landingpage.dto.response;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class LandingPageResponse {
@@ -11,13 +13,13 @@ public class LandingPageResponse {
 
   public LandingPageResponse(long gameId, List<MissionDto> missions) {
     this.gameId = gameId;
-    this.missions = missions;
+    this.missions = missions != null ? new ArrayList<>(missions) : null;
   }
 
   public long getGameId() {
     return gameId;
   }
   public List<MissionDto> getMissions() {
-    return missions;
+    return missions != null ? Collections.unmodifiableList(missions) : null;
   }
 }

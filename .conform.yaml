@@ -1,0 +1,43 @@
+---
+policies:
+  - type: commit
+    spec:
+      header:
+        length: 100
+        imperative: true
+        case: lower
+        invalidLastCharacters: .
+      body:
+        required: false
+      dco: false
+      gpg: false
+      spellcheck:
+        locale: US
+      maximumOfOneCommit: false
+      conventional:
+        types:
+          - feat
+          - fix
+          - refactor
+          - perf
+          - chore
+          - test
+          - docs
+          - no_type
+        scopes:
+          - config
+          - service
+          - repository
+          - controller
+          - entity
+          - dto
+          - plugin
+          - pom
+          - database
+          - release
+          - deployment
+          - deps
+          - ci
+          - license
+          - readme
+        descriptionLength: 100

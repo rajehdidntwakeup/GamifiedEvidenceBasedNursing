@@ -51,7 +51,9 @@ class RoomOfAbstractsServiceIntegrationTest {
     private MissionRepository missionRepository;
 
     @Autowired
-    private ImageRepository imageRepository;
+    private DocumentRepository documentRepository;
+
+    private Long questionIdCounter = 1L;
 
     @BeforeEach
     void setUp() {
@@ -63,7 +65,9 @@ class RoomOfAbstractsServiceIntegrationTest {
         gameRepository.deleteAll();
         missionRepository.deleteAll();
         locationRepository.deleteAll();
-        imageRepository.deleteAll();
+        documentRepository.deleteAll();
+        // Reset ID counter for each test
+        questionIdCounter = 1L;
     }
 
     @Test
@@ -78,28 +82,32 @@ class RoomOfAbstractsServiceIntegrationTest {
         Team team = createTeam(game);
         team = teamRepository.save(team);
 
-        // Create 12 questions with answers
+        // Create 12 questions with answers (use unique IDs)
         for (long i = 1; i <= 12; i++) {
-            Question question = createQuestion(i, location);
+            Question question = createQuestion(questionIdCounter++, location);
             question = questionRepository.save(question);
 
-            Answer answer = createAnswer(i, true, question);
+            Answer answer = createAnswer(null, true, question);
+            answer = answerRepository.save(answer);
             question.getAnswers().add(answer);
-            answerRepository.save(answer);
         }
 
         // Create room with 0 progress
         Room room = createRoom(team, location, 0);
         room = roomRepository.save(room);
 
-        // Verify answers - send 3 correct answers
-        List<QuestionAnswerDto> answers = List.of(
-            new QuestionAnswerDto(1L, 1L),
-            new QuestionAnswerDto(2L, 2L),
-            new QuestionAnswerDto(3L, 3L)
+        // Get the saved questions and answers
+        List<Question> questions = questionRepository.findAll();
+        List<Answer> answers = answerRepository.findAll();
+
+        // Verify answers - send 3 correct answers (first 3)
+        List<QuestionAnswerDto> questionAnswers = List.of(
+            new QuestionAnswerDto(questions.get(0).getId(), answers.get(0).getId()),
+            new QuestionAnswerDto(questions.get(1).getId(), answers.get(1).getId()),
+            new QuestionAnswerDto(questions.get(2).getId(), answers.get(2).getId())
         );
 
-        VerifyRoomOfAbstractsAnswersDto dto = new VerifyRoomOfAbstractsAnswersDto(room.getId(), 1L, answers);
+        VerifyRoomOfAbstractsAnswersDto dto = new VerifyRoomOfAbstractsAnswersDto(room.getId(), 1L, questionAnswers);
 
         // When
         ResultDto result = roomOfAbstractsService.verifyRoomOfAbstractsAnswers(dto);
@@ -123,37 +131,41 @@ class RoomOfAbstractsServiceIntegrationTest {
         Team team = createTeam(game);
         team = teamRepository.save(team);
 
-        // Create 12 questions with correct answers
+        // Create 12 questions with correct answers (use unique IDs)
         for (long i = 1; i <= 12; i++) {
-            Question question = createQuestion(i, location);
+            Question question = createQuestion(questionIdCounter++, location);
             question = questionRepository.save(question);
 
-            Answer answer = createAnswer(i, true, question);
+            Answer answer = createAnswer(null, true, question);
+            answer = answerRepository.save(answer);
             question.getAnswers().add(answer);
-            answerRepository.save(answer);
         }
 
         // Create room with 0 progress
         Room room = createRoom(team, location, 0);
         room = roomRepository.save(room);
 
-        // Send 12 correct answers
-        List<QuestionAnswerDto> answers = List.of(
-            new QuestionAnswerDto(1L, 1L),
-            new QuestionAnswerDto(2L, 2L),
-            new QuestionAnswerDto(3L, 3L),
-            new QuestionAnswerDto(4L, 4L),
-            new QuestionAnswerDto(5L, 5L),
-            new QuestionAnswerDto(6L, 6L),
-            new QuestionAnswerDto(7L, 7L),
-            new QuestionAnswerDto(8L, 8L),
-            new QuestionAnswerDto(9L, 9L),
-            new QuestionAnswerDto(10L, 10L),
-            new QuestionAnswerDto(11L, 11L),
-            new QuestionAnswerDto(12L, 12L)
+        // Get the saved questions and answers
+        List<Question> questions = questionRepository.findAll();
+        List<Answer> answers = answerRepository.findAll();
+
+        // Send 12 correct answers (all of them)
+        List<QuestionAnswerDto> questionAnswers = List.of(
+            new QuestionAnswerDto(questions.get(0).getId(), answers.get(0).getId()),
+            new QuestionAnswerDto(questions.get(1).getId(), answers.get(1).getId()),
+            new QuestionAnswerDto(questions.get(2).getId(), answers.get(2).getId()),
+            new QuestionAnswerDto(questions.get(3).getId(), answers.get(3).getId()),
+            new QuestionAnswerDto(questions.get(4).getId(), answers.get(4).getId()),
+            new QuestionAnswerDto(questions.get(5).getId(), answers.get(5).getId()),
+            new QuestionAnswerDto(questions.get(6).getId(), answers.get(6).getId()),
+            new QuestionAnswerDto(questions.get(7).getId(), answers.get(7).getId()),
+            new QuestionAnswerDto(questions.get(8).getId(), answers.get(8).getId()),
+            new QuestionAnswerDto(questions.get(9).getId(), answers.get(9).getId()),
+            new QuestionAnswerDto(questions.get(10).getId(), answers.get(10).getId()),
+            new QuestionAnswerDto(questions.get(11).getId(), answers.get(11).getId())
         );
 
-        VerifyRoomOfAbstractsAnswersDto dto = new VerifyRoomOfAbstractsAnswersDto(room.getId(), 1L, answers);
+        VerifyRoomOfAbstractsAnswersDto dto = new VerifyRoomOfAbstractsAnswersDto(room.getId(), 1L, questionAnswers);
 
         // When
         ResultDto result = roomOfAbstractsService.verifyRoomOfAbstractsAnswers(dto);
@@ -175,34 +187,40 @@ class RoomOfAbstractsServiceIntegrationTest {
         Team team = createTeam(game);
         team = teamRepository.save(team);
 
-        // Create 12 questions with correct answer at ID 100, wrong at ID 1
+        // Create 12 questions with correct and wrong answers (use unique IDs)
         for (long i = 1; i <= 12; i++) {
-            Question question = createQuestion(i, location);
+            Question question = createQuestion(questionIdCounter++, location);
             question = questionRepository.save(question);
 
-            // Wrong answer at ID 1
-            Answer wrongAnswer = createAnswer(1L, false, question);
+            // Wrong answer (first)
+            Answer wrongAnswer = createAnswer(null, false, question);
+            wrongAnswer = answerRepository.save(wrongAnswer);
             question.getAnswers().add(wrongAnswer);
-            answerRepository.save(wrongAnswer);
 
-            // Correct answer at ID 100
-            Answer correctAnswer = createAnswer(100L, true, question);
+            // Correct answer (second)
+            Answer correctAnswer = createAnswer(null, true, question);
+            correctAnswer = answerRepository.save(correctAnswer);
             question.getAnswers().add(correctAnswer);
-            answerRepository.save(correctAnswer);
         }
 
         // Create room with 0 progress
         Room room = createRoom(team, location, 0);
         room = roomRepository.save(room);
 
-        // Send wrong answers (IDs 1)
-        List<QuestionAnswerDto> wrongAnswers = List.of(
-            new QuestionAnswerDto(1L, 1L),
-            new QuestionAnswerDto(2L, 1L),
-            new QuestionAnswerDto(3L, 1L)
+        // Get the saved questions and wrong answers (first answer of each question is wrong)
+        List<Question> questions = questionRepository.findAll();
+        List<Answer> wrongAnswers = answerRepository.findAll().stream()
+            .filter(a -> !a.isCorrect())
+            .toList();
+
+        // Send wrong answers
+        List<QuestionAnswerDto> questionAnswers = List.of(
+            new QuestionAnswerDto(questions.get(0).getId(), wrongAnswers.get(0).getId()),
+            new QuestionAnswerDto(questions.get(1).getId(), wrongAnswers.get(1).getId()),
+            new QuestionAnswerDto(questions.get(2).getId(), wrongAnswers.get(2).getId())
         );
 
-        VerifyRoomOfAbstractsAnswersDto dto = new VerifyRoomOfAbstractsAnswersDto(room.getId(), 1L, wrongAnswers);
+        VerifyRoomOfAbstractsAnswersDto dto = new VerifyRoomOfAbstractsAnswersDto(room.getId(), 1L, questionAnswers);
 
         // When
         ResultDto result = roomOfAbstractsService.verifyRoomOfAbstractsAnswers(dto);
@@ -223,23 +241,27 @@ class RoomOfAbstractsServiceIntegrationTest {
         Team team = createTeam(game);
         team = teamRepository.save(team);
 
-        // Create 12 questions
+        // Create 12 questions (use unique IDs)
         for (long i = 1; i <= 12; i++) {
-            Question question = createQuestion(i, location);
+            Question question = createQuestion(questionIdCounter++, location);
             question = questionRepository.save(question);
 
-            Answer answer = createAnswer(100L, true, question);
+            Answer answer = createAnswer(null, true, question);
+            answer = answerRepository.save(answer);
             question.getAnswers().add(answer);
-            answerRepository.save(answer);
         }
 
         // Create room with 95 progress
         Room room = createRoom(team, location, 95);
         room = roomRepository.save(room);
 
+        // Get the first question and its answer
+        Question question = questionRepository.findAll().get(0);
+        Answer answer = answerRepository.findAll().get(0);
+
         // Send 1 correct answer (should reach 100 with 100/12 = 8% = 95+8=103 -> capped at 100)
-        List<QuestionAnswerDto> answers = List.of(new QuestionAnswerDto(1L, 100L));
-        VerifyRoomOfAbstractsAnswersDto dto = new VerifyRoomOfAbstractsAnswersDto(room.getId(), 1L, answers);
+        List<QuestionAnswerDto> questionAnswers = List.of(new QuestionAnswerDto(question.getId(), answer.getId()));
+        VerifyRoomOfAbstractsAnswersDto dto = new VerifyRoomOfAbstractsAnswersDto(room.getId(), 1L, questionAnswers);
 
         // When
         ResultDto result = roomOfAbstractsService.verifyRoomOfAbstractsAnswers(dto);
@@ -291,16 +313,19 @@ class RoomOfAbstractsServiceIntegrationTest {
         return team;
     }
 
-    private Question createQuestion(long id, Location location) {
+    private Question createQuestion(Long id, Location location) {
         Question question = new Question();
         question.setId(id);
         question.setLocation(location);
+        question.setTitle("Question " + id);
         return question;
     }
 
-    private Answer createAnswer(long id, boolean isCorrect, Question question) {
+    private Answer createAnswer(Long id, boolean isCorrect, Question question) {
         Answer answer = new Answer();
-        answer.setId(id);
+        if (id != null) {
+            answer.setId(id);
+        }
         answer.setCorrect(isCorrect);
         answer.setQuestion(question);
         return answer;

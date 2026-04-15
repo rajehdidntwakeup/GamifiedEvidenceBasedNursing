@@ -1,22 +1,24 @@
 package bswe.gamifiedevidencebasednursing.feature.proceedtothenextroom.dto.response;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-public class RoomOfAbstractsResponseDto {
+public class RoomResponseDto {
   private long roomId;
   private long missionId;
   private String mainQuestion;
   private List<String> docs;
   private List<TableQuestionDto> questions;
 
-  public RoomOfAbstractsResponseDto() {
+  public RoomResponseDto() {
   }
 
-  public RoomOfAbstractsResponseDto(long roomId, long missionId, String mainQuestion, List<String> docs) {
+  public RoomResponseDto(long roomId, long missionId, String mainQuestion, List<String> docs) {
     this.roomId = roomId;
     this.missionId = missionId;
     this.mainQuestion = mainQuestion;
-
+    this.docs = docs != null ? new ArrayList<>(docs) : null;
   }
 
   public long getRoomId() {
@@ -32,19 +34,19 @@ public class RoomOfAbstractsResponseDto {
   }
 
   public List<TableQuestionDto> getQuestions() {
-    return questions;
+    return questions != null ? Collections.unmodifiableList(questions) : null;
   }
 
   public List<String> getDocs() {
-    return docs;
+    return docs != null ? Collections.unmodifiableList(docs) : null;
   }
 
   public void setDocs(List<String> docs) {
-    this.docs = docs;
+    this.docs = docs != null ? new ArrayList<>(docs) : null;
   }
 
   public void setQuestions(List<TableQuestionDto> questions) {
-    this.questions = questions;
+    this.questions = questions != null ? new ArrayList<>(questions) : null;
   }
 
   public void setRoomId(long roomId) {

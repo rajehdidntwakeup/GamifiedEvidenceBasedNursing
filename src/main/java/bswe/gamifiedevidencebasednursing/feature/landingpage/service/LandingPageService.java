@@ -1,6 +1,5 @@
 package bswe.gamifiedevidencebasednursing.feature.landingpage.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import bswe.gamifiedevidencebasednursing.domain.Game;

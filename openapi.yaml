@@ -51,7 +51,11 @@ tags:
   - name: Room of Abstracts
     description: Room of Abstracts specific endpoints — verify answers and track progress
   - name: Proceed to Next Room
-    description: Proceed to next room endpoints — advance to Room of Abstracts or Analytics
+    description: Proceed to next room endpoints — advance through Room of Abstracts, Analytics, and Science Battle
+  - name: Room of Analytics
+    description: Room of Analytics specific endpoints
+  - name: Room of Science Battle
+    description: Room of Science Battle specific endpoints
 
 paths:
   # ──────────────────────────────────────────────
@@ -598,6 +602,86 @@ paths:
                         answer: "Topic A"
                       - answerId: 2
                         answer: "Topic B"
+
+  /api/game/proceed/analytics:
+    post:
+      tags:
+        - Proceed to Next Room
+        - Room of Analytics
+      summary: Proceed to the Room of Analytics
+      description: |
+        Advances a team from Room of Abstracts to Room of Analytics.
+      operationId: proceedToTheRoomOfAnalytics
+      requestBody:
+        description: Proceed request
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProceedDto'
+            example:
+              roomId: 2
+      responses:
+        '200':
+          description: Proceeded to Room of Analytics successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoomOfAbstractsResponseDto'
+              example:
+                roomId: 3
+                missionId: 1
+                mainQuestion: "Welcome to Room of Analytics"
+                docs:
+                  - "/images/analytics.jpg"
+                questions:
+                  - questionId: 1
+                    question: "What does the data show?"
+                    answers:
+                      - answerId: 1
+                        answer: "Trend A"
+                      - answerId: 2
+                        answer: "Trend B"
+
+  /api/game/proceed/scienebattle:
+    post:
+      tags:
+        - Proceed to Next Room
+        - Room of Science Battle
+      summary: Proceed to the Room of Science Battle
+      description: |
+        Advances a team from Room of Analytics to Room of Science Battle.
+      operationId: proceedToTheRoomOfScienceBattle
+      requestBody:
+        description: Proceed request
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProceedDto'
+            example:
+              roomId: 3
+      responses:
+        '200':
+          description: Proceeded to Room of Science Battle successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoomOfAbstractsResponseDto'
+              example:
+                roomId: 4
+                missionId: 1
+                mainQuestion: "Welcome to Room of Science Battle"
+                docs:
+                  - "/images/science-battle.jpg"
+                questions:
+                  - questionId: 1
+                    question: "What is the evidence?"
+                    answers:
+                      - answerId: 1
+                        answer: "Evidence A"
+                      - answerId: 2
+                        answer: "Evidence B"
 
 # ════════════════════════════════════════════════
 # Reusable Components

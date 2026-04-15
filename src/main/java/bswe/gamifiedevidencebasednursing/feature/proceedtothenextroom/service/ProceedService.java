@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import bswe.gamifiedevidencebasednursing.domain.Answer;
 import bswe.gamifiedevidencebasednursing.domain.Document;
 import bswe.gamifiedevidencebasednursing.domain.Location;
 import bswe.gamifiedevidencebasednursing.domain.Question;
@@ -14,7 +13,7 @@ import bswe.gamifiedevidencebasednursing.domain.Room;
 import bswe.gamifiedevidencebasednursing.domain.Team;
 import bswe.gamifiedevidencebasednursing.feature.proceedtothenextroom.dto.request.ProceedDto;
 import bswe.gamifiedevidencebasednursing.feature.proceedtothenextroom.dto.response.AnswerDto;
-import bswe.gamifiedevidencebasednursing.feature.proceedtothenextroom.dto.response.RoomOfAbstractsResponseDto;
+import bswe.gamifiedevidencebasednursing.feature.proceedtothenextroom.dto.response.RoomResponseDto;
 import bswe.gamifiedevidencebasednursing.feature.proceedtothenextroom.dto.response.TableQuestionDto;
 import bswe.gamifiedevidencebasednursing.repository.LocationRepository;
 import bswe.gamifiedevidencebasednursing.repository.QuestionRepository;
@@ -33,7 +32,7 @@ public class ProceedService {
   private static final String ROOM_OF_KNOWLEDGE = "Room of Knowledge";
   private static final String ROOM_OF_ABSTRACTS = "Room of Abstracts";
   private static final String ROOM_OF_ANALYTICS = "Room of Analytics";
-
+  private static final String ROOM_OF_SCIENCE_BATTLE = "Room of Science Battle";
 
   public ProceedService(RoomRepository roomRepository, TeamRepository teamRepository,
                         LocationRepository locationRepository, QuestionRepository questionRepository) {
@@ -43,86 +42,76 @@ public class ProceedService {
     this.questionRepository = questionRepository;
   }
 
-  public ResponseEntity<RoomOfAbstractsResponseDto> proceedToTheRoomOfAbstracts(ProceedDto proceedDto) {
-    Optional<Room> room = roomRepository.findById(proceedDto.roomId());
-    if (room.isPresent()) {
-      Room currentRoom = room.get();
-      Location location = currentRoom.getLocation();
-      if (location.getName().equals(ROOM_OF_KNOWLEDGE)) {
-        return ResponseEntity.ok(proceedToRoomOfAbstracts(currentRoom.getTeam().getId()));
-      }
-    }
-    return ResponseEntity.notFound().build();
+  public ResponseEntity<RoomResponseDto> proceedToTheRoomOfAbstracts(ProceedDto proceedDto) {
+    return proceedToNextRoom(proceedDto, ROOM_OF_KNOWLEDGE, ROOM_OF_ABSTRACTS);
   }
 
-  private void proceedToRoomOfAnalytics(long teamId) {
+  public ResponseEntity<RoomResponseDto> proceedToTheRoomOfAnalytics(ProceedDto proceedDto) {
+    return proceedToNextRoom(proceedDto, ROOM_OF_ABSTRACTS, ROOM_OF_ANALYTICS);
+  }
+
+  public ResponseEntity<RoomResponseDto> proceedToTheRoomOfScienceBattle(ProceedDto proceedDto) {
+    return proceedToNextRoom(proceedDto, ROOM_OF_ANALYTICS, ROOM_OF_SCIENCE_BATTLE);
+  }
+
+  private ResponseEntity<RoomResponseDto> proceedToNextRoom(ProceedDto proceedDto, String currentRoomName,
+                                                            String nextRoomName) {
+    return roomRepository.findById(proceedDto.roomId())
+        .filter(room -> room.getProgress() == 100)
+        .filter(room -> currentRoomName.equals(room.getLocation().getName()))
+        .map(room -> ResponseEntity.ok(createRoom(room.getTeam().getId(), nextRoomName)))
+        .orElse(ResponseEntity.notFound().build());
+  }
+
+  private RoomResponseDto createRoom(long teamId, String nextRoomName) {
     Optional<Team> team = teamRepository.findById(teamId);
-    Optional<Location> location = locationRepository.findByName(ROOM_OF_ANALYTICS);
+    Optional<Location> location = locationRepository.findByName(nextRoomName);
+
     if (team.isPresent() && location.isPresent()) {
       Team currentTeam = team.get();
       Location nextLocation = location.get();
-      Room roomOfAnalytics = new Room();
-      roomOfAnalytics.setLocation(nextLocation);
-      nextLocation.getRooms().add(roomOfAnalytics);
+      Room nextRoom = new Room();
+      nextRoom.setLocation(nextLocation);
+      nextLocation.getRooms().add(nextRoom);
 
-      teamRepository.save(currentTeam);
-    }
-  }
-
-  private RoomOfAbstractsResponseDto proceedToRoomOfAbstracts(long teamId) {
-    Optional<Team> team = teamRepository.findById(teamId);
-    Optional<Location> location = locationRepository.findByName(ROOM_OF_ABSTRACTS);
-    if (team.isPresent() && location.isPresent()) {
-      Team currentTeam = team.get();
-      Location nextLocation = location.get();
-      Room roomOfAbstracts = new Room();
-      roomOfAbstracts.setLocation(nextLocation);
-      nextLocation.getRooms().add(roomOfAbstracts);
-      Set<Question> questions = getQuestionsForRoomOfAbstracts(currentTeam.getMission().getId(), nextLocation.getId());
-      roomOfAbstracts.setQuestions(questions);
-      roomOfAbstracts.setTeam(currentTeam);
-      roomOfAbstracts = roomRepository.save(roomOfAbstracts);
+      Set<Question> questions = new HashSet<>(
+          questionRepository.findByLocationIdAndMissionId(nextLocation.getId(), currentTeam.getMission().getId()));
+      nextRoom.setQuestions(questions);
+      nextRoom.setTeam(currentTeam);
+      nextRoom = roomRepository.save(nextRoom);
       locationRepository.save(nextLocation);
-      if (roomOfAbstracts.getId() == null) {
-        throw new IllegalStateException("Failed to create room");
+
+      if (nextRoom.getId() == null) {
+        throw new IllegalStateException("Failed to create " + nextRoomName.toLowerCase());
       }
-      return createRoomOfAbstractsResponse(currentTeam.getMission().getId(), roomOfAbstracts.getId(), questions);
+      return createRoomResponse(currentTeam.getMission().getId(), nextRoom.getId(), questions);
     }
     return null;
   }
 
-  private Set<Question> getQuestionsForRoomOfAbstracts(long missionId, long locationId) {
-    List<Question> questions = questionRepository.findByLocationIdAndMissionId(locationId, missionId);
-    return new HashSet<>(questions);
-  }
+  private RoomResponseDto createRoomResponse(long missionId, long roomId, Set<Question> questions) {
+    RoomResponseDto roomResponseDto = new RoomResponseDto();
+    roomResponseDto.setRoomId(roomId);
+    roomResponseDto.setMissionId(missionId);
 
-  private RoomOfAbstractsResponseDto createRoomOfAbstractsResponse(long missionId, long roomId, Set<Question> questions) {
-    RoomOfAbstractsResponseDto roomOfAbstractsResponseDto = new RoomOfAbstractsResponseDto();
-    roomOfAbstractsResponseDto.setRoomId(roomId);
-    roomOfAbstractsResponseDto.setMissionId(missionId);
     List<TableQuestionDto> tableQuestionDtos = new ArrayList<>();
     for (Question question : questions) {
-      if (question.getAnswers().isEmpty()) {
-        roomOfAbstractsResponseDto.setMainQuestion(question.getTitle());
-        List<String> images = new ArrayList<>();
-        for (Document document : question.getImages()) {
-          images.add(document.getPath());
-        }
-        roomOfAbstractsResponseDto.setDocs(images);
+      if (question.getAnswers().isEmpty() && !question.getDocuments().isEmpty()) {
+        roomResponseDto.setMainQuestion(question.getTitle());
+        roomResponseDto.setDocs(question.getDocuments().stream()
+            .map(Document::getPath)
+            .toList());
       } else {
         TableQuestionDto tableQuestionDto = new TableQuestionDto();
         tableQuestionDto.setQuestionId(question.getId());
         tableQuestionDto.setQuestion(question.getTitle());
-        List<AnswerDto> answers = new ArrayList<>();
-        for (Answer answer : question.getAnswers()) {
-          AnswerDto answerDto = new AnswerDto(answer.getId(), answer.getText());
-          answers.add(answerDto);
-        }
-        tableQuestionDto.setAnswers(answers);
+        tableQuestionDto.setAnswers(question.getAnswers().stream()
+            .map(answer -> new AnswerDto(answer.getId(), answer.getText()))
+            .toList());
         tableQuestionDtos.add(tableQuestionDto);
       }
     }
-    roomOfAbstractsResponseDto.setQuestions(tableQuestionDtos);
-    return roomOfAbstractsResponseDto;
+    roomResponseDto.setQuestions(tableQuestionDtos);
+    return roomResponseDto;
   }
 }
