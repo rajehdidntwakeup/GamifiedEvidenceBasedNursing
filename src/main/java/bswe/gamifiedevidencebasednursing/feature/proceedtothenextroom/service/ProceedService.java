@@ -103,7 +103,14 @@ public class ProceedService {
         roomResponseDto.setDocs(question.getDocuments().stream()
             .map(Document::getPath)
             .toList());
-      } else {
+      } else if (question.getAnswers().isEmpty() && question.getDocuments().isEmpty()) {
+        // Open question: no answers and no documents
+        TableQuestionDto tableQuestionDto = new TableQuestionDto();
+        tableQuestionDto.setQuestionId(question.getId());
+        tableQuestionDto.setQuestion(question.getTitle());
+        tableQuestionDto.setAnswers(new ArrayList<>());
+        tableQuestionDtos.add(tableQuestionDto);
+      }else {
         TableQuestionDto tableQuestionDto = new TableQuestionDto();
         tableQuestionDto.setQuestionId(question.getId());
         tableQuestionDto.setQuestion(question.getTitle());
