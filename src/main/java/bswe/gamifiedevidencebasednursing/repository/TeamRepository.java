@@ -9,9 +9,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TeamRepository extends JpaRepository<Team, Long> {
 
-  @Query("SELECT t FROM Team t " +
-      "WHERE t.game.id = :gameId " +
-      "AND t.mission.id = :missionId")
-  Team findTeamByGameIdAndMissionId(Long gameId, Long missionId);
+  @Query(
+      "SELECT t.password FROM Team t " +
+          "WHERE t.game.id =:gameId " +
+          "AND t.mission.id =:missionId"
+  )
+  String findPasswordByGameIdAndMissionId(Long gameId, Long missionId);
 
 }

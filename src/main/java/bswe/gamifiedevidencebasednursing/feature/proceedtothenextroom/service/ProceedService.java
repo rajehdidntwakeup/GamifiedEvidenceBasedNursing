@@ -1,5 +1,6 @@
 package bswe.gamifiedevidencebasednursing.feature.proceedtothenextroom.service;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -56,6 +57,7 @@ public class ProceedService {
 
   private ResponseEntity<RoomResponseDto> proceedToNextRoom(ProceedDto proceedDto, String currentRoomName,
                                                             String nextRoomName) {
+    closeCurrentRoom(proceedDto.roomId());
     return roomRepository.findById(proceedDto.roomId())
         .filter(room -> room.getProgress() == 100)
         .filter(room -> currentRoomName.equals(room.getLocation().getName()))
@@ -113,5 +115,13 @@ public class ProceedService {
     }
     roomResponseDto.setQuestions(tableQuestionDtos);
     return roomResponseDto;
+  }
+
+  private void closeCurrentRoom(long roomId) {
+    Room room = roomRepository.findById(roomId).orElse(null);
+    if (room != null) {
+      room.setEndTime(Instant.now());
+      roomRepository.save(room);
+    }
   }
 }

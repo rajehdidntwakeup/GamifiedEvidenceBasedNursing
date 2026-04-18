@@ -25,6 +25,8 @@ public class Team {
   @Enumerated(EnumType.STRING)
   @NotNull
   private Status status;
+  @NotNull
+  private String password;
   private boolean isWinner;
   @ManyToOne
   @JoinColumn(name = "mission_id")
@@ -58,6 +60,13 @@ public class Team {
     return status;
   }
 
+  public String getPassword() {
+    return password;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
+  }
 
   public Mission getMission() {
     return mission;

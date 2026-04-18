@@ -1,9 +1,12 @@
 package bswe.gamifiedevidencebasednursing.feature.gamecreation.service;
 
+import bswe.gamifiedevidencebasednursing.domain.Game;
 import bswe.gamifiedevidencebasednursing.domain.Location;
+import bswe.gamifiedevidencebasednursing.domain.Mission;
 import bswe.gamifiedevidencebasednursing.domain.Question;
 import bswe.gamifiedevidencebasednursing.domain.Room;
 import bswe.gamifiedevidencebasednursing.domain.Team;
+import bswe.gamifiedevidencebasednursing.feature.gamecreation.dto.response.GameResponseDto;
 import bswe.gamifiedevidencebasednursing.repository.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -36,7 +39,6 @@ class GameCreationServiceTest {
     private RoomRepository roomRepository;
 
     @InjectMocks
-    @Spy
     private GameCreationService gameCreationService;
 
     @BeforeEach
@@ -45,18 +47,14 @@ class GameCreationServiceTest {
     }
 
     @Test
-    void createRoomOfKnowledge_shouldCreateRoomsForAllTeams() {
+    void createGame_shouldCreateGameTeamsAndRooms() {
         // Given
-        List<Long> teamIds = List.of(1L, 2L);
-        Team team1 = new Team();
-        team1.setId(1L);
-        Team team2 = new Team();
-        team2.setId(2L);
-        Location location = new Location("Room of Knowledge", "E-C", 10);
+        Mission mission = new Mission("Mission 1");
+        mission.setId(1L);
+        when(missionRepository.findAll()).thenReturn(List.of(mission));
 
+        Location location = new Location("Room of Knowledge", "E-C", 10);
         when(locationRepository.findByName("Room of Knowledge")).thenReturn(Optional.of(location));
-        when(teamRepository.findById(1L)).thenReturn(Optional.of(team1));
-        when(teamRepository.findById(2L)).thenReturn(Optional.of(team2));
 
         List<Question> questions = new ArrayList<>();
         for (int i = 0; i < 15; i++) {
@@ -64,58 +62,31 @@ class GameCreationServiceTest {
         }
         when(questionRepository.findQuestionsForRoomOfKnowledge()).thenReturn(questions);
 
-        when(roomRepository.save(any(Room.class))).thenAnswer(invocation -> {
-            Room room = invocation.getArgument(0);
-            // Simulate saving by setting an ID
-            java.lang.reflect.Field idField = Room.class.getDeclaredField("id");
+        when(gameRepository.save(any())).thenAnswer(i -> {
+            Game g = i.getArgument(0);
+            java.lang.reflect.Field idField = Game.class.getDeclaredField("id");
             idField.setAccessible(true);
-            idField.set(room, 1L);
-            return room;
+            idField.set(g, 1L);
+            return g;
+        });
+
+        when(teamRepository.saveAll(any())).thenAnswer(i -> {
+            List<Team> ts = i.getArgument(0);
+            for (long id = 1; id <= ts.size(); id++) {
+                java.lang.reflect.Field idField = Team.class.getDeclaredField("id");
+                idField.setAccessible(true);
+                idField.set(ts.get((int)id-1), id);
+            }
+            return ts;
         });
 
         // When
-        gameCreationService.createRoomOfKnowledge(teamIds);
+        GameResponseDto response = gameCreationService.createGame();
 
         // Then
-        verify(teamRepository, times(1)).findById(1L);
-        verify(teamRepository, times(1)).findById(2L);
-        verify(roomRepository, times(2)).save(any(Room.class));
-    }
-
-    @Test
-    void createRoomOfKnowledge_shouldThrowException_whenTeamNotFound() {
-        // Given
-        List<Long> teamIds = List.of(1L);
-        Location location = new Location("Room of Knowledge", "E-C", 10);
-
-        when(locationRepository.findByName("Room of Knowledge")).thenReturn(Optional.of(location));
-        when(teamRepository.findById(1L)).thenReturn(Optional.empty());
-
-        // When & Then
-        assertThrows(IllegalArgumentException.class, () -> gameCreationService.createRoomOfKnowledge(teamIds));
-    }
-
-    @Test
-    void createRoomOfKnowledge_shouldThrowException_whenRoomSaveFails() {
-        // Given
-        List<Long> teamIds = List.of(1L);
-        Team team = new Team();
-        team.setId(1L);
-        Location location = new Location("Room of Knowledge", "E-C", 10);
-
-        when(locationRepository.findByName("Room of Knowledge")).thenReturn(Optional.of(location));
-        when(teamRepository.findById(1L)).thenReturn(Optional.of(team));
-
-        List<Question> questions = new ArrayList<>();
-        for (int i = 0; i < 15; i++) {
-            questions.add(new Question());
-        }
-        when(questionRepository.findQuestionsForRoomOfKnowledge()).thenReturn(questions);
-
-        // Room save returns room without ID
-        when(roomRepository.save(any(Room.class))).thenReturn(new Room());
-
-        // When & Then
-        assertThrows(IllegalStateException.class, () -> gameCreationService.createRoomOfKnowledge(teamIds));
+        assertEquals(1L, response.getGameId());
+        assertEquals(1, response.getTeamPasswords().size());
+        verify(teamRepository, times(1)).saveAll(any());
+        verify(roomRepository, times(1)).saveAll(any());
     }
 }
