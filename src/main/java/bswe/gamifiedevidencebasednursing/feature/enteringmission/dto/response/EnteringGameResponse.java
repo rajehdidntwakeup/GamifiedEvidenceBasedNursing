@@ -9,7 +9,7 @@ public class EnteringGameResponse {
   private long roomId;
   private int timer;
 
-  private List<RoomOfKnowledgeQuestionsDto> questions;
+  private List<RoomOfKnowledgeQuestionsDto> questions = new ArrayList<>();
 
   public EnteringGameResponse() {
   }
@@ -18,7 +18,7 @@ public class EnteringGameResponse {
     this.missionId = missionId;
     this.roomId = roomId;
     this.timer = timer;
-    this.questions = questions;
+    this.questions = questions != null ? new ArrayList<>(questions) : new ArrayList<>();
   }
 
   public long getMissionId() {

@@ -1,12 +1,14 @@
 package bswe.gamifiedevidencebasednursing.feature.gamecreation.dto.response;
 
 
+import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 public class GameResponseDto {
 
   private long gameId;
-  private List<TeamPassword> teamPasswords;
+  private List<TeamPassword> teamPasswords = new ArrayList<>();
 
 
   public GameResponseDto(long gameId) {
@@ -15,7 +17,7 @@ public class GameResponseDto {
 
   public GameResponseDto(long gameId, List<TeamPassword> teamPasswords) {
     this.gameId = gameId;
-    this.teamPasswords = teamPasswords;
+    this.teamPasswords = teamPasswords != null ? new ArrayList<>(teamPasswords) : new ArrayList<>();
   }
 
   public long getGameId() {
@@ -27,8 +29,10 @@ public class GameResponseDto {
   }
 
   public List<TeamPassword> getTeamPasswords() {
-    return teamPasswords;
+    return teamPasswords != null ? Collections.unmodifiableList(teamPasswords) : null;
   }
 
-  public void setTeamPasswords(List<TeamPassword> teamPasswords) {}
+  public void setTeamPasswords(List<TeamPassword> teamPasswords) {
+    this.teamPasswords = teamPasswords != null ? new ArrayList<>(teamPasswords) : new ArrayList<>();
+  }
 }

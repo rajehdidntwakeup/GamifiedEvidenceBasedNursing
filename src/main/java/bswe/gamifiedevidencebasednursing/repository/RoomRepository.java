@@ -1,6 +1,5 @@
 package bswe.gamifiedevidencebasednursing.repository;
 
-import java.time.Instant;
 
 import bswe.gamifiedevidencebasednursing.domain.Room;
 import org.springframework.data.jpa.repository.JpaRepository;
