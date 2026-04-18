@@ -56,6 +56,8 @@ tags:
     description: Room of Analytics specific endpoints
   - name: Room of Science Battle
     description: Room of Science Battle specific endpoints
+  - name: Room Time
+    description: Room Time specific endpoints — calculate remaining time for a room
 
 paths:
   # ──────────────────────────────────────────────
@@ -253,15 +255,6 @@ paths:
       operationId: createGame
       security:
         - bearerAuth: []
-      requestBody:
-        description: Game session configuration
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateGameRequest'
-            example:
-              password: "GameRoom42"
       responses:
         '200':
           description: Game session created successfully
@@ -271,6 +264,10 @@ paths:
                 $ref: '#/components/schemas/GameResponseDto'
               example:
                 gameId: 1
+                teamPasswords:
+                  - teamId: 1
+                    mission: "Wound Care for Pressure Ulcers"
+                    password: "abcd"
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -351,6 +348,7 @@ paths:
               example:
                 missionId: 1
                 roomId: 1
+                timer: 300
                 questions:
                   - questionId: 1
                     question: "What is the primary sign of a pressure ulcer?"
@@ -464,6 +462,34 @@ paths:
               example:
                 progress: 80
                 key: "KEY-123"
+
+  /api/rooms/howmuchtimedowehave:
+    get:
+      tags:
+        - Room Time
+      summary: Get how much time is left for a room
+      description: |
+        Calculates and returns the remaining minutes and seconds for a given room.
+      operationId: getHowMuchTimeDoWeHave
+      parameters:
+        - name: roomId
+          in: query
+          required: true
+          description: ID of the room
+          schema:
+            type: integer
+            format: int64
+            example: 1
+      responses:
+        '200':
+          description: Remaining time retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoomTimeResponse'
+              example:
+                minutes: 10
+                seconds: 30
 
   # ──────────────────────────────────────────────
   # Retry Rooms
@@ -587,7 +613,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RoomOfAbstractsResponseDto'
+                $ref: '#/components/schemas/RoomResponseDto'
               example:
                 roomId: 2
                 missionId: 1
@@ -627,7 +653,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RoomOfAbstractsResponseDto'
+                $ref: '#/components/schemas/RoomResponseDto'
               example:
                 roomId: 3
                 missionId: 1
@@ -667,7 +693,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RoomOfAbstractsResponseDto'
+                $ref: '#/components/schemas/RoomResponseDto'
               example:
                 roomId: 4
                 missionId: 1
@@ -755,16 +781,6 @@ components:
           example: true
 
     # ── Game ────────────────────────────────────
-    CreateGameRequest:
-      type: object
-      description: Request body for creating a new game session
-      required:
-        - password
-      properties:
-        password:
-          type: string
-          description: Game session password
-          example: "GameRoom42"
 
     GameResponseDto:
       type: object
@@ -775,6 +791,24 @@ components:
           format: int64
           description: Unique identifier of the created game
           example: 1
+        teamPasswords:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamPassword'
+
+    TeamPassword:
+      type: object
+      properties:
+        teamId:
+          type: integer
+          format: int64
+          example: 1
+        mission:
+          type: string
+          example: "Wound Care for Pressure Ulcers"
+        password:
+          type: string
+          example: "abcd"
 
     # ── Landing Page ────────────────────────────
     LandingPageResponse:
@@ -832,6 +866,10 @@ components:
           type: integer
           format: int64
           example: 1
+        timer:
+          type: integer
+          format: int32
+          example: 300
         questions:
           type: array
           items:
@@ -885,6 +923,19 @@ components:
           example: 1
 
     # ── Room of Abstracts ───────────────────────
+    RoomTimeResponse:
+      type: object
+      description: Response containing remaining minutes and seconds for a room
+      properties:
+        minutes:
+          type: integer
+          format: int64
+          example: 10
+        seconds:
+          type: integer
+          format: int64
+          example: 30
+
     VerifyRoomOfAbstractsAnswersDto:
       type: object
       description: Request to verify answers for Room of Abstracts
@@ -951,9 +1002,9 @@ components:
           description: ID of the current room
           example: 1
 
-    RoomOfAbstractsResponseDto:
+    RoomResponseDto:
       type: object
-      description: Response for proceeding to Room of Abstracts
+      description: Response for proceeding to rooms
       properties:
         roomId:
           type: integer

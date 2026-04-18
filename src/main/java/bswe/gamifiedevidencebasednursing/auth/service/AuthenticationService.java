@@ -5,10 +5,12 @@ import bswe.gamifiedevidencebasednursing.auth.dto.AuthResponse;
 import bswe.gamifiedevidencebasednursing.domain.User;
 import bswe.gamifiedevidencebasednursing.repository.UserRepository;
 import bswe.gamifiedevidencebasednursing.security.JwtService;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  * Service class for user authentication operations.
@@ -39,11 +41,14 @@ public class AuthenticationService {
 
 
   public AuthResponse register(AuthRequest request) {
-    User user = new User(request.getUsername(), passwordEncoder.encode(request.getPassword()), "ROLE_ADMIN");
-    userRepository.save(user);
+    if (userRepository.findAll().isEmpty()) {
+      User user = new User(request.getUsername(), passwordEncoder.encode(request.getPassword()), "ROLE_ADMIN");
+      userRepository.save(user);
 
-    String token = jwtService.generateToken(user);
-    return new AuthResponse(token, true);
+      String token = jwtService.generateToken(user);
+      return new AuthResponse(token, true);
+    }
+    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Admin exists already!");
   }
 
   public AuthResponse authenticate(AuthRequest request) {

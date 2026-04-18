@@ -29,6 +29,8 @@ public class Question {
   private Set<Answer> answers = new HashSet<>();
   @ManyToMany(mappedBy = "questions")
   private Set<Mission> missions = new HashSet<>();
+  @OneToMany(mappedBy = "question")
+  private Set<OpenQuestionAnswer> openQuestionAnswers = new HashSet<>();
   @ManyToOne
   @JoinColumn(name = "location_id")
   private Location location;
@@ -87,6 +89,15 @@ public class Question {
 
   public void setMissions(Set<Mission> missions) {
     this.missions = missions;
+  }
+
+  public Set<OpenQuestionAnswer> getOpenQuestionAnswers() {
+    return openQuestionAnswers;
+  }
+
+  public void setOpenQuestionAnswers(
+      Set<OpenQuestionAnswer> openQuestionAnswers) {
+    this.openQuestionAnswers = openQuestionAnswers;
   }
 
   public Location getLocation() {

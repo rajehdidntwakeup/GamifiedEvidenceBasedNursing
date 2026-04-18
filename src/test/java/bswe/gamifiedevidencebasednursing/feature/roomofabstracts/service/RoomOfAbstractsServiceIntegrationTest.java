@@ -76,7 +76,7 @@ class RoomOfAbstractsServiceIntegrationTest {
         Location location = createLocation("Room of Abstracts", "F-O", 20);
         location = locationRepository.save(location);
 
-        Game game = createGame("password");
+        Game game = createGame();
         game = gameRepository.save(game);
 
         Team team = createTeam(game);
@@ -125,7 +125,7 @@ class RoomOfAbstractsServiceIntegrationTest {
         Location location = createLocation("Room of Abstracts", "SECRET-KEY", 20);
         location = locationRepository.save(location);
 
-        Game game = createGame("password");
+        Game game = createGame();
         game = gameRepository.save(game);
 
         Team team = createTeam(game);
@@ -181,7 +181,7 @@ class RoomOfAbstractsServiceIntegrationTest {
         Location location = createLocation("Room of Abstracts", "F-O", 20);
         location = locationRepository.save(location);
 
-        Game game = createGame("password");
+        Game game = createGame();
         game = gameRepository.save(game);
 
         Team team = createTeam(game);
@@ -235,7 +235,7 @@ class RoomOfAbstractsServiceIntegrationTest {
         Location location = createLocation("Room of Abstracts", "END-KEY", 20);
         location = locationRepository.save(location);
 
-        Game game = createGame("password");
+        Game game = createGame();
         game = gameRepository.save(game);
 
         Team team = createTeam(game);
@@ -277,7 +277,7 @@ class RoomOfAbstractsServiceIntegrationTest {
         Location location = createLocation("Room of Abstracts", "F-O", 20);
         location = locationRepository.save(location);
 
-        Game game = createGame("password");
+        Game game = createGame();
         game = gameRepository.save(game);
 
         Team team = createTeam(game);
@@ -301,13 +301,14 @@ class RoomOfAbstractsServiceIntegrationTest {
         return new Location(name, key, timer);
     }
 
-    private Game createGame(String password) {
-        return new Game(password, GameStatus.CREATED);
+    private Game createGame() {
+        return new Game(GameStatus.CREATED);
     }
 
     private Team createTeam(Game game) {
         Team team = new Team();
         team.setGame(game);
+        team.setPassword("password");
         team.setStatus(Status.READY);
         team.setWinner(false);
         return team;

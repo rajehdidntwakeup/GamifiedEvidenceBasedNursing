@@ -7,15 +7,18 @@ import java.util.List;
 public class EnteringGameResponse {
   private long missionId;
   private long roomId;
-  private List<RoomOfKnowledgeQuestionsDto> questions;
+  private int timer;
+
+  private List<RoomOfKnowledgeQuestionsDto> questions = new ArrayList<>();
 
   public EnteringGameResponse() {
   }
 
-  public EnteringGameResponse(long missionId, long roomId, List<RoomOfKnowledgeQuestionsDto> questions) {
+  public EnteringGameResponse(long missionId, long roomId, int timer, List<RoomOfKnowledgeQuestionsDto> questions) {
     this.missionId = missionId;
     this.roomId = roomId;
-    this.questions = questions != null ? new ArrayList<>(questions) : null;
+    this.timer = timer;
+    this.questions = questions != null ? new ArrayList<>(questions) : new ArrayList<>();
   }
 
   public long getMissionId() {
@@ -24,6 +27,10 @@ public class EnteringGameResponse {
 
   public long getRoomId() {
     return roomId;
+  }
+
+  public int getTimer() {
+    return timer;
   }
 
   public List<RoomOfKnowledgeQuestionsDto> getQuestions() {

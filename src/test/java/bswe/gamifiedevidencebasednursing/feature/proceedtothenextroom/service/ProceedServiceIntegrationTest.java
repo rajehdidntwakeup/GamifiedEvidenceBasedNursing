@@ -75,11 +75,12 @@ class ProceedServiceIntegrationTest {
         mission = new Mission("Mission 1");
         missionRepository.save(mission);
 
-        game = new Game("password", GameStatus.CREATED);
+        game = new Game(GameStatus.CREATED);
         gameRepository.save(game);
 
         team = new Team(Status.STARTED, mission, false);
         team.setGame(game);
+        team.setPassword("teamPassword");
         teamRepository.save(team);
 
         Question q1 = new Question("Abstract Question", roomOfAbstracts);

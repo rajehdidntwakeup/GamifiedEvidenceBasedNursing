@@ -13,9 +13,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 
 @Entity
 public class Game {
@@ -23,9 +21,6 @@ public class Game {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-  @NotBlank
-  @Size(min = 4, max = 50)
-  private String password;
   @NotNull
   @Enumerated(EnumType.STRING)
   private GameStatus status;
@@ -39,13 +34,11 @@ public class Game {
   public Game() {
   }
 
-  public Game(String password, GameStatus status) {
-    this.password = password;
+  public Game(GameStatus status) {
     this.status = status;
   }
 
-  public Game(String password, GameStatus status, Instant begin, Instant finish) {
-    this.password = password;
+  public Game(GameStatus status, Instant begin, Instant finish) {
     this.status = status;
     this.begin = begin;
     this.finish = finish;
@@ -53,10 +46,6 @@ public class Game {
 
   public Long getId() {
     return id;
-  }
-
-  public String getPassword() {
-    return password;
   }
 
   public GameStatus getStatus() {

@@ -31,7 +31,7 @@ class LandingPageServiceIntegrationTest {
     @Test
     void isThereAnyGameRunning_shouldReturnTrue_whenGameStatusIsCreated() {
         // Given
-        Game game = new Game("password", GameStatus.CREATED, null, null);
+        Game game = new Game(GameStatus.CREATED);
         gameRepository.save(game);
 
         // When
@@ -44,7 +44,7 @@ class LandingPageServiceIntegrationTest {
     @Test
     void isThereAnyGameRunning_shouldReturnTrue_whenGameStatusIsRunning() {
         // Given
-        Game game = new Game("password", GameStatus.RUNNING, null, null);
+        Game game = new Game(GameStatus.RUNNING);
         gameRepository.save(game);
 
         // When
@@ -66,7 +66,7 @@ class LandingPageServiceIntegrationTest {
     @Test
     void isThereAnyGameRunning_shouldReturnFalse_whenGameStatusIsFinished() {
         // Given
-        Game game = new Game("password", GameStatus.FINISHED, null, null);
+        Game game = new Game(GameStatus.FINISHED);
         gameRepository.save(game);
 
         // When

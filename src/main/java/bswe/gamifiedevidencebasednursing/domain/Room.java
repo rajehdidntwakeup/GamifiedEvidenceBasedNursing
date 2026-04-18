@@ -1,5 +1,6 @@
 package bswe.gamifiedevidencebasednursing.domain;
 
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -12,6 +13,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 
@@ -26,6 +28,8 @@ public class Room {
   private int progress = 0;
   @Min(0)
   private int extraTime; // in minutes
+  private Instant startTime;
+  private Instant endTime;
   @ManyToOne
   @JoinColumn(name = "team_id")
   private Team team;
@@ -34,6 +38,8 @@ public class Room {
       joinColumns = @JoinColumn(name = "room_id"),
       inverseJoinColumns = @JoinColumn(name = "question_id"))
   private Set<Question> questions = new HashSet<>();
+  @OneToMany(mappedBy = "room")
+  private Set<OpenQuestionAnswer> openQuestionAnswers = new HashSet<>();
   @ManyToOne
   @JoinColumn(name = "location_id")
   private Location location;
@@ -75,6 +81,22 @@ public class Room {
     this.progress = progress;
   }
 
+  public Instant getStartTime() {
+    return startTime;
+  }
+
+  public void setStartTime(Instant startTime) {
+    this.startTime = startTime;
+  }
+
+  public Instant getEndTime() {
+    return endTime;
+  }
+
+  public void setEndTime(Instant endTime) {
+    this.endTime = endTime;
+  }
+
   public Team getTeam() {
     return team;
   }
@@ -89,6 +111,15 @@ public class Room {
 
   public void setQuestions(Set<Question> questions) {
     this.questions = questions;
+  }
+
+  public Set<OpenQuestionAnswer> getOpenQuestionAnswers() {
+    return openQuestionAnswers;
+  }
+
+  public void setOpenQuestionAnswers(
+      Set<OpenQuestionAnswer> openQuestionAnswers) {
+    this.openQuestionAnswers = openQuestionAnswers;
   }
 
   public Location getLocation() {

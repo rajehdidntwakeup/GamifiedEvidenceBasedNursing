@@ -45,8 +45,9 @@ public class EnteringMissionService {
     if (game.isEmpty()) {
       throw new ResponseStatusException(HttpStatusCode.valueOf(404), "Game not found");
     }
+    String teamPassword = teamRepository.findPasswordByGameIdAndMissionId(request.getGameId(), request.getMissionId());
     Game gameInstance = game.get();
-    if (gameInstance.getPassword().equals(request.getPassword())) {
+    if (teamPassword.equals(request.getPassword())) {
       startGame(gameInstance);
       return ResponseEntity
           .ok(enterRoomOfKnowledge(gameInstance.getId(), request.getMissionId()));
@@ -60,8 +61,15 @@ public class EnteringMissionService {
     if (room == null) {
       throw new ResponseStatusException(HttpStatusCode.valueOf(404), "Room not found");
     }
+    if (room.getProgress() != 0) {
+      room.setProgress(0);
+      roomRepository.save(room);
+    }
+    if (room.getStartTime() == null) {
+      startRoom(room);
+    }
     updateTeamStatus(room.getTeam().getId());
-    return new EnteringGameResponse(missionId, room.getId(), getRoomOfKnowledgeQuestions(room));
+    return new EnteringGameResponse(missionId, room.getId(), room.getLocation().getTimer(), getRoomOfKnowledgeQuestions(room));
   }
 
   private List<RoomOfKnowledgeQuestionsDto> getRoomOfKnowledgeQuestions(Room room) {
@@ -84,6 +92,12 @@ public class EnteringMissionService {
       game.setStatus(GameStatus.RUNNING);
       gameRepository.save(game);
     }
+  }
+
+  private void startRoom(Room room) {
+    Instant start = Instant.now();
+    room.setStartTime(start);
+    roomRepository.save(room);
   }
 
   private void updateTeamStatus(long teamId) {
