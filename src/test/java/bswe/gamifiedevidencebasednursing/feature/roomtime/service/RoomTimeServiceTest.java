@@ -6,15 +6,15 @@ import bswe.gamifiedevidencebasednursing.feature.roomtime.dto.RoomTimeResponse;
 import bswe.gamifiedevidencebasednursing.repository.RoomRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.time.Clock;
 import java.time.Instant;
+import java.time.ZoneId;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 class RoomTimeServiceTest {
@@ -22,12 +22,14 @@ class RoomTimeServiceTest {
     @Mock
     private RoomRepository roomRepository;
 
-    @InjectMocks
+    private Clock clock;
     private RoomTimeService roomTimeService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        clock = Clock.fixed(Instant.parse("2026-04-19T19:20:00Z"), ZoneId.of("UTC"));
+        roomTimeService = new RoomTimeService(roomRepository, clock);
     }
 
     @Test
@@ -35,7 +37,7 @@ class RoomTimeServiceTest {
         // Given
         long roomId = 1L;
         Room room = new Room();
-        room.setStartTime(Instant.now().minusSeconds(60)); // Started 1 minute ago
+        room.setStartTime(Instant.now(clock).minusSeconds(60)); // Started 1 minute ago
         room.setExtraTime(5); // 5 minutes extra
         Location location = new Location();
         location.setTimer(10); // 10 minutes original
@@ -48,9 +50,8 @@ class RoomTimeServiceTest {
         RoomTimeResponse response = roomTimeService.howmuchtimedowehave(roomId);
 
         // Then
-        assertEquals(13, response.getMinutes()); // 13 or 14 depending on exact 'now' call in service vs test
-        // Let's be more precise with 'now' or just check it's around 13-14 minutes
-        assertTrue(response.getMinutes() >= 13 && response.getMinutes() <= 14);
+        assertEquals(14, response.getMinutes());
+        assertEquals(0, response.getSeconds());
     }
 
     @Test
@@ -58,7 +59,7 @@ class RoomTimeServiceTest {
         // Given
         long roomId = 1L;
         Room room = new Room();
-        room.setStartTime(Instant.now().minusSeconds(1200)); // Started 20 minutes ago
+        room.setStartTime(Instant.now(clock).minusSeconds(1200)); // Started 20 minutes ago
         room.setExtraTime(0);
         Location location = new Location();
         location.setTimer(10); // 10 minutes total
