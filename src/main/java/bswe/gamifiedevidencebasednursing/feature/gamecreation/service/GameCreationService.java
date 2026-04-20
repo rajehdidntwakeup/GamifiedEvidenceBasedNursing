@@ -1,6 +1,5 @@
 package bswe.gamifiedevidencebasednursing.feature.gamecreation.service;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -8,13 +7,12 @@ import java.util.UUID;
 
 import bswe.gamifiedevidencebasednursing.domain.Game;
 import bswe.gamifiedevidencebasednursing.domain.Location;
-import bswe.gamifiedevidencebasednursing.domain.Mission;
 import bswe.gamifiedevidencebasednursing.domain.Question;
 import bswe.gamifiedevidencebasednursing.domain.Room;
 import bswe.gamifiedevidencebasednursing.domain.Team;
-import bswe.gamifiedevidencebasednursing.feature.gamecreation.dto.response.GameResponseDto;
 import bswe.gamifiedevidencebasednursing.domain.enums.GameStatus;
 import bswe.gamifiedevidencebasednursing.domain.enums.Status;
+import bswe.gamifiedevidencebasednursing.feature.gamecreation.dto.response.GameResponseDto;
 import bswe.gamifiedevidencebasednursing.feature.gamecreation.dto.response.TeamPassword;
 import bswe.gamifiedevidencebasednursing.repository.GameRepository;
 import bswe.gamifiedevidencebasednursing.repository.LocationRepository;
@@ -23,7 +21,6 @@ import bswe.gamifiedevidencebasednursing.repository.QuestionRepository;
 import bswe.gamifiedevidencebasednursing.repository.RoomRepository;
 import bswe.gamifiedevidencebasednursing.repository.TeamRepository;
 import org.springframework.stereotype.Service;
-
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -51,6 +48,7 @@ public class GameCreationService {
   }
 
   public GameResponseDto createGame() {
+    closeCreatedAndRunningGameSessions();
     Game game = new Game(GameStatus.CREATED);
     game = gameRepository.save(game);
     List<Team> teams = createTeams(game);
@@ -63,22 +61,30 @@ public class GameCreationService {
     return new GameResponseDto(game.getId(), teamPasswords);
   }
 
+  private void closeCreatedAndRunningGameSessions() {
+    gameRepository.findCreatedOrRunningGame()
+        .ifPresent(game -> {
+          game.setStatus(GameStatus.FINISHED);
+          gameRepository.save(game);
+        });
+  }
+
   private List<Team> createTeams(Game game) {
-    List<Mission> missions = missionRepository.findAll();
-    List<Team> teams = new ArrayList<>();
+    List<Team> teams = missionRepository.findAll().stream()
+        .map(mission -> {
+          Team team = new Team();
+          team.setGame(game);
+          team.setStatus(Status.READY);
+          team.setPassword(generatePassword());
+          team.setWinner(false);
+          team.setMission(mission);
 
-    for (Mission mission : missions) {
-      Team team = new Team();
-      team.setGame(game);
-      team.setStatus(Status.READY);
-      team.setPassword(generatePassword());
-      team.setWinner(false);
-      team.setMission(mission);
+          mission.getTeams().add(team);
+          game.getTeamList().add(team);
+          return team;
+        })
+        .toList();
 
-      mission.getTeams().add(team);
-      game.getTeamList().add(team);
-      teams.add(team);
-    }
     return teamRepository.saveAll(teams);
   }
 
@@ -87,30 +93,36 @@ public class GameCreationService {
         .orElseThrow(() -> new IllegalStateException("Failed to find room of knowledge location"));
 
     List<Question> questions = getRoomOfKnowledgeQuestionList();
-    List<Room> rooms = new ArrayList<>();
 
-    for (Team team : teams) {
-      Room roomOfKnowledge = new Room();
-      roomOfKnowledge.setLocation(location);
-      roomOfKnowledge.setQuestions(new HashSet<>(questions));
-      roomOfKnowledge.setTeam(team);
-      rooms.add(roomOfKnowledge);
-      location.getRooms().add(roomOfKnowledge);
-    }
+    List<Room> rooms = teams.stream()
+        .map(team -> {
+          Room roomOfKnowledge = new Room();
+          roomOfKnowledge.setLocation(location);
+          roomOfKnowledge.setQuestions(new HashSet<>(questions));
+          roomOfKnowledge.setTeam(team);
+
+          location.getRooms().add(roomOfKnowledge);
+          return roomOfKnowledge;
+        })
+        .toList();
+
     roomRepository.saveAll(rooms);
   }
 
   private List<Question> getRoomOfKnowledgeQuestionList() {
     List<Question> questionList = questionRepository.findQuestionsForRoomOfKnowledge();
     Collections.shuffle(questionList);
-    return questionList.size() > 10 ? questionList.subList(0, 10) : questionList;
+    return questionList.stream()
+        .limit(10)
+        .toList();
   }
 
   private String generatePassword() {
     return UUID.randomUUID()
         .toString()
         .replace("-", "")
-        .substring(0, 4);
+        .substring(0, 4)
+        .toUpperCase();
   }
 
 }

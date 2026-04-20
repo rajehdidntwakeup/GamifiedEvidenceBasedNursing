@@ -110,7 +110,7 @@ public class ProceedService {
         tableQuestionDto.setQuestion(question.getTitle());
         tableQuestionDto.setAnswers(new ArrayList<>());
         tableQuestionDtos.add(tableQuestionDto);
-      }else {
+      } else {
         TableQuestionDto tableQuestionDto = new TableQuestionDto();
         tableQuestionDto.setQuestionId(question.getId());
         tableQuestionDto.setQuestion(question.getTitle());

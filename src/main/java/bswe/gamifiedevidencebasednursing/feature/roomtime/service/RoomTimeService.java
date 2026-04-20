@@ -1,5 +1,6 @@
 package bswe.gamifiedevidencebasednursing.feature.roomtime.service;
 
+import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Optional;
@@ -12,15 +13,17 @@ import org.springframework.stereotype.Service;
 @Service
 public class RoomTimeService {
 
-  private RoomRepository roomRepository;
+  private final RoomRepository roomRepository;
+  private final Clock clock;
 
-  public RoomTimeService(RoomRepository roomRepository) {
+  public RoomTimeService(RoomRepository roomRepository, Clock clock) {
     this.roomRepository = roomRepository;
+    this.clock = clock;
   }
 
 
   public RoomTimeResponse howmuchtimedowehave(long roomId) {
-    Instant now = Instant.now();
+    Instant now = Instant.now(clock);
     Optional<Room> room = roomRepository.findById(roomId);
     if (room.isPresent()) {
       Instant start = room.get().getStartTime();
