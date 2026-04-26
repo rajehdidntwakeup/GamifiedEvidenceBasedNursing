@@ -33,7 +33,7 @@ class RoomTimeServiceTest {
     }
 
     @Test
-    void howmuchtimedowehave_shouldReturnCorrectTime() {
+    void howMuchTimeDoWeHave_shouldReturnCorrectTime() {
         // Given
         long roomId = 1L;
         Room room = new Room();
@@ -47,7 +47,7 @@ class RoomTimeServiceTest {
         when(roomRepository.findById(roomId)).thenReturn(Optional.of(room));
 
         // When
-        RoomTimeResponse response = roomTimeService.howmuchtimedowehave(roomId);
+        RoomTimeResponse response = roomTimeService.howMuchTimeDoWeHave(roomId);
 
         // Then
         assertEquals(14, response.getMinutes());
@@ -55,7 +55,7 @@ class RoomTimeServiceTest {
     }
 
     @Test
-    void howmuchtimedowehave_shouldReturnZeroIfTimeOut() {
+    void howMuchTimeDoWeHave_shouldReturnZeroIfTimeOut() {
         // Given
         long roomId = 1L;
         Room room = new Room();
@@ -68,7 +68,7 @@ class RoomTimeServiceTest {
         when(roomRepository.findById(roomId)).thenReturn(Optional.of(room));
 
         // When
-        RoomTimeResponse response = roomTimeService.howmuchtimedowehave(roomId);
+        RoomTimeResponse response = roomTimeService.howMuchTimeDoWeHave(roomId);
 
         // Then
         assertEquals(0, response.getMinutes());

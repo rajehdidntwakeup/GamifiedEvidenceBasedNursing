@@ -22,7 +22,7 @@ public class RoomTimeService {
   }
 
 
-  public RoomTimeResponse howmuchtimedowehave(long roomId) {
+  public RoomTimeResponse howMuchTimeDoWeHave(long roomId) {
     Instant now = Instant.now(clock);
     Optional<Room> room = roomRepository.findById(roomId);
     if (room.isPresent()) {
