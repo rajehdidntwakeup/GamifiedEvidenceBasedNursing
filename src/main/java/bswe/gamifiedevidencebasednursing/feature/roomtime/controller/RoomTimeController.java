@@ -20,6 +20,6 @@ public class RoomTimeController {
 
   @GetMapping
   public ResponseEntity<RoomTimeResponse> getHowMuchTimedowehave(@RequestParam long roomId) {
-    return ResponseEntity.ok(roomTimeService.howmuchtimedowehave(roomId));
+    return ResponseEntity.ok(roomTimeService.howMuchTimeDoWeHave(roomId));
   }
 }
