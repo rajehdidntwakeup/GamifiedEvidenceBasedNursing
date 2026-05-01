@@ -40,4 +40,13 @@ public class LandingPageService {
     LandingPageResponse response = new LandingPageResponse(game.getId(), missionDtos);
     return ResponseEntity.ok(response);
   }
+
+  public ResponseEntity<Long> getGameSessionId() {
+    Game game = gameRepository.findCreatedOrRunningGame().orElse(null);
+    if (game == null) {
+      throw new ResponseStatusException(HttpStatusCode.valueOf(404), "No running game found");
+    }
+    return ResponseEntity.ok(game.getId());
+  }
+
 }
