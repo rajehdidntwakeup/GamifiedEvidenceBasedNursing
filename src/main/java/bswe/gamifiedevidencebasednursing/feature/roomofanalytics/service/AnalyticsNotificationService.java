@@ -19,6 +19,7 @@ public class AnalyticsNotificationService {
   }
 
   public void notifyTeam(AnalyticsFeedbackDto feedback) {
+    System.out.println("Sending feedback notification for mission: " + feedback.missionName());
     messagingTemplate.convertAndSend("/topic/mission/analytics/" + feedback.missionName() + "/feedback", feedback);
   }
 }

@@ -6,7 +6,6 @@ import java.util.List;
 public record AnalyticsFeedbackDto(
     Long roomId,
     String missionName,
-    Integer progress,
     Instant feedbackAt,
     List<QuestionFeedbackResultDto> questions
 ) {}

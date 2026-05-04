@@ -19,7 +19,7 @@ public class RoomOfAnalyticsController {
   }
 
   @PostMapping(value = "/submit")
-  public ResponseEntity<String> submitAnalytics(@RequestBody SubmissionDto submissionDto) {
+  public ResponseEntity<Boolean> submitAnalytics(@RequestBody SubmissionDto submissionDto) {
     return roomOfAnalyticsService.submitAnalytics(submissionDto);
   }
 }

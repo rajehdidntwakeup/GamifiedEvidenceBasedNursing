@@ -3,7 +3,10 @@ package bswe.gamifiedevidencebasednursing.feature.roomofanalytics.service;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import bswe.gamifiedevidencebasednursing.domain.Answer;
 import bswe.gamifiedevidencebasednursing.domain.Mission;
@@ -44,41 +47,68 @@ public class RoomOfAnalyticsService {
 
 
   @Transactional
-  public ResponseEntity<String> submitAnalytics(SubmissionDto submissionDto) {
-    Optional<Room> roomOptional = roomRepository.findById(submissionDto.getRoomId());
-    if (roomOptional.isEmpty()) {
-      throw new IllegalArgumentException("Room not found");
-    }
-    Room room = roomOptional.get();
-    List<OpenQuestionAnswer> openQuestionAnswers = new ArrayList<>();
+  public ResponseEntity<Boolean> submitAnalytics(SubmissionDto submissionDto) {
+    Room room = roomRepository.findById(submissionDto.getRoomId())
+        .orElseThrow(() -> new IllegalArgumentException("Room not found"));
+
+    List<OpenQuestionAnswer> toSave = new ArrayList<>();
     List<AnswerDetailDto> answerDetails = new ArrayList<>();
-    for (OpenQuestionSubmissionDto openQuestionSubmissionDto : submissionDto.getOpenQuestions()) {
-      Optional<Question> questionOptional = questionRepository.findById(openQuestionSubmissionDto.getQuestionId());
-      if (questionOptional.isEmpty()) {
-        throw new IllegalArgumentException("Question not found");
+    List<OpenQuestionSubmissionDto> openQuestions = submissionDto.getOpenQuestions();
+
+    if (openQuestions != null && !openQuestions.isEmpty()) {
+      List<Long> questionIds = openQuestions.stream()
+          .map(OpenQuestionSubmissionDto::getQuestionId)
+          .toList();
+
+      Map<Long, Question> questions = questionRepository.findAllById(questionIds)
+          .stream()
+          .collect(Collectors.toMap(Question::getId, Function.identity()));
+
+      Map<Long, OpenQuestionAnswer> existingAnswers = openQuestionAnswerRepository
+          .findAllByRoomId(room.getId())
+          .stream()
+          .collect(Collectors.toMap(
+              oqa -> oqa.getQuestion().getId(),
+              Function.identity()
+          ));
+
+      for (OpenQuestionSubmissionDto dto : openQuestions) {
+        Question question = questions.get(dto.getQuestionId());
+        if (question == null) {
+          throw new IllegalArgumentException("Question not found");
+        }
+
+        OpenQuestionAnswer existing = existingAnswers.get(dto.getQuestionId());
+        if (existing != null) {
+          existing.setAnswerText(dto.getAnswer());
+          if (!existing.isApproved()) {
+            answerDetails.add(new AnswerDetailDto(
+                question.getId(),
+                question.getTitle(),
+                dto.getAnswer()
+            ));
+          }
+
+          toSave.add(existing);
+        } else {
+          OpenQuestionAnswer newAnswer = new OpenQuestionAnswer();
+          newAnswer.setRoom(room);
+          newAnswer.setQuestion(question);
+          newAnswer.setAnswerText(dto.getAnswer());
+          toSave.add(newAnswer);
+
+          answerDetails.add(new AnswerDetailDto(
+              question.getId(),
+              question.getTitle(),
+              dto.getAnswer()
+          ));
+        }
       }
-      Question question = questionOptional.get();
-      OpenQuestionAnswer openQuestionAnswer = new OpenQuestionAnswer();
-      openQuestionAnswer.setRoom(room);
-      openQuestionAnswer.setQuestion(question);
-      openQuestionAnswer.setAnswerText(openQuestionSubmissionDto.getAnswer());
-      openQuestionAnswers.add(openQuestionAnswer);
-      AnswerDetailDto answerDetailDto = new AnswerDetailDto(
-          question.getId(),
-          question.getTitle(),
-          openQuestionSubmissionDto.getAnswer()
-      );
-      answerDetails.add(answerDetailDto);
-    }
-    List<OpenQuestionAnswer> saved = openQuestionAnswerRepository.saveAll(openQuestionAnswers);
-    int progress = validateLevelOfEvidenceAnswer(submissionDto.getLevelofEvidenceQuestionId(),
-        submissionDto.getLevelofEvidencAnswer());
-    if (progress > 0) {
-      room.setProgress(room.getProgress() + progress);
-      roomRepository.save(room);
+
+      openQuestionAnswerRepository.saveAll(toSave);
     }
 
-    if (!saved.isEmpty()) {
+    if (!answerDetails.isEmpty()) {
       Mission mission = room.getTeam().getMission();
       AdminNotificationDto notification = new AdminNotificationDto(
           mission.getId(),
@@ -91,7 +121,12 @@ public class RoomOfAnalyticsService {
       analyticsNotificationService.notifyAdmin(notification);
     }
 
-    return ResponseEntity.ok("Analytics submitted successfully");
+    int progress = validateLevelOfEvidenceAnswer(submissionDto.getLevelofEvidenceQuestionId(),
+        submissionDto.getLevelofEvidencAnswer());
+
+    room.setProgress(80 - (answerDetails.size() * 20) + progress);
+    roomRepository.save(room);
+    return ResponseEntity.ok(progress > 0);
   }
 
   private int validateLevelOfEvidenceAnswer(long questionId, String levelOfEvidenceAnswer) {

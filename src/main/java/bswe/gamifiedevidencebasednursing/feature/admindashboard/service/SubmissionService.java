@@ -3,6 +3,7 @@ package bswe.gamifiedevidencebasednursing.feature.admindashboard.service;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import bswe.gamifiedevidencebasednursing.domain.Answer;
@@ -40,30 +41,41 @@ public class SubmissionService {
       throw new IllegalArgumentException("Room not found");
     }
     Room room = optionalRoom.get();
+    List<OpenQuestionAnswer> allOpenQuestionAnswers = openQuestionAnswerRepository.findAllByRoomId(room.getId());
     List<QuestionFeedbackResultDto> results = new ArrayList<>();
     for (QuestionFeedbackDto questionFeedbackDto : analyticsSubmissionFeedbackDto.getQuestions()) {
       if (questionFeedbackDto.getAnswer() == null) {
         throw new IllegalArgumentException("Answer cannot be null");
       }
+      OpenQuestionAnswer openQuestionAnswer = openQuestionAnswerRepository.findByRoomIdAndQuestionId(room.getId(), questionFeedbackDto.getQuestionId());
       if (questionFeedbackDto.isApproved()) {
-        room.setProgress(room.getProgress() + 20);
+        openQuestionAnswer.setApproved(true);
         results.add(new QuestionFeedbackResultDto(questionFeedbackDto.getQuestionId(), true, questionFeedbackDto.getAnswer()));
       } else {
-        OpenQuestionAnswer openQuestionAnswer = openQuestionAnswerRepository.findByRoomIdAndQuestionId(room.getId(), questionFeedbackDto.getQuestionId());
         if (openQuestionAnswer == null) {
           throw new IllegalArgumentException("Open question answer not found for room and question");
         }
+        openQuestionAnswer.setApproved(false);
         openQuestionAnswer.setAnswerText(null);
-        openQuestionAnswerRepository.save(openQuestionAnswer);
         results.add(new QuestionFeedbackResultDto(questionFeedbackDto.getQuestionId(), false, null));
       }
+      openQuestionAnswerRepository.save(openQuestionAnswer);
     }
+
+
+    if (!allOpenQuestionAnswers.isEmpty()) {
+      for (OpenQuestionAnswer openQuestionAnswer : allOpenQuestionAnswers) {
+        if (openQuestionAnswer.isApproved()) {
+          results.add(new QuestionFeedbackResultDto(openQuestionAnswer.getQuestion().getId(), openQuestionAnswer.isApproved(), openQuestionAnswer.getAnswerText()));
+        }
+      }
+    }
+
     roomRepository.save(room);
 
     AnalyticsFeedbackDto feedback = new AnalyticsFeedbackDto(
         room.getId(),
         room.getTeam().getMission().getName(),
-        room.getProgress(),
         Instant.now(),
         results
     );

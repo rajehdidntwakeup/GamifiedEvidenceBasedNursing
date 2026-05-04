@@ -766,12 +766,12 @@ paths:
                   answer: "Elevated blood pressure"
       responses:
         '200':
-          description: Analytics submitted successfully
+          description: Analytics submitted successfully, true if the levelEvidenceAnswer is correct
           content:
-            text/plain:
+            application/json:
               schema:
-                type: string
-              example: "Submission successful"
+                type: boolean
+              example: true
         '400':
           $ref: '#/components/responses/BadRequest'
 
@@ -1300,11 +1300,21 @@ components:
     AnalyticsFeedbackDto:
       type: object
       description: Real-time feedback sent to a team after admin reviews their analytics submission
+      required:
+        - roomId
+        - missionName
+        - progress
+        - feedbackAt
+        - questions
       properties:
         roomId:
           type: integer
           format: int64
           example: 3
+        missionName:
+          type: string
+          description: Name of the mission
+          example: "mission1"
         progress:
           type: integer
           example: 60
@@ -1320,6 +1330,9 @@ components:
     QuestionFeedbackResultDto:
       type: object
       description: Result for a single question after admin review
+      required:
+        - questionId
+        - approved
       properties:
         questionId:
           type: integer

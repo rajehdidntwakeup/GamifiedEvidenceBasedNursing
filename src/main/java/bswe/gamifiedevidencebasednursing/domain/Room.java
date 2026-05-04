@@ -81,6 +81,10 @@ public class Room {
     this.progress = progress;
   }
 
+  public void addProgress(int amount) {
+    this.progress = Math.min(100, this.progress + amount);
+  }
+
   public Instant getStartTime() {
     return startTime;
   }
