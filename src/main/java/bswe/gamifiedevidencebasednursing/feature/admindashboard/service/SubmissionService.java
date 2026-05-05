@@ -50,6 +50,7 @@ public class SubmissionService {
       OpenQuestionAnswer openQuestionAnswer = openQuestionAnswerRepository.findByRoomIdAndQuestionId(room.getId(), questionFeedbackDto.getQuestionId());
       if (questionFeedbackDto.isApproved()) {
         openQuestionAnswer.setApproved(true);
+        room.setProgress(room.getProgress() + 20);
         results.add(new QuestionFeedbackResultDto(questionFeedbackDto.getQuestionId(), true, questionFeedbackDto.getAnswer()));
       } else {
         if (openQuestionAnswer == null) {
@@ -75,6 +76,7 @@ public class SubmissionService {
 
     AnalyticsFeedbackDto feedback = new AnalyticsFeedbackDto(
         room.getId(),
+        room.getProgress(),
         room.getTeam().getMission().getName(),
         Instant.now(),
         results

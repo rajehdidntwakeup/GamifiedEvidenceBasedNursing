@@ -17,6 +17,8 @@ import bswe.gamifiedevidencebasednursing.feature.roomofanalytics.dto.request.Ope
 import bswe.gamifiedevidencebasednursing.feature.roomofanalytics.dto.request.SubmissionDto;
 import bswe.gamifiedevidencebasednursing.feature.roomofanalytics.dto.response.AdminNotificationDto;
 import bswe.gamifiedevidencebasednursing.feature.roomofanalytics.dto.response.AnswerDetailDto;
+import bswe.gamifiedevidencebasednursing.feature.roomofanalytics.dto.response.ResultDto;
+import bswe.gamifiedevidencebasednursing.feature.roomofanalytics.dto.response.SubmissionResponseDto;
 import bswe.gamifiedevidencebasednursing.repository.AnswerRepository;
 import bswe.gamifiedevidencebasednursing.repository.OpenQuestionAnswerRepository;
 import bswe.gamifiedevidencebasednursing.repository.QuestionRepository;
@@ -47,7 +49,7 @@ public class RoomOfAnalyticsService {
 
 
   @Transactional
-  public ResponseEntity<Boolean> submitAnalytics(SubmissionDto submissionDto) {
+  public ResponseEntity<SubmissionResponseDto> submitAnalytics(SubmissionDto submissionDto) {
     Room room = roomRepository.findById(submissionDto.getRoomId())
         .orElseThrow(() -> new IllegalArgumentException("Room not found"));
 
@@ -124,9 +126,20 @@ public class RoomOfAnalyticsService {
     int progress = validateLevelOfEvidenceAnswer(submissionDto.getLevelofEvidenceQuestionId(),
         submissionDto.getLevelofEvidencAnswer());
 
-    room.setProgress(80 - (answerDetails.size() * 20) + progress);
+    room.setProgress(room.getProgress() + progress);
     roomRepository.save(room);
-    return ResponseEntity.ok(progress > 0);
+    return ResponseEntity.ok(new SubmissionResponseDto(room.getProgress(), progress > 0));
+  }
+
+  public ResponseEntity<ResultDto> getResults(long roomId, long missionId) {
+    Optional<Room> room = roomRepository.findById(roomId);
+    if (room.isPresent()) {
+      Mission mission = room.get().getTeam().getMission();
+      if (mission.getId() == missionId) {
+        return ResponseEntity.ok(new ResultDto(room.get().getProgress(), room.get().getLocation().getKey()));
+      }
+    }
+    throw new IllegalArgumentException("Room not found");
   }
 
   private int validateLevelOfEvidenceAnswer(long questionId, String levelOfEvidenceAnswer) {
