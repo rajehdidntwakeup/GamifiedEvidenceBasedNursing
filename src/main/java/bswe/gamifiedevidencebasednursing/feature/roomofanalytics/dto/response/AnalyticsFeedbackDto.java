@@ -9,4 +9,13 @@ public record AnalyticsFeedbackDto(
     String missionName,
     Instant feedbackAt,
     List<QuestionFeedbackResultDto> questions
-) {}
+) {
+  public AnalyticsFeedbackDto {
+    questions = questions == null ? null : List.copyOf(questions);
+  }
+
+  @Override
+  public List<QuestionFeedbackResultDto> questions() {
+    return questions == null ? null : List.copyOf(questions);
+  }
+}

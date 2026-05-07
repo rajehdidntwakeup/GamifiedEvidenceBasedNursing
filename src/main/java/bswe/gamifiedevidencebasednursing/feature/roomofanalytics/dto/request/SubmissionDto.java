@@ -14,7 +14,7 @@ public class SubmissionDto {
 
   public SubmissionDto(long roomId, List<OpenQuestionSubmissionDto> openQuestions) {
     this.roomId = roomId;
-    this.openQuestions = openQuestions;
+    this.openQuestions = openQuestions == null ? null : List.copyOf(openQuestions);
   }
 
   public long getRoomId() {
@@ -26,12 +26,12 @@ public class SubmissionDto {
   }
 
   public List<OpenQuestionSubmissionDto> getOpenQuestions() {
-    return openQuestions;
+    return openQuestions == null ? null : List.copyOf(openQuestions);
   }
 
   public void setOpenQuestions(
       List<OpenQuestionSubmissionDto> openQuestions) {
-    this.openQuestions = openQuestions;
+    this.openQuestions = openQuestions == null ? null : List.copyOf(openQuestions);
   }
 
   public long getLevelofEvidenceQuestionId() {

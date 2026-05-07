@@ -3,10 +3,8 @@ package bswe.gamifiedevidencebasednursing.feature.admindashboard.service;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
-import bswe.gamifiedevidencebasednursing.domain.Answer;
 import bswe.gamifiedevidencebasednursing.domain.OpenQuestionAnswer;
 import bswe.gamifiedevidencebasednursing.domain.Room;
 import bswe.gamifiedevidencebasednursing.feature.admindashboard.dto.request.AnalyticsSubmissionFeedbackDto;

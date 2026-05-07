@@ -10,4 +10,13 @@ public record AdminNotificationDto(
     String roomName,
     Instant submittedAt,
     List<AnswerDetailDto> answers
-) {}
+) {
+  public AdminNotificationDto {
+    answers = answers == null ? null : List.copyOf(answers);
+  }
+
+  @Override
+  public List<AnswerDetailDto> answers() {
+    return answers == null ? null : List.copyOf(answers);
+  }
+}

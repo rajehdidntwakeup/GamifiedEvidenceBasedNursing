@@ -4,4 +4,4 @@ public record AnswerDetailDto(
     Long questionId,
     String questionText,
     String answerText
-) {}
+) { }
