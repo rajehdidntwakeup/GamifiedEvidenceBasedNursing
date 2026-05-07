@@ -145,7 +145,7 @@ public class RoomOfAnalyticsService {
   private int validateLevelOfEvidenceAnswer(long questionId, String levelOfEvidenceAnswer) {
     Answer answer = answerRepository.findCorrectAnswerByQuestionId(questionId);
     if (answer == null) {
-      throw new IllegalArgumentException("Answer not found");
+      return 0;
     }
     if (answer.getText().equalsIgnoreCase(levelOfEvidenceAnswer)) {
       return 20;
