@@ -301,9 +301,9 @@ INSERT INTO document_question (document_id, question_id) VALUES (9, 47);
 INSERT INTO question (id, title, location_id) VALUES (48, '1_1_Study_Title_And_Autor?', (SELECT id FROM location WHERE name = 'Room of Abstracts'));
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Schmerzmanagement in der postoperativen Pflege'), 48);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (225, 'Postoperative Paintreatment, Authors: Sakata, Okumura & Ogawa (2022)', true, 48);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (226, 'Postoperative Paintreatment, Authors: Sakata, Okumura & Ogawa (2023)', false, 48);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (227, 'Postoperative Paintreatment, Authors: Sakata, Okumura & Ogawa (2017)', false, 48);
+INSERT INTO answer (id, text, is_correct, question_id) VALUES (225, 'Postoperative Pain treatment, Authors: Sakata, Okumura & Ogawa (2022)', true, 48);
+INSERT INTO answer (id, text, is_correct, question_id) VALUES (226, 'Postoperative Pain treatment, Authors: Sakata, Okumura & Ogawa (2023)', false, 48);
+INSERT INTO answer (id, text, is_correct, question_id) VALUES (227, 'Postoperative Pain treatment, Authors: Sakata, Okumura & Ogawa (2017)', false, 48);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (228, 'Nursing Music Protocol and Postoperative Pain, Authors: Poulsen & Coto (2017)', false, 48);
 INSERT INTO answer (id, text, is_correct, question_id) VALUES (229, 'Documentation-for Assessing Pain in Postoperative Pain Management Pre- and Post-intervention, Authors: Huong & Stafseth (2022)', false, 48);
 

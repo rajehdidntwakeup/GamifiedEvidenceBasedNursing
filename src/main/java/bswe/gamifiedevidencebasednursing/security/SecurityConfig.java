@@ -71,6 +71,7 @@ public class SecurityConfig {
             .requestMatchers(HttpMethod.POST, "/api/admin/**").hasRole("ADMIN")
             .requestMatchers(HttpMethod.PUT, "/api/admin/**").hasRole("ADMIN")
             .requestMatchers(HttpMethod.DELETE, "/api/admin/**").hasRole("ADMIN")
+            .requestMatchers("/ws/**").permitAll()
             .anyRequest().authenticated()
         )
         .cors(Customizer.withDefaults())

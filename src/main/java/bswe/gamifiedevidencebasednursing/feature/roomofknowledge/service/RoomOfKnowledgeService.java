@@ -36,7 +36,7 @@ public class RoomOfKnowledgeService {
       for (Answer answer : question.get().getAnswers()) {
         if (answer.getId() == verifyAnswerDto.getAnswerId() && answer.isCorrect()) {
           if (room.get().getProgress() < 100) {
-            room.get().setProgress(room.get().getProgress() + 10);
+            room.get().addProgress(10);
             roomRepository.save(room.get());
             return new ResponseEntity<>(true, HttpStatus.OK);
           } else {
@@ -58,7 +58,7 @@ public class RoomOfKnowledgeService {
       Optional<Room> room = roomRepository.findById(roomId);
       if (room.isPresent()) {
         if (room.get().getProgress() < 100) {
-          room.get().setProgress(room.get().getProgress() + 10);
+          room.get().addProgress(10);
           roomRepository.save(room.get());
         }
       } else {

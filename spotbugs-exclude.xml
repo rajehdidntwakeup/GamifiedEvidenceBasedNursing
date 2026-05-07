@@ -5,4 +5,9 @@
         <Package name="bswe.gamifiedevidencebasednursing.domain"/>
         <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2"/>
     </Match>
+    <!-- SimpMessagingTemplate is a Spring bean and its internal representation is not easily copyable -->
+    <Match>
+        <Class name="bswe.gamifiedevidencebasednursing.feature.roomofanalytics.service.AnalyticsNotificationService"/>
+        <Bug pattern="EI_EXPOSE_REP2"/>
+    </Match>
 </FindBugsFilter>

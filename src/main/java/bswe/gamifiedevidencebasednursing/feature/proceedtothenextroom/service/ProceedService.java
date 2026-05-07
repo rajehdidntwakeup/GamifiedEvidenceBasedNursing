@@ -73,6 +73,8 @@ public class ProceedService {
       Team currentTeam = team.get();
       Location nextLocation = location.get();
       Room nextRoom = new Room();
+      nextRoom.setStartTime(Instant.now());
+      nextRoom.setProgress(0);
       nextRoom.setLocation(nextLocation);
       nextLocation.getRooms().add(nextRoom);
 

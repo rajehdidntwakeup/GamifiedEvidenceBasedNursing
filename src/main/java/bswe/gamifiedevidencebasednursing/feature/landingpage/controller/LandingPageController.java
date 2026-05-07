@@ -31,4 +31,9 @@ public class LandingPageController {
 
 
 
+  @GetMapping("/session-id")
+  public ResponseEntity<Long> getGameSessionId() {
+    return landingPageService.getGameSessionId();
+  }
+
 }

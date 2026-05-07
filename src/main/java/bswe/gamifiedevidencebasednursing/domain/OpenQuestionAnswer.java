@@ -18,6 +18,8 @@ public class OpenQuestionAnswer {
   @Lob
   private String answerText;
 
+  private boolean isApproved;
+
   @ManyToOne
   @JoinColumn(name = "room_id")
   @NotNull
@@ -37,6 +39,22 @@ public class OpenQuestionAnswer {
     this.answerText = answerText;
     this.room = room;
     this.question = question;
+  }
+
+  public OpenQuestionAnswer(long id, String answerText, boolean isApproved, Room room, Question question) {
+    this.id = id;
+    this.answerText = answerText;
+    this.isApproved = isApproved;
+    this.room = room;
+    this.question = question;
+  }
+
+  public boolean isApproved() {
+    return isApproved;
+  }
+
+  public void setApproved(boolean isApproved) {
+    this.isApproved = isApproved;
   }
 
   public long getId() {
