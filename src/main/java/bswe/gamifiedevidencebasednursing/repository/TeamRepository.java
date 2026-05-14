@@ -29,4 +29,7 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
   )
   List<MissionPasswordDto> findAllMissionPasswordsByGameId(long gameId);
 
+  @Query("SELECT t FROM Team t LEFT JOIN FETCH t.roomList WHERE t.game.id = :gameId")
+  List<Team> findByGameIdWithRooms(Long gameId);
+
 }
