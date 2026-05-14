@@ -1,7 +1,7 @@
-package bswe.gamifiedevidencebasednursing.feature.admindashboard.controller;
+package bswe.gamifiedevidencebasednursing.feature.adminfeedbacksubmission.controller;
 
-import bswe.gamifiedevidencebasednursing.feature.admindashboard.dto.request.AnalyticsSubmissionFeedbackDto;
-import bswe.gamifiedevidencebasednursing.feature.admindashboard.service.SubmissionService;
+import bswe.gamifiedevidencebasednursing.feature.adminfeedbacksubmission.dto.request.AnalyticsSubmissionFeedbackDto;
+import bswe.gamifiedevidencebasednursing.feature.adminfeedbacksubmission.service.SubmissionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

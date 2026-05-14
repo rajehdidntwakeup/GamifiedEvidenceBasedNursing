@@ -1,4 +1,4 @@
-package bswe.gamifiedevidencebasednursing.feature.admindashboard.dto.request;
+package bswe.gamifiedevidencebasednursing.feature.adminfeedbacksubmission.dto.request;
 
 import java.util.List;
 

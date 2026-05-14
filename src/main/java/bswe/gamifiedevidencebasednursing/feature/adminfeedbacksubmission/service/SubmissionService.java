@@ -1,4 +1,4 @@
-package bswe.gamifiedevidencebasednursing.feature.admindashboard.service;
+package bswe.gamifiedevidencebasednursing.feature.adminfeedbacksubmission.service;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -7,8 +7,8 @@ import java.util.Optional;
 
 import bswe.gamifiedevidencebasednursing.domain.OpenQuestionAnswer;
 import bswe.gamifiedevidencebasednursing.domain.Room;
-import bswe.gamifiedevidencebasednursing.feature.admindashboard.dto.request.AnalyticsSubmissionFeedbackDto;
-import bswe.gamifiedevidencebasednursing.feature.admindashboard.dto.request.QuestionFeedbackDto;
+import bswe.gamifiedevidencebasednursing.feature.adminfeedbacksubmission.dto.request.AnalyticsSubmissionFeedbackDto;
+import bswe.gamifiedevidencebasednursing.feature.adminfeedbacksubmission.dto.request.QuestionFeedbackDto;
 import bswe.gamifiedevidencebasednursing.feature.roomofanalytics.dto.response.AnalyticsFeedbackDto;
 import bswe.gamifiedevidencebasednursing.feature.roomofanalytics.dto.response.QuestionFeedbackResultDto;
 import bswe.gamifiedevidencebasednursing.feature.roomofanalytics.service.AnalyticsNotificationService;
