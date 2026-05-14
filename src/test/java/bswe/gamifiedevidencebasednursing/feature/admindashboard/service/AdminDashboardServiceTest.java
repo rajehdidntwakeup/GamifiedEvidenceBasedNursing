@@ -4,6 +4,7 @@ import bswe.gamifiedevidencebasednursing.domain.Game;
 import bswe.gamifiedevidencebasednursing.domain.Room;
 import bswe.gamifiedevidencebasednursing.domain.Team;
 import bswe.gamifiedevidencebasednursing.repository.GameRepository;
+import bswe.gamifiedevidencebasednursing.repository.RoomRepository;
 import bswe.gamifiedevidencebasednursing.repository.TeamRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,6 +26,8 @@ class AdminDashboardServiceTest {
     private GameRepository gameRepository;
     @Mock
     private TeamRepository teamRepository;
+    @Mock
+    private RoomRepository roomRepository;
 
     @InjectMocks
     private AdminDashboardService adminDashboardService;

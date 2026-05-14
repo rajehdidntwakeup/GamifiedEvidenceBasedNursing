@@ -23,7 +23,7 @@ public class AdminDashboardController {
     return adminDashboardService.getSessionPasswords();
   }
 
-  @PostMapping("close-game-session")
+  @PostMapping("/close-game-session")
   public ResponseEntity<Void> closeGameSession() {
    return adminDashboardService.closeGameSession();
   }
