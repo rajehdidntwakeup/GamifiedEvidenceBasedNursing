@@ -146,7 +146,7 @@ public ResponseEntity<String> analyticsSubmissionFeedback(
 > The existing codebase does not use a separate mapper layer for analytics DTOs (`RoomOfAnalyticsService` builds `AdminNotificationDto` inline). Following the same style keeps the change minimal and consistent.
 
 **Import cleanup:**
-- `AnalyticsSubmissionFeedbackDto` and `QuestionFeedbackDto` come from `bswe.gamifiedevidencebasednursing.feature.admindashboard.dto.request`.
+- `AnalyticsSubmissionFeedbackDto` and `QuestionFeedbackDto` come from `bswe.gamifiedevidencebasednursing.feature.adminfeedbacksubmission.dto.request`.
 - Remove the unused `import bswe.gamifiedevidencebasednursing.domain.Answer;` from `SubmissionService.java`.
 
 ---
