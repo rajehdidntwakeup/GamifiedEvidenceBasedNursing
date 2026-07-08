@@ -1,4 +1,4 @@
-package bswe.gamifiedevidencebasednursing.feature.roomofanalytics.service;
+package bswe.gamifiedevidencebasednursing.feature.roomofsciencebattle.service;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -13,12 +13,12 @@ import bswe.gamifiedevidencebasednursing.domain.Mission;
 import bswe.gamifiedevidencebasednursing.domain.OpenQuestionAnswer;
 import bswe.gamifiedevidencebasednursing.domain.Question;
 import bswe.gamifiedevidencebasednursing.domain.Room;
-import bswe.gamifiedevidencebasednursing.feature.roomofanalytics.dto.request.OpenQuestionSubmissionDto;
-import bswe.gamifiedevidencebasednursing.feature.roomofanalytics.dto.request.SubmissionDto;
-import bswe.gamifiedevidencebasednursing.feature.roomofanalytics.dto.response.AdminNotificationDto;
-import bswe.gamifiedevidencebasednursing.feature.roomofanalytics.dto.response.AnswerDetailDto;
-import bswe.gamifiedevidencebasednursing.feature.roomofanalytics.dto.response.ResultDto;
-import bswe.gamifiedevidencebasednursing.feature.roomofanalytics.dto.response.SubmissionResponseDto;
+import bswe.gamifiedevidencebasednursing.feature.roomofsciencebattle.dto.request.OpenQuestionSubmissionDto;
+import bswe.gamifiedevidencebasednursing.feature.roomofsciencebattle.dto.request.SubmissionDto;
+import bswe.gamifiedevidencebasednursing.feature.roomofsciencebattle.dto.response.AdminNotificationDto;
+import bswe.gamifiedevidencebasednursing.feature.roomofsciencebattle.dto.response.AnswerDetailDto;
+import bswe.gamifiedevidencebasednursing.feature.roomofsciencebattle.dto.response.ResultDto;
+import bswe.gamifiedevidencebasednursing.feature.roomofsciencebattle.dto.response.SubmissionResponseDto;
 import bswe.gamifiedevidencebasednursing.repository.AnswerRepository;
 import bswe.gamifiedevidencebasednursing.repository.OpenQuestionAnswerRepository;
 import bswe.gamifiedevidencebasednursing.repository.QuestionRepository;
@@ -28,28 +28,27 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class RoomOfAnalyticsService {
+public class RoomOfScienceBattleService {
 
   private final RoomRepository roomRepository;
   private final QuestionRepository questionRepository;
   private final OpenQuestionAnswerRepository openQuestionAnswerRepository;
-  private final AnalyticsNotificationService analyticsNotificationService;
+  private final ScienceBattleNotificationService  scienceBattleNotificationService;
   private final AnswerRepository answerRepository;
 
-  public RoomOfAnalyticsService(RoomRepository roomRepository, QuestionRepository questionRepository,
-                                OpenQuestionAnswerRepository openQuestionAnswerRepository,
-                                AnalyticsNotificationService analyticsNotificationService,
-                                AnswerRepository answerRepository) {
+  public RoomOfScienceBattleService(RoomRepository roomRepository, QuestionRepository questionRepository,
+                                    OpenQuestionAnswerRepository openQuestionAnswerRepository,
+                                    ScienceBattleNotificationService scienceBattleNotificationService,
+                                    AnswerRepository answerRepository) {
     this.roomRepository = roomRepository;
     this.questionRepository = questionRepository;
     this.openQuestionAnswerRepository = openQuestionAnswerRepository;
-    this.analyticsNotificationService = analyticsNotificationService;
+    this.scienceBattleNotificationService = scienceBattleNotificationService;
     this.answerRepository = answerRepository;
   }
 
-
   @Transactional
-  public ResponseEntity<SubmissionResponseDto> submitAnalytics(SubmissionDto submissionDto) {
+  public ResponseEntity<SubmissionResponseDto> submitScienceBattleEvidence(SubmissionDto submissionDto) {
     Room room = roomRepository.findById(submissionDto.getRoomId())
         .orElseThrow(() -> new IllegalArgumentException("Room not found"));
 
@@ -62,34 +61,30 @@ public class RoomOfAnalyticsService {
           .map(OpenQuestionSubmissionDto::getQuestionId)
           .toList();
 
-      Map<Long, Question> questions = questionRepository.findAllById(questionIds)
-          .stream()
+      Map<Long, Question> questionMap = questionRepository
+          .findAllById(questionIds).stream()
           .collect(Collectors.toMap(Question::getId, Function.identity()));
 
       Map<Long, OpenQuestionAnswer> existingAnswers = openQuestionAnswerRepository
           .findAllByRoomId(room.getId())
           .stream()
-          .collect(Collectors.toMap(
-              oqa -> oqa.getQuestion().getId(),
-              Function.identity()
-          ));
+          .collect(Collectors.toMap(OpenQuestionAnswer::getId, Function.identity()));
 
       for (OpenQuestionSubmissionDto dto : openQuestions) {
-        Question question = questions.get((Long) dto.getQuestionId());
+        Question question = questionMap.get((Long) dto.getQuestionId());
         if (question == null) throw new IllegalArgumentException("Question not found");
 
-        OpenQuestionAnswer existing = existingAnswers.get((Long) dto.getQuestionId());
-        if (existing != null) {
-          existing.setAnswerText(dto.getAnswer());
-          if (!existing.isApproved()) {
+        OpenQuestionAnswer existingAnswer = existingAnswers.get((Long) dto.getQuestionId());
+        if (existingAnswer != null) {
+          existingAnswer.setAnswerText(dto.getAnswer());
+          if (!existingAnswer.isApproved()) {
             answerDetails.add(new AnswerDetailDto(
                 question.getId(),
                 question.getTitle(),
                 dto.getAnswer()
             ));
           }
-
-          toSave.add(existing);
+          toSave.add(existingAnswer);
         } else {
           OpenQuestionAnswer newAnswer = new OpenQuestionAnswer();
           newAnswer.setRoom(room);
@@ -104,13 +99,12 @@ public class RoomOfAnalyticsService {
           ));
         }
       }
-
       openQuestionAnswerRepository.saveAll(toSave);
     }
 
     if (!answerDetails.isEmpty()) {
       Mission mission = room.getTeam().getMission();
-      AdminNotificationDto notification = new AdminNotificationDto(
+      AdminNotificationDto notificationDto = new AdminNotificationDto(
           mission.getId(),
           mission.getName(),
           room.getId(),
@@ -118,7 +112,7 @@ public class RoomOfAnalyticsService {
           Instant.now(),
           answerDetails
       );
-      analyticsNotificationService.notifyAdmin(notification);
+      scienceBattleNotificationService.notifyAdmin(notificationDto);
     }
 
     int progress = validateLevelOfEvidenceAnswer(submissionDto.getLevelofEvidenceQuestionId(),
@@ -128,7 +122,7 @@ public class RoomOfAnalyticsService {
     roomRepository.save(room);
     return ResponseEntity.ok(new SubmissionResponseDto(room.getProgress(), progress > 0));
   }
-
+  
   public ResponseEntity<ResultDto> getResults(long roomId, long missionId) {
     Optional<Room> room = roomRepository.findById(roomId);
     if (room.isPresent()) {

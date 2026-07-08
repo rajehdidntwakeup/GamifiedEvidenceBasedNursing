@@ -83,4 +83,6 @@ public class SubmissionService {
 
     return ResponseEntity.ok("Feedback submitted successfully");
   }
+
+  public void sciencebattleSubmissionFeedback(long roomId, long missionId) {}
 }

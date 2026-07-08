@@ -4,7 +4,7 @@ import java.util.List;
 
 public class AnalyticsSubmissionFeedbackDto {
   private long roomId;
- List<QuestionFeedbackDto> questions;
+  private List<QuestionFeedbackDto> questions;
 
  public AnalyticsSubmissionFeedbackDto() {
  }

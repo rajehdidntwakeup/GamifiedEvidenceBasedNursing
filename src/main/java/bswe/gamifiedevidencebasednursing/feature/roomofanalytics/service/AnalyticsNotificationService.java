@@ -2,6 +2,8 @@ package bswe.gamifiedevidencebasednursing.feature.roomofanalytics.service;
 
 import bswe.gamifiedevidencebasednursing.feature.roomofanalytics.dto.response.AdminNotificationDto;
 import bswe.gamifiedevidencebasednursing.feature.roomofanalytics.dto.response.AnalyticsFeedbackDto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Service;
 public class AnalyticsNotificationService {
 
   private final SimpMessagingTemplate messagingTemplate;
+  public static final Logger logger = LoggerFactory.getLogger(AnalyticsNotificationService.class);
 
   public AnalyticsNotificationService(SimpMessagingTemplate messagingTemplate) {
     this.messagingTemplate = messagingTemplate;
@@ -19,7 +22,7 @@ public class AnalyticsNotificationService {
   }
 
   public void notifyTeam(AnalyticsFeedbackDto feedback) {
-    System.out.println("Sending feedback notification for mission: " + feedback.missionName());
+    logger.info("Sending feedback notification for mission: {}", feedback.missionName());
     messagingTemplate.convertAndSend("/topic/mission/analytics/" + feedback.missionName() + "/feedback", feedback);
   }
 }

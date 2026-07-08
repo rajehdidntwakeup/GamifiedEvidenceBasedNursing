@@ -12,6 +12,19 @@ INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Wundversorgung bei Dekubitus'), 116);
 INSERT INTO document_question (document_id, question_id) VALUES (16, 116);
 
+INSERT INTO question (id, title, location_id)
+VALUES (146, 'Study Title',
+        (SELECT id FROM location WHERE name = 'Room of Science Battle'));
+
+INSERT INTO mission_question (mission_id, question_id)
+VALUES ((SELECT id FROM mission WHERE name = 'Wundversorgung bei Dekubitus'), 146);
+
+INSERT INTO question (id, title, location_id)
+VALUES (147, 'Link to Study',
+        (SELECT id FROM location WHERE name = 'Room of Science Battle'));
+
+INSERT INTO mission_question (mission_id, question_id)
+VALUES ((SELECT id FROM mission WHERE name = 'Wundversorgung bei Dekubitus'), 147);
 
 INSERT INTO question (id, title, location_id)
 VALUES (117, 'Level of Evidence - Study A',
@@ -34,13 +47,6 @@ VALUES (118, 'Level of Evidence - Study B',
 
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Wundversorgung bei Dekubitus'), 118);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (485, 'Level III — Controlled Trials (no randomization)', true, 118);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (486, 'Level I — Systematic Reviews / Meta-analyses', false, 118);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (487, 'Level II — Randomized Controlled Trials', false, 118);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (488, 'Level IV — Case-Control / Cohort Studies', false, 118);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (489, 'Level V — Systematic Reviews of Descriptive Studies', false, 118);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (490, 'Level VI — Single Descriptive / Qualitative Study', false, 118);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (491, 'Level VII — Expert Opinion', false, 118);
 
 
 INSERT INTO question (id, title, location_id)
@@ -79,18 +85,33 @@ INSERT INTO document_question (document_id, question_id) VALUES (17, 122);
 
 
 INSERT INTO question (id, title, location_id)
+VALUES (148, 'Study Title',
+        (SELECT id FROM location WHERE name = 'Room of Science Battle'));
+
+INSERT INTO mission_question (mission_id, question_id)
+VALUES ((SELECT id FROM mission WHERE name = 'Sturzprävention in der Geriatrie'), 148);
+
+INSERT INTO question (id, title, location_id)
+VALUES (149, 'Link to Study',
+        (SELECT id FROM location WHERE name = 'Room of Science Battle'));
+
+INSERT INTO mission_question (mission_id, question_id)
+VALUES ((SELECT id FROM mission WHERE name = 'Sturzprävention in der Geriatrie'), 149);
+
+INSERT INTO question (id, title, location_id)
 VALUES (123, 'Level of Evidence - Study A',
         (SELECT id FROM location WHERE name = 'Room of Science Battle'));
 
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Sturzprävention in der Geriatrie'), 123);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (494, 'Level I — Systematic Reviews / Meta-analyses', true, 123);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (495, 'Level II — Randomized Controlled Trials', false, 123);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (496, 'Level III — Controlled Trials (no randomization)', false, 123);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (497, 'Level IV — Case-Control / Cohort Studies', false, 123);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (498, 'Level V — Systematic Reviews of Descriptive Studies', false, 123);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (499, 'Level VI — Single Descriptive / Qualitative Study', false, 123);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (500, 'Level VII — Expert Opinion', false, 123);
+INSERT INTO answer (id, text, is_correct, question_id) VALUES (485, 'Level III — Controlled Trials (no randomization)', false, 123);
+INSERT INTO answer (id, text, is_correct, question_id) VALUES (486, 'Level I — Systematic Reviews / Meta-analyses', true, 123);
+INSERT INTO answer (id, text, is_correct, question_id) VALUES (487, 'Level II — Randomized Controlled Trials', false, 123);
+INSERT INTO answer (id, text, is_correct, question_id) VALUES (488, 'Level IV — Case-Control / Cohort Studies', false, 123);
+INSERT INTO answer (id, text, is_correct, question_id) VALUES (489, 'Level V — Systematic Reviews of Descriptive Studies', false, 123);
+INSERT INTO answer (id, text, is_correct, question_id) VALUES (490, 'Level VI — Single Descriptive / Qualitative Study', false, 123);
+INSERT INTO answer (id, text, is_correct, question_id) VALUES (491, 'Level VII — Expert Opinion', false, 123);
+
 
 
 INSERT INTO question (id, title, location_id)
@@ -99,13 +120,6 @@ VALUES (124, 'Level of Evidence - Study B',
 
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Sturzprävention in der Geriatrie'), 124);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (501, 'Level I — Systematic Reviews / Meta-analyses', false, 124);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (502, 'Level II — Randomized Controlled Trials', true, 124);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (503, 'Level III — Controlled Trials (no randomization)', false, 124);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (504, 'Level IV — Case-Control / Cohort Studies', false, 124);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (505, 'Level V — Systematic Reviews of Descriptive Studies', false, 124);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (506, 'Level VI — Single Descriptive / Qualitative Study', false, 124);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (507, 'Level VII — Expert Opinion', false, 124);
 
 
 INSERT INTO question (id, title, location_id)
@@ -144,18 +158,34 @@ INSERT INTO document_question (document_id, question_id) VALUES (18, 128);
 
 
 INSERT INTO question (id, title, location_id)
+VALUES (150, 'Study Title',
+        (SELECT id FROM location WHERE name = 'Room of Science Battle'));
+
+INSERT INTO mission_question (mission_id, question_id)
+VALUES ((SELECT id FROM mission WHERE name = 'Schmerzmanagement in der postoperativen Pflege'), 150);
+
+INSERT INTO question (id, title, location_id)
+VALUES (151, 'Link to Study',
+        (SELECT id FROM location WHERE name = 'Room of Science Battle'));
+
+INSERT INTO mission_question (mission_id, question_id)
+VALUES ((SELECT id FROM mission WHERE name = 'Schmerzmanagement in der postoperativen Pflege'), 151);
+
+
+
+INSERT INTO question (id, title, location_id)
 VALUES (129, 'Level of Evidence - Study A',
         (SELECT id FROM location WHERE name = 'Room of Science Battle'));
 
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Schmerzmanagement in der postoperativen Pflege'), 129);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (510, 'Level III — Controlled Trials (no randomization)', false, 129);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (511, 'Level I — Systematic Reviews / Meta-analyses', false, 129);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (512, 'Level II — Randomized Controlled Trials', false, 129);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (513, 'Level IV — Case-Control / Cohort Studies', true, 129);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (514, 'Level V — Systematic Reviews of Descriptive Studies', false, 129);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (515, 'Level VI — Single Descriptive / Qualitative Study', false, 129);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (516, 'Level VII — Expert Opinion', false, 129);
+INSERT INTO answer (id, text, is_correct, question_id) VALUES (501, 'Level I — Systematic Reviews / Meta-analyses', false, 129);
+INSERT INTO answer (id, text, is_correct, question_id) VALUES (502, 'Level II — Randomized Controlled Trials', false, 129);
+INSERT INTO answer (id, text, is_correct, question_id) VALUES (503, 'Level III — Controlled Trials (no randomization)', true, 129);
+INSERT INTO answer (id, text, is_correct, question_id) VALUES (504, 'Level IV — Case-Control / Cohort Studies', false, 129);
+INSERT INTO answer (id, text, is_correct, question_id) VALUES (505, 'Level V — Systematic Reviews of Descriptive Studies', false, 129);
+INSERT INTO answer (id, text, is_correct, question_id) VALUES (506, 'Level VI — Single Descriptive / Qualitative Study', false, 129);
+INSERT INTO answer (id, text, is_correct, question_id) VALUES (507, 'Level VII — Expert Opinion', false, 129);
 
 
 INSERT INTO question (id, title, location_id)
@@ -164,13 +194,6 @@ VALUES (130, 'Level of Evidence - Study B',
 
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Schmerzmanagement in der postoperativen Pflege'), 130);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (517, 'Level III — Controlled Trials (no randomization)', true, 130);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (518, 'Level I — Systematic Reviews / Meta-analyses', false, 130);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (519, 'Level II — Randomized Controlled Trials', false, 130);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (520, 'Level IV — Case-Control / Cohort Studies', false, 130);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (521, 'Level V — Systematic Reviews of Descriptive Studies', false, 130);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (522, 'Level VI — Single Descriptive / Qualitative Study', false, 130);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (523, 'Level VII — Expert Opinion', false, 130);
 
 
 INSERT INTO question (id, title, location_id)
@@ -209,18 +232,32 @@ INSERT INTO document_question (document_id, question_id) VALUES (19, 134);
 
 
 INSERT INTO question (id, title, location_id)
+VALUES (152, 'Study Title',
+        (SELECT id FROM location WHERE name = 'Room of Science Battle'));
+
+INSERT INTO mission_question (mission_id, question_id)
+VALUES ((SELECT id FROM mission WHERE name = 'Ernährungsinterventionen bei Mangelernährung'), 152);
+
+INSERT INTO question (id, title, location_id)
+VALUES (153, 'Link to Study',
+        (SELECT id FROM location WHERE name = 'Room of Science Battle'));
+
+INSERT INTO mission_question (mission_id, question_id)
+VALUES ((SELECT id FROM mission WHERE name = 'Ernährungsinterventionen bei Mangelernährung'), 153);
+
+INSERT INTO question (id, title, location_id)
 VALUES (135, 'Level of Evidence - Study A',
         (SELECT id FROM location WHERE name = 'Room of Science Battle'));
 
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Ernährungsinterventionen bei Mangelernährung'), 135);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (526, 'Level I — Systematic Reviews / Meta-analyses', true, 135);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (527, 'Level II — Randomized Controlled Trials', false, 135);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (528, 'Level III — Controlled Trials (no randomization)', false, 135);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (529, 'Level IV — Case-Control / Cohort Studies', false, 135);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (530, 'Level V — Systematic Reviews of Descriptive Studies', false, 135);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (531, 'Level VI — Single Descriptive / Qualitative Study', false, 135);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (532, 'Level VII — Expert Opinion', false, 135);
+INSERT INTO answer (id, text, is_correct, question_id) VALUES (517, 'Level III — Controlled Trials (no randomization)', false, 135);
+INSERT INTO answer (id, text, is_correct, question_id) VALUES (518, 'Level I — Systematic Reviews / Meta-analyses', false, 135);
+INSERT INTO answer (id, text, is_correct, question_id) VALUES (519, 'Level II — Randomized Controlled Trials', true, 135);
+INSERT INTO answer (id, text, is_correct, question_id) VALUES (520, 'Level IV — Case-Control / Cohort Studies', false, 135);
+INSERT INTO answer (id, text, is_correct, question_id) VALUES (521, 'Level V — Systematic Reviews of Descriptive Studies', false, 135);
+INSERT INTO answer (id, text, is_correct, question_id) VALUES (522, 'Level VI — Single Descriptive / Qualitative Study', false, 135);
+INSERT INTO answer (id, text, is_correct, question_id) VALUES (523, 'Level VII — Expert Opinion', false, 135);
 
 
 INSERT INTO question (id, title, location_id)
@@ -229,13 +266,6 @@ VALUES (136, 'Level of Evidence - Study B',
 
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Ernährungsinterventionen bei Mangelernährung'), 136);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (533, 'Level I — Systematic Reviews / Meta-analyses', false, 136);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (534, 'Level II — Randomized Controlled Trials', true, 136);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (535, 'Level III — Controlled Trials (no randomization)', false, 136);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (536, 'Level IV — Case-Control / Cohort Studies', false, 136);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (537, 'Level V — Systematic Reviews of Descriptive Studies', false, 136);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (538, 'Level VI — Single Descriptive / Qualitative Study', false, 136);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (539, 'Level VII — Expert Opinion', false, 136);
 
 
 INSERT INTO question (id, title, location_id)
@@ -272,6 +302,19 @@ INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Vermeidung von Katheter-assoziierten Harnwegsinfektionen'), 140);
 INSERT INTO document_question (document_id, question_id) VALUES (20, 140);
 
+INSERT INTO question (id, title, location_id)
+VALUES (154, 'Study Title',
+        (SELECT id FROM location WHERE name = 'Room of Science Battle'));
+
+INSERT INTO mission_question (mission_id, question_id)
+VALUES ((SELECT id FROM mission WHERE name = 'Vermeidung von Katheter-assoziierten Harnwegsinfektionen'), 154);
+
+INSERT INTO question (id, title, location_id)
+VALUES (155, 'Link to Study',
+        (SELECT id FROM location WHERE name = 'Room of Science Battle'));
+
+INSERT INTO mission_question (mission_id, question_id)
+VALUES ((SELECT id FROM mission WHERE name = 'Vermeidung von Katheter-assoziierten Harnwegsinfektionen'), 155);
 
 INSERT INTO question (id, title, location_id)
 VALUES (141, 'Level of Evidence - Study A',
@@ -279,13 +322,13 @@ VALUES (141, 'Level of Evidence - Study A',
 
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Vermeidung von Katheter-assoziierten Harnwegsinfektionen'), 141);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (542, 'Level III — Controlled Trials (no randomization)', true, 141);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (543, 'Level I — Systematic Reviews / Meta-analyses', false, 141);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (544, 'Level II — Randomized Controlled Trials', false, 141);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (545, 'Level IV — Case-Control / Cohort Studies', false, 141);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (546, 'Level V — Systematic Reviews of Descriptive Studies', false, 141);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (547, 'Level VI — Single Descriptive / Qualitative Study', false, 141);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (548, 'Level VII — Expert Opinion', false, 141);
+INSERT INTO answer (id, text, is_correct, question_id) VALUES (533, 'Level I — Systematic Reviews / Meta-analyses', false, 141);
+INSERT INTO answer (id, text, is_correct, question_id) VALUES (534, 'Level II — Randomized Controlled Trials', true, 141);
+INSERT INTO answer (id, text, is_correct, question_id) VALUES (535, 'Level III — Controlled Trials (no randomization)', false, 141);
+INSERT INTO answer (id, text, is_correct, question_id) VALUES (536, 'Level IV — Case-Control / Cohort Studies', false, 141);
+INSERT INTO answer (id, text, is_correct, question_id) VALUES (537, 'Level V — Systematic Reviews of Descriptive Studies', false, 141);
+INSERT INTO answer (id, text, is_correct, question_id) VALUES (538, 'Level VI — Single Descriptive / Qualitative Study', false, 141);
+INSERT INTO answer (id, text, is_correct, question_id) VALUES (539, 'Level VII — Expert Opinion', false, 141);
 
 
 INSERT INTO question (id, title, location_id)
@@ -294,13 +337,6 @@ VALUES (142, 'Level of Evidence - Study B',
 
 INSERT INTO mission_question (mission_id, question_id)
 VALUES ((SELECT id FROM mission WHERE name = 'Vermeidung von Katheter-assoziierten Harnwegsinfektionen'), 142);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (549, 'Level I — Systematic Reviews / Meta-analyses', false, 142);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (550, 'Level II — Randomized Controlled Trials', true, 142);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (551, 'Level III — Controlled Trials (no randomization)', false, 142);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (552, 'Level IV — Case-Control / Cohort Studies', false, 142);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (553, 'Level V — Systematic Reviews of Descriptive Studies', false, 142);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (554, 'Level VI — Single Descriptive / Qualitative Study', false, 142);
-INSERT INTO answer (id, text, is_correct, question_id) VALUES (555, 'Level VII — Expert Opinion', false, 142);
 
 
 INSERT INTO question (id, title, location_id)
