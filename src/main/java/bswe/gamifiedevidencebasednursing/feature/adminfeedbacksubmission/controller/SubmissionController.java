@@ -1,6 +1,6 @@
 package bswe.gamifiedevidencebasednursing.feature.adminfeedbacksubmission.controller;
 
-import bswe.gamifiedevidencebasednursing.feature.adminfeedbacksubmission.dto.request.AnalyticsSubmissionFeedbackDto;
+import bswe.gamifiedevidencebasednursing.feature.adminfeedbacksubmission.dto.request.SubmissionFeedbackDto;
 import bswe.gamifiedevidencebasednursing.feature.adminfeedbacksubmission.service.SubmissionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,8 +20,8 @@ public class SubmissionController {
 
   @PostMapping(value = "/analytics")
   public ResponseEntity<String> analyticsSubmissionFeedback(@RequestBody
-                                                            AnalyticsSubmissionFeedbackDto analyticsSubmissionFeedbackDto) {
-    return submissionService.analyticsSubmissionFeedback(analyticsSubmissionFeedbackDto);
+                                                            SubmissionFeedbackDto submissionFeedbackDto) {
+    return submissionService.analyticsSubmissionFeedback(submissionFeedbackDto);
   }
 
 }

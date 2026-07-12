@@ -7,7 +7,7 @@ import java.util.Optional;
 
 import bswe.gamifiedevidencebasednursing.domain.OpenQuestionAnswer;
 import bswe.gamifiedevidencebasednursing.domain.Room;
-import bswe.gamifiedevidencebasednursing.feature.adminfeedbacksubmission.dto.request.AnalyticsSubmissionFeedbackDto;
+import bswe.gamifiedevidencebasednursing.feature.adminfeedbacksubmission.dto.request.SubmissionFeedbackDto;
 import bswe.gamifiedevidencebasednursing.feature.adminfeedbacksubmission.dto.request.QuestionFeedbackDto;
 import bswe.gamifiedevidencebasednursing.feature.roomofanalytics.dto.response.AnalyticsFeedbackDto;
 import bswe.gamifiedevidencebasednursing.feature.roomofanalytics.dto.response.QuestionFeedbackResultDto;
@@ -33,15 +33,15 @@ public class SubmissionService {
   }
 
 
-  public ResponseEntity<String> analyticsSubmissionFeedback(AnalyticsSubmissionFeedbackDto analyticsSubmissionFeedbackDto) {
-    Optional<Room> optionalRoom = roomRepository.findById(analyticsSubmissionFeedbackDto.getRoomId());
+  public ResponseEntity<String> analyticsSubmissionFeedback(SubmissionFeedbackDto submissionFeedbackDto) {
+    Optional<Room> optionalRoom = roomRepository.findById(submissionFeedbackDto.getRoomId());
     if (optionalRoom.isEmpty()) {
       throw new IllegalArgumentException("Room not found");
     }
     Room room = optionalRoom.get();
     List<OpenQuestionAnswer> allOpenQuestionAnswers = openQuestionAnswerRepository.findAllByRoomId(room.getId());
     List<QuestionFeedbackResultDto> results = new ArrayList<>();
-    for (QuestionFeedbackDto questionFeedbackDto : analyticsSubmissionFeedbackDto.getQuestions()) {
+    for (QuestionFeedbackDto questionFeedbackDto : submissionFeedbackDto.getQuestions()) {
       if (questionFeedbackDto.getAnswer() == null) {
         throw new IllegalArgumentException("Answer cannot be null");
       }
@@ -84,5 +84,37 @@ public class SubmissionService {
     return ResponseEntity.ok("Feedback submitted successfully");
   }
 
-  public void sciencebattleSubmissionFeedback(long roomId, long missionId) {}
+  public void sciencebattleSubmissionFeedback(SubmissionFeedbackDto submissionFeedbackDto) {
+
+  }
+
+  private List<OpenQuestionAnswer> processAdminFeedbackSubmission(SubmissionFeedbackDto submissionFeedbackDto) {
+    Optional<Room> optionalRoom = roomRepository.findById(submissionFeedbackDto.getRoomId());
+    if (optionalRoom.isEmpty()) {
+      throw new IllegalArgumentException("Room not found");
+    }
+    Room room = optionalRoom.get();
+    List<OpenQuestionAnswer> allOpenQuestionAnswers = openQuestionAnswerRepository.findAllByRoomId(room.getId());
+    List<QuestionFeedbackResultDto> results = new ArrayList<>();
+    for (QuestionFeedbackDto questionFeedbackDto : submissionFeedbackDto.getQuestions()) {
+      if (questionFeedbackDto.getAnswer() == null) {
+        throw new IllegalArgumentException("Answer cannot be null");
+      }
+      OpenQuestionAnswer openQuestionAnswer = openQuestionAnswerRepository.findByRoomIdAndQuestionId(room.getId(), questionFeedbackDto.getQuestionId());
+      if (questionFeedbackDto.isApproved()) {
+        openQuestionAnswer.setApproved(true);
+        room.setProgress(room.getProgress() + 20);
+        results.add(new QuestionFeedbackResultDto(questionFeedbackDto.getQuestionId(), true, questionFeedbackDto.getAnswer()));
+      } else {
+        if (openQuestionAnswer == null) {
+          throw new IllegalArgumentException("Open question answer not found for room and question");
+        }
+        openQuestionAnswer.setApproved(false);
+        openQuestionAnswer.setAnswerText(null);
+        results.add(new QuestionFeedbackResultDto(questionFeedbackDto.getQuestionId(), false, null));
+      }
+      openQuestionAnswerRepository.save(openQuestionAnswer);
+    }
+    return allOpenQuestionAnswers;
+  }
 }

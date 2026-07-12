@@ -1,6 +1,9 @@
 package bswe.gamifiedevidencebasednursing.feature.roomofsciencebattle.controller;
 
-import bswe.gamifiedevidencebasednursing.feature.roomofanalytics.dto.request.SubmissionDto;
+import bswe.gamifiedevidencebasednursing.feature.roomofsciencebattle.dto.request.SubmissionDto;
+import bswe.gamifiedevidencebasednursing.feature.roomofsciencebattle.dto.response.SubmissionResponseDto;
+import bswe.gamifiedevidencebasednursing.feature.roomofsciencebattle.service.RoomOfScienceBattleService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,7 +13,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/rooms/roomofsciencebattle")
 public class RoomOfScienceBattleController {
 
+
+  private final RoomOfScienceBattleService roomOfScienceBattleService;
+
+  public RoomOfScienceBattleController(RoomOfScienceBattleService roomOfScienceBattleService) {
+    this.roomOfScienceBattleService = roomOfScienceBattleService;
+  }
+
   @PostMapping(value = "/submit")
-  public void submitScienceBattle(@RequestBody SubmissionDto submissionDto) {
+  public ResponseEntity<SubmissionResponseDto> submitScienceBattle(@RequestBody SubmissionDto submissionDto) {
+    return roomOfScienceBattleService.submitScienceBattleEvidence(submissionDto);
   }
 }

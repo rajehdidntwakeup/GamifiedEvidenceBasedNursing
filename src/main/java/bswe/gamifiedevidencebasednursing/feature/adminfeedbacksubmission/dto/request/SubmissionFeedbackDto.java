@@ -2,14 +2,14 @@ package bswe.gamifiedevidencebasednursing.feature.adminfeedbacksubmission.dto.re
 
 import java.util.List;
 
-public class AnalyticsSubmissionFeedbackDto {
+public class SubmissionFeedbackDto {
   private long roomId;
   private List<QuestionFeedbackDto> questions;
 
- public AnalyticsSubmissionFeedbackDto() {
+ public SubmissionFeedbackDto() {
  }
 
-  public AnalyticsSubmissionFeedbackDto(long roomId, List<QuestionFeedbackDto> questions) {
+  public SubmissionFeedbackDto(long roomId, List<QuestionFeedbackDto> questions) {
     this.roomId = roomId;
     this.questions = questions == null ? null : List.copyOf(questions);
   }
