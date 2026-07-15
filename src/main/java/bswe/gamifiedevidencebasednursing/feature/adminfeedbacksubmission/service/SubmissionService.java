@@ -12,6 +12,8 @@ import bswe.gamifiedevidencebasednursing.feature.adminfeedbacksubmission.dto.req
 import bswe.gamifiedevidencebasednursing.feature.roomofanalytics.dto.response.AnalyticsFeedbackDto;
 import bswe.gamifiedevidencebasednursing.feature.roomofanalytics.dto.response.QuestionFeedbackResultDto;
 import bswe.gamifiedevidencebasednursing.feature.roomofanalytics.service.AnalyticsNotificationService;
+import bswe.gamifiedevidencebasednursing.feature.roomofsciencebattle.dto.response.ScienceBattleFeedbackDto;
+import bswe.gamifiedevidencebasednursing.feature.roomofsciencebattle.service.ScienceBattleNotificationService;
 import bswe.gamifiedevidencebasednursing.repository.OpenQuestionAnswerRepository;
 import bswe.gamifiedevidencebasednursing.repository.RoomRepository;
 import org.springframework.http.ResponseEntity;
@@ -23,13 +25,16 @@ public class SubmissionService {
   private final RoomRepository roomRepository;
   private final OpenQuestionAnswerRepository openQuestionAnswerRepository;
   private final AnalyticsNotificationService analyticsNotificationService;
+  private final ScienceBattleNotificationService scienceBattleNotificationService;
 
   public SubmissionService(RoomRepository roomRepository,
                            OpenQuestionAnswerRepository openQuestionAnswerRepository,
-                           AnalyticsNotificationService analyticsNotificationService) {
+                           AnalyticsNotificationService analyticsNotificationService,
+                           ScienceBattleNotificationService scienceBattleNotificationService) {
     this.roomRepository = roomRepository;
     this.openQuestionAnswerRepository = openQuestionAnswerRepository;
     this.analyticsNotificationService = analyticsNotificationService;
+    this.scienceBattleNotificationService = scienceBattleNotificationService;
   }
 
 
@@ -84,18 +89,14 @@ public class SubmissionService {
     return ResponseEntity.ok("Feedback submitted successfully");
   }
 
-  public void sciencebattleSubmissionFeedback(SubmissionFeedbackDto submissionFeedbackDto) {
-
-  }
-
-  private List<OpenQuestionAnswer> processAdminFeedbackSubmission(SubmissionFeedbackDto submissionFeedbackDto) {
+  public ResponseEntity<String> scienceBattleSubmissionFeedback(SubmissionFeedbackDto submissionFeedbackDto) {
     Optional<Room> optionalRoom = roomRepository.findById(submissionFeedbackDto.getRoomId());
     if (optionalRoom.isEmpty()) {
       throw new IllegalArgumentException("Room not found");
     }
     Room room = optionalRoom.get();
-    List<OpenQuestionAnswer> allOpenQuestionAnswers = openQuestionAnswerRepository.findAllByRoomId(room.getId());
-    List<QuestionFeedbackResultDto> results = new ArrayList<>();
+    List<bswe.gamifiedevidencebasednursing.feature.roomofsciencebattle.dto.response.
+        QuestionFeedbackResultDto> results = new ArrayList<>();
     for (QuestionFeedbackDto questionFeedbackDto : submissionFeedbackDto.getQuestions()) {
       if (questionFeedbackDto.getAnswer() == null) {
         throw new IllegalArgumentException("Answer cannot be null");
@@ -103,18 +104,31 @@ public class SubmissionService {
       OpenQuestionAnswer openQuestionAnswer = openQuestionAnswerRepository.findByRoomIdAndQuestionId(room.getId(), questionFeedbackDto.getQuestionId());
       if (questionFeedbackDto.isApproved()) {
         openQuestionAnswer.setApproved(true);
-        room.setProgress(room.getProgress() + 20);
-        results.add(new QuestionFeedbackResultDto(questionFeedbackDto.getQuestionId(), true, questionFeedbackDto.getAnswer()));
+        room.setProgress(room.getProgress() + 15);
+        results.add(new bswe.gamifiedevidencebasednursing.feature.roomofsciencebattle.dto.response.
+            QuestionFeedbackResultDto(questionFeedbackDto.getQuestionId(), true, questionFeedbackDto.getAnswer()));
       } else {
         if (openQuestionAnswer == null) {
           throw new IllegalArgumentException("Open question answer not found for room and question");
         }
         openQuestionAnswer.setApproved(false);
         openQuestionAnswer.setAnswerText(null);
-        results.add(new QuestionFeedbackResultDto(questionFeedbackDto.getQuestionId(), false, null));
+        results.add(new bswe.gamifiedevidencebasednursing.feature.roomofsciencebattle.dto.response.
+            QuestionFeedbackResultDto(questionFeedbackDto.getQuestionId(), false, null));
       }
       openQuestionAnswerRepository.save(openQuestionAnswer);
     }
-    return allOpenQuestionAnswers;
+
+    ScienceBattleFeedbackDto feedback = new ScienceBattleFeedbackDto(
+        room.getId(),
+        room.getProgress(),
+        room.getTeam().getMission().getName(),
+        Instant.now(),
+        results
+    );
+    scienceBattleNotificationService.notifyTeam(feedback);
+
+    return ResponseEntity.ok("Feedback submitted successfully");
   }
+
 }

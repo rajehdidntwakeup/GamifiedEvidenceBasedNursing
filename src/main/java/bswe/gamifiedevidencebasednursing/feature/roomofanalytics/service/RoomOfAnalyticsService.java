@@ -122,7 +122,7 @@ public class RoomOfAnalyticsService {
     }
 
     int progress = validateLevelOfEvidenceAnswer(submissionDto.getLevelofEvidenceQuestionId(),
-        submissionDto.getLevelofEvidencAnswer());
+        submissionDto.getLevelofEvidenceAnswer());
 
     room.setProgress(room.getProgress() + progress);
     roomRepository.save(room);

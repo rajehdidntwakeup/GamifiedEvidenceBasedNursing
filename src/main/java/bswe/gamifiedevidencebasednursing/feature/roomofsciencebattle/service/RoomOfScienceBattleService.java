@@ -116,7 +116,7 @@ public class RoomOfScienceBattleService {
     }
 
     int progress = validateLevelOfEvidenceAnswer(submissionDto.getLevelofEvidenceQuestionId(),
-        submissionDto.getLevelofEvidencAnswer());
+        submissionDto.getLevelofEvidenceAnswer());
 
     room.setProgress(room.getProgress() + progress);
     roomRepository.save(room);
@@ -141,7 +141,7 @@ public class RoomOfScienceBattleService {
       return 0;
     }
     if (answer.getText().equalsIgnoreCase(levelOfEvidenceAnswer)) {
-      return 30;
+      return 10;
     }
     return 0;
   }

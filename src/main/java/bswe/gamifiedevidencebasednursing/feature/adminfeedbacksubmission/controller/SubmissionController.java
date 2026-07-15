@@ -24,4 +24,10 @@ public class SubmissionController {
     return submissionService.analyticsSubmissionFeedback(submissionFeedbackDto);
   }
 
+  @PostMapping(value = "/sciencebattle")
+  public ResponseEntity<String> scienceBattleSubmissionFeedback(@RequestBody
+                                                                 SubmissionFeedbackDto submissionFeedbackDto) {
+    return submissionService.scienceBattleSubmissionFeedback(submissionFeedbackDto);
+  }
+
 }

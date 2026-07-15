@@ -31,7 +31,7 @@ public class ProceedController {
     return proceedService.proceedToTheRoomOfAnalytics(proceedDto);
   }
 
-  @PostMapping("/scienebattle")
+  @PostMapping("/sciencebattle")
   public ResponseEntity<RoomResponseDto> proceedToTheRoomOfScienceBattle(
       @RequestBody ProceedDto proceedDto) {
     return proceedService.proceedToTheRoomOfScienceBattle(proceedDto);

@@ -7,7 +7,7 @@ public class SubmissionDto {
 
   private long roomId;
   private long levelofEvidenceQuestionId;
-  private String levelofEvidencAnswer;
+  private String levelofEvidenceAnswer;
   private List<OpenQuestionSubmissionDto> openQuestions;
 
   public SubmissionDto() {
@@ -41,10 +41,10 @@ public class SubmissionDto {
   public void setLevelofEvidenceQuestionId(long levelofEvidenceQuestionId) {
     this.levelofEvidenceQuestionId = levelofEvidenceQuestionId;
   }
-  public String getLevelofEvidencAnswer() {
-    return levelofEvidencAnswer;
+  public String getLevelofEvidenceAnswer() {
+    return levelofEvidenceAnswer;
   }
-  public void setLevelofEvidencAnswer(String levelofEvidencAnswer) {
-    this.levelofEvidencAnswer = levelofEvidencAnswer;
+  public void setLevelofEvidenceAnswer(String levelofEvidenceAnswer) {
+    this.levelofEvidenceAnswer = levelofEvidenceAnswer;
   }
 }
