@@ -6,7 +6,7 @@ package bswe.gamifiedevidencebasednursing.auth.dto;
  */
 public class AuthResponse {
   private String token;
-  private boolean isAdmin;
+  private boolean admin;
 
   /**
    * Default constructor.
@@ -18,11 +18,11 @@ public class AuthResponse {
    * Constructs an authentication response with token and admin status.
    *
    * @param token the JWT authentication token
-   * @param isAdmin whether the user has admin (WRITE) privileges
+   * @param admin whether the user has admin (WRITE) privileges
    */
-  public AuthResponse(String token, boolean isAdmin) {
+  public AuthResponse(String token, boolean admin) {
     this.token = token;
-    this.isAdmin = isAdmin;
+    this.admin = admin;
   }
 
   /**
@@ -49,7 +49,7 @@ public class AuthResponse {
    * @return true if the user is an admin, false otherwise
    */
   public boolean isAdmin() {
-    return isAdmin;
+    return admin;
   }
 
   /**
@@ -58,6 +58,6 @@ public class AuthResponse {
    * @param admin the admin status to set
    */
   public void setAdmin(boolean admin) {
-    isAdmin = admin;
+    this.admin = admin;
   }
 }

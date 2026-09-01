@@ -28,7 +28,7 @@ public class RoomOfScienceBattleController {
     return roomOfScienceBattleService.submitScienceBattleEvidence(submissionDto);
   }
 
-  @GetMapping
+  @GetMapping(value = "/results")
   public ResponseEntity<ResultDto> getResults(@RequestParam long roomId, @RequestParam long missionId) {
     return roomOfScienceBattleService.getResults(roomId, missionId);
   }

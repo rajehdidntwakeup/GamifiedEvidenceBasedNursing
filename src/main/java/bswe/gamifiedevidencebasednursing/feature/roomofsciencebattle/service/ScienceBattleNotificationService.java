@@ -23,6 +23,6 @@ public class ScienceBattleNotificationService {
 
   public void notifyTeam(ScienceBattleFeedbackDto feedback) {
     logger.info("Sending feedback notification for mission: {}", feedback.missionName());
-    messagingTemplate.convertAndSend("/topic/sciencebattle/feedback" + feedback.missionName() + "/feedback", feedback);
+    messagingTemplate.convertAndSend("/topic/sciencebattle/feedback/" + feedback.missionName() + "/feedback", feedback);
   }
 }

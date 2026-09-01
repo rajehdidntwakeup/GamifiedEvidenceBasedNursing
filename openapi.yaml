@@ -35,6 +35,8 @@ info:
     - **Topics:**
       - `/topic/analytics/submissions`: Admins can subscribe to this topic to receive real-time notifications when a team submits their answers in the Room of Analytics.
       - `/topic/mission/analytics/{mission-name}/feedback`: Teams can subscribe to this topic to receive real-time feedback when an admin approves or rejects their analytics answers. Replace `{mission-name}` with the team's actual mission name (e.g., "mission1").
+      - `/topic/sciencebattle/submissions`: Admins can subscribe to this topic to receive real-time notifications when a team submits their answers in the Room of Science Battle.
+      - `/topic/sciencebattle/feedback{mission-name}/feedback`: Teams can subscribe to this topic to receive real-time feedback when an admin approves or rejects their science battle answers. Replace `{mission-name}` with the team's actual mission name (e.g., "mission1").
   version: 1.0.0
   contact:
     name: GamifiedEvidenceBasedNursing Team
@@ -946,7 +948,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/rooms/roomofsciencebattle:
+  /api/rooms/roomofsciencebattle/results:
     get:
       tags:
         - Room of Science Battle
@@ -961,12 +963,14 @@ paths:
           schema:
             type: integer
             format: int64
+          example: 4
         - name: missionId
           in: query
           required: true
           schema:
             type: integer
             format: int64
+          example: 1
       responses:
         '200':
           description: Results retrieved successfully
@@ -1536,7 +1540,7 @@ components:
     # ── WebSocket Notifications ─────────────────
     AdminNotificationDto:
       type: object
-      description: Real-time notification for admins when a room of analytics is submitted
+      description: Real-time notification for admins when answers for a room (Room of Analytics or Room of Science Battle) are submitted
       required:
         - missionId
         - missionName
@@ -1608,6 +1612,36 @@ components:
         progress:
           type: integer
           example: 60
+        feedbackAt:
+          type: string
+          format: date-time
+          example: "2026-05-01T14:30:00Z"
+        questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuestionFeedbackResultDto'
+
+    ScienceBattleFeedbackDto:
+      type: object
+      description: Real-time feedback sent to a team after admin reviews their science battle submission
+      required:
+        - roomId
+        - missionName
+        - progress
+        - feedbackAt
+        - questions
+      properties:
+        roomId:
+          type: integer
+          format: int64
+          example: 4
+        missionName:
+          type: string
+          description: Name of the mission
+          example: "mission1"
+        progress:
+          type: integer
+          example: 75
         feedbackAt:
           type: string
           format: date-time
