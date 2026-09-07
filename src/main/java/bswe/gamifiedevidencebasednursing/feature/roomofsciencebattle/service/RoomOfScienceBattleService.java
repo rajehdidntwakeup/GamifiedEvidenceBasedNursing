@@ -68,7 +68,9 @@ public class RoomOfScienceBattleService {
       Map<Long, OpenQuestionAnswer> existingAnswers = openQuestionAnswerRepository
           .findAllByRoomId(room.getId())
           .stream()
-          .collect(Collectors.toMap(OpenQuestionAnswer::getId, Function.identity()));
+          .collect(Collectors.toMap(
+              OpenQuestionAnswer::getId, Function.identity()
+          ));
 
       for (OpenQuestionSubmissionDto dto : openQuestions) {
         Question question = questionMap.get((Long) dto.getQuestionId());

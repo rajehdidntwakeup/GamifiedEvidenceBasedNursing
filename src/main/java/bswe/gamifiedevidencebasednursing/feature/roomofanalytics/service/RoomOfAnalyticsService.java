@@ -47,7 +47,6 @@ public class RoomOfAnalyticsService {
     this.answerRepository = answerRepository;
   }
 
-
   @Transactional
   public ResponseEntity<SubmissionResponseDto> submitAnalytics(SubmissionDto submissionDto) {
     Room room = roomRepository.findById(submissionDto.getRoomId())
@@ -88,7 +87,6 @@ public class RoomOfAnalyticsService {
                 dto.getAnswer()
             ));
           }
-
           toSave.add(existing);
         } else {
           OpenQuestionAnswer newAnswer = new OpenQuestionAnswer();

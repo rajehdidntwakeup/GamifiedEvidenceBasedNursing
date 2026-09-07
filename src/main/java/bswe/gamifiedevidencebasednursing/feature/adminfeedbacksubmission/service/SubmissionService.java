@@ -95,8 +95,10 @@ public class SubmissionService {
       throw new IllegalArgumentException("Room not found");
     }
     Room room = optionalRoom.get();
+    List<OpenQuestionAnswer> allOpenQuestionAnswers = openQuestionAnswerRepository.findAllByRoomId(room.getId());
     List<bswe.gamifiedevidencebasednursing.feature.roomofsciencebattle.dto.response.
         QuestionFeedbackResultDto> results = new ArrayList<>();
+
     for (QuestionFeedbackDto questionFeedbackDto : submissionFeedbackDto.getQuestions()) {
       if (questionFeedbackDto.getAnswer() == null) {
         throw new IllegalArgumentException("Answer cannot be null");
