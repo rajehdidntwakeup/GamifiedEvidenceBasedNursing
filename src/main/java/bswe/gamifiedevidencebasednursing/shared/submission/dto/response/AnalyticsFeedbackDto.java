@@ -1,4 +1,4 @@
-package bswe.gamifiedevidencebasednursing.feature.roomofanalytics.dto.response;
+package bswe.gamifiedevidencebasednursing.shared.submission.dto.response;
 
 import java.time.Instant;
 import java.util.List;

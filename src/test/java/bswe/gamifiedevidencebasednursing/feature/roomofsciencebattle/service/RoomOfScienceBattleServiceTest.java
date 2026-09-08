@@ -10,14 +10,14 @@ import bswe.gamifiedevidencebasednursing.domain.OpenQuestionAnswer;
 import bswe.gamifiedevidencebasednursing.domain.Question;
 import bswe.gamifiedevidencebasednursing.domain.Room;
 import bswe.gamifiedevidencebasednursing.domain.Team;
-import bswe.gamifiedevidencebasednursing.feature.roomofsciencebattle.dto.request.OpenQuestionSubmissionDto;
-import bswe.gamifiedevidencebasednursing.feature.roomofsciencebattle.dto.request.SubmissionDto;
-import bswe.gamifiedevidencebasednursing.feature.roomofsciencebattle.dto.response.AdminNotificationDto;
-import bswe.gamifiedevidencebasednursing.feature.roomofsciencebattle.dto.response.SubmissionResponseDto;
 import bswe.gamifiedevidencebasednursing.repository.AnswerRepository;
 import bswe.gamifiedevidencebasednursing.repository.OpenQuestionAnswerRepository;
 import bswe.gamifiedevidencebasednursing.repository.QuestionRepository;
 import bswe.gamifiedevidencebasednursing.repository.RoomRepository;
+import bswe.gamifiedevidencebasednursing.shared.submission.dto.request.OpenQuestionSubmissionDto;
+import bswe.gamifiedevidencebasednursing.shared.submission.dto.request.SubmissionDto;
+import bswe.gamifiedevidencebasednursing.shared.submission.dto.response.AdminNotificationDto;
+import bswe.gamifiedevidencebasednursing.shared.submission.dto.response.SubmissionResponseDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -29,7 +29,6 @@ import org.springframework.http.ResponseEntity;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -117,6 +116,7 @@ class RoomOfScienceBattleServiceTest {
 
     assertNotNull(response);
     assertEquals(200, response.getStatusCode().value());
+    assert response.getBody() != null;
     assertTrue(response.getBody().levelOfEvidenceApproved());
     assertEquals(10, response.getBody().progress());
 
@@ -145,8 +145,9 @@ class RoomOfScienceBattleServiceTest {
     verify(scienceBattleNotificationService).notifyAdmin(notificationCaptor.capture());
     AdminNotificationDto notification = notificationCaptor.getValue();
     assertEquals(mission.getId(), notification.missionId());
+    assert notification.answers() != null;
     assertEquals(2, notification.answers().size());
-    assertEquals(120L, notification.answers().get(0).questionId());
+    assertEquals(120L, notification.answers().getFirst().questionId());
     assertEquals("Explain why your chosen study provides better evidence", notification.answers().get(0).questionText());
     assertEquals("Updated answer for 120", notification.answers().get(0).answerText());
     assertEquals(121L, notification.answers().get(1).questionId());

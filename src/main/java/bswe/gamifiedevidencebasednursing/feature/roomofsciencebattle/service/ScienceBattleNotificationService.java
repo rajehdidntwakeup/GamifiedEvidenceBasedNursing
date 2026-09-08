@@ -1,7 +1,7 @@
 package bswe.gamifiedevidencebasednursing.feature.roomofsciencebattle.service;
 
-import bswe.gamifiedevidencebasednursing.feature.roomofsciencebattle.dto.response.AdminNotificationDto;
 import bswe.gamifiedevidencebasednursing.feature.roomofsciencebattle.dto.response.ScienceBattleFeedbackDto;
+import bswe.gamifiedevidencebasednursing.shared.submission.dto.response.AdminNotificationDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.messaging.simp.SimpMessagingTemplate;

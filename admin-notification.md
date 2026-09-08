@@ -45,7 +45,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 ## 2. Create Notification DTOs
 
 ### `AdminNotificationDto.java`
-File: `src/main/java/bswe/gamifiedevidencebasednursing/feature/roomofanalytics/dto/response/AdminNotificationDto.java`
+File: `src/main/java/bswe/gamifiedevidencebasednursing/shared/submission/dto/response`
 
 ```java
 package bswe.gamifiedevidencebasednursing.feature.roomofanalytics.dto.response;
@@ -53,19 +53,22 @@ package bswe.gamifiedevidencebasednursing.feature.roomofanalytics.dto.response;
 import java.time.Instant;
 import java.util.List;
 
+import bswe.gamifiedevidencebasednursing.shared.submission.dto.response.AnswerDetailDto;
+
 public record AdminNotificationDto(
-        Long submissionId,
-        Long missionId,
-        String missionName,
-        Long roomId,
-        String roomName,
-        Instant submittedAt,
-        List<AnswerDetailDto> answers
-) {}
+    Long submissionId,
+    Long missionId,
+    String missionName,
+    Long roomId,
+    String roomName,
+    Instant submittedAt,
+    List<AnswerDetailDto> answers
+) {
+}
 ```
 
 ### `AnswerDetailDto.java`
-File: `src/main/java/bswe/gamifiedevidencebasednursing/feature/roomofanalytics/dto/response/AnswerDetailDto.java`
+File: `src/main/java/bswe/gamifiedevidencebasednursing/shared/submission/dto/response`
 
 ```java
 package bswe.gamifiedevidencebasednursing.feature.roomofanalytics.dto.response;
@@ -86,22 +89,22 @@ File: `src/main/java/bswe/gamifiedevidencebasednursing/feature/roomofanalytics/s
 ```java
 package bswe.gamifiedevidencebasednursing.feature.roomofanalytics.service;
 
-import bswe.gamifiedevidencebasednursing.feature.roomofanalytics.dto.response.AdminNotificationDto;
+import bswe.gamifiedevidencebasednursing.shared.submission.dto.response.AdminNotificationDto;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AnalyticsNotificationService {
 
-    private final SimpMessagingTemplate messagingTemplate;
+  private final SimpMessagingTemplate messagingTemplate;
 
-    public AnalyticsNotificationService(SimpMessagingTemplate messagingTemplate) {
-        this.messagingTemplate = messagingTemplate;
-    }
+  public AnalyticsNotificationService(SimpMessagingTemplate messagingTemplate) {
+    this.messagingTemplate = messagingTemplate;
+  }
 
-    public void notifyAdmin(AdminNotificationDto notification) {
-        messagingTemplate.convertAndSend("/topic/analytics/submissions", notification);
-    }
+  public void notifyAdmin(AdminNotificationDto notification) {
+    messagingTemplate.convertAndSend("/topic/analytics/submissions", notification);
+  }
 }
 ```
 
@@ -117,55 +120,56 @@ Add imports and update `submitAnalytics`:
 
 ```java
 import bswe.gamifiedevidencebasednursing.domain.Mission;
-import bswe.gamifiedevidencebasednursing.feature.roomofanalytics.dto.response.AdminNotificationDto;
-import bswe.gamifiedevidencebasednursing.feature.roomofanalytics.dto.response.AnswerDetailDto;
+import bswe.gamifiedevidencebasednursing.shared.submission.dto.response.AdminNotificationDto;
+import bswe.gamifiedevidencebasednursing.shared.submission.dto.response.AnswerDetailDto;
+
 import java.time.Instant;
 
 // ... other existing imports
 
 @Transactional
 public ResponseEntity<String> submitAnalytics(SubmissionDto submissionDto) {
-    Optional<Room> roomOptional = roomRepository.findById(submissionDto.getRoomId());
-    if (roomOptional.isEmpty()) {
-        throw new IllegalArgumentException("Room not found");
-    }
-    Room room = roomOptional.get();
-    
-    List<OpenQuestionAnswer> openQuestionAnswers = new ArrayList<>();
-    for (OpenQuestionSubmissionDto openQuestionSubmissionDto : submissionDto.getOpenQuestions()) {
-        Optional<Question> questionOptional = questionRepository.findById(openQuestionSubmissionDto.getQuestionId());
-        if (questionOptional.isEmpty()) {
-            throw new IllegalArgumentException("Question not found");
-        }
-        Question question = questionOptional.get();
-        OpenQuestionAnswer openQuestionAnswer = new OpenQuestionAnswer();
-        openQuestionAnswer.setRoom(room);
-        openQuestionAnswer.setQuestion(question);
-        openQuestionAnswer.setAnswerText(openQuestionSubmissionDto.getAnswer());
-        openQuestionAnswers.add(openQuestionAnswer);
-    }
-    List<OpenQuestionAnswer> saved = openQuestionAnswerRepository.saveAll(openQuestionAnswers);
+  Optional<Room> roomOptional = roomRepository.findById(submissionDto.getRoomId());
+  if (roomOptional.isEmpty()) {
+    throw new IllegalArgumentException("Room not found");
+  }
+  Room room = roomOptional.get();
 
-    // Emit notification to admins
-    if (!saved.isEmpty()) {
-        Mission mission = room.getTeam().getMission();
-        AdminNotificationDto notification = new AdminNotificationDto(
-                saved.get(0).getId(), // Using first answer ID as submission reference
-                mission.getId(),
-                mission.getName(),
-                room.getId(),
-                room.getLocation().getName(),
-                Instant.now(),
-                saved.stream().map(a -> new AnswerDetailDto(
-                        a.getQuestion().getId(),
-                        a.getQuestion().getTitle(),
-                        a.getAnswerText()
-                )).toList()
-        );
-        analyticsNotificationService.notifyAdmin(notification);
+  List<OpenQuestionAnswer> openQuestionAnswers = new ArrayList<>();
+  for (OpenQuestionSubmissionDto openQuestionSubmissionDto : submissionDto.getOpenQuestions()) {
+    Optional<Question> questionOptional = questionRepository.findById(openQuestionSubmissionDto.getQuestionId());
+    if (questionOptional.isEmpty()) {
+      throw new IllegalArgumentException("Question not found");
     }
+    Question question = questionOptional.get();
+    OpenQuestionAnswer openQuestionAnswer = new OpenQuestionAnswer();
+    openQuestionAnswer.setRoom(room);
+    openQuestionAnswer.setQuestion(question);
+    openQuestionAnswer.setAnswerText(openQuestionSubmissionDto.getAnswer());
+    openQuestionAnswers.add(openQuestionAnswer);
+  }
+  List<OpenQuestionAnswer> saved = openQuestionAnswerRepository.saveAll(openQuestionAnswers);
 
-    return ResponseEntity.ok("Analytics submitted successfully");
+  // Emit notification to admins
+  if (!saved.isEmpty()) {
+    Mission mission = room.getTeam().getMission();
+    AdminNotificationDto notification = new AdminNotificationDto(
+        saved.getFirst().getId(), // Using first answer ID as submission reference
+        mission.getId(),
+        mission.getName(),
+        room.getId(),
+        room.getLocation().getName(),
+        Instant.now(),
+        saved.stream().map(a -> new AnswerDetailDto(
+            a.getQuestion().getId(),
+            a.getQuestion().getTitle(),
+            a.getAnswerText()
+        )).toList()
+    );
+    analyticsNotificationService.notifyAdmin(notification);
+  }
+
+  return ResponseEntity.ok("Analytics submitted successfully");
 }
 ```
 

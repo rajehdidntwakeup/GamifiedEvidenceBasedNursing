@@ -1,8 +1,8 @@
 package bswe.gamifiedevidencebasednursing.feature.roomofanalytics.controller;
 
-import bswe.gamifiedevidencebasednursing.feature.roomofanalytics.dto.request.SubmissionDto;
-import bswe.gamifiedevidencebasednursing.feature.roomofanalytics.dto.response.ResultDto;
-import bswe.gamifiedevidencebasednursing.feature.roomofanalytics.dto.response.SubmissionResponseDto;
+import bswe.gamifiedevidencebasednursing.shared.submission.dto.request.SubmissionDto;
+import bswe.gamifiedevidencebasednursing.shared.submission.dto.response.ResultDto;
+import bswe.gamifiedevidencebasednursing.shared.submission.dto.response.SubmissionResponseDto;
 import bswe.gamifiedevidencebasednursing.feature.roomofanalytics.service.RoomOfAnalyticsService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

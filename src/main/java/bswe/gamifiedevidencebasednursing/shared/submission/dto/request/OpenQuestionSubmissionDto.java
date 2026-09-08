@@ -1,4 +1,4 @@
-package bswe.gamifiedevidencebasednursing.feature.roomofanalytics.dto.request;
+package bswe.gamifiedevidencebasednursing.shared.submission.dto.request;
 
 public class OpenQuestionSubmissionDto {
   private long questionId;

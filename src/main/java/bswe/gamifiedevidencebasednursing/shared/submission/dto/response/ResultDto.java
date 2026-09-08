@@ -1,4 +1,4 @@
-package bswe.gamifiedevidencebasednursing.feature.roomofanalytics.dto.response;
+package bswe.gamifiedevidencebasednursing.shared.submission.dto.response;
 
 public class ResultDto {
   private int progress;

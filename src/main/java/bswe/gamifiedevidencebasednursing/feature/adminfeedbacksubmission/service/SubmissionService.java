@@ -9,8 +9,8 @@ import bswe.gamifiedevidencebasednursing.domain.OpenQuestionAnswer;
 import bswe.gamifiedevidencebasednursing.domain.Room;
 import bswe.gamifiedevidencebasednursing.feature.adminfeedbacksubmission.dto.request.SubmissionFeedbackDto;
 import bswe.gamifiedevidencebasednursing.feature.adminfeedbacksubmission.dto.request.QuestionFeedbackDto;
-import bswe.gamifiedevidencebasednursing.feature.roomofanalytics.dto.response.AnalyticsFeedbackDto;
-import bswe.gamifiedevidencebasednursing.feature.roomofanalytics.dto.response.QuestionFeedbackResultDto;
+import bswe.gamifiedevidencebasednursing.shared.submission.dto.response.AnalyticsFeedbackDto;
+import bswe.gamifiedevidencebasednursing.shared.submission.dto.response.QuestionFeedbackResultDto;
 import bswe.gamifiedevidencebasednursing.feature.roomofanalytics.service.AnalyticsNotificationService;
 import bswe.gamifiedevidencebasednursing.feature.roomofsciencebattle.dto.response.ScienceBattleFeedbackDto;
 import bswe.gamifiedevidencebasednursing.feature.roomofsciencebattle.service.ScienceBattleNotificationService;
@@ -95,7 +95,6 @@ public class SubmissionService {
       throw new IllegalArgumentException("Room not found");
     }
     Room room = optionalRoom.get();
-    List<OpenQuestionAnswer> allOpenQuestionAnswers = openQuestionAnswerRepository.findAllByRoomId(room.getId());
     List<bswe.gamifiedevidencebasednursing.feature.roomofsciencebattle.dto.response.
         QuestionFeedbackResultDto> results = new ArrayList<>();
 

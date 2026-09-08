@@ -30,7 +30,7 @@ return ResponseEntity.ok("Feedback submitted successfully");
 
 ## Step 2 — Create the Feedback Notification DTO
 
-**New file:** `src/main/java/bswe/gamifiedevidencebasednursing/feature/roomofanalytics/dto/response/AnalyticsFeedbackDto.java`
+**New file:** `src/main/java/bswe/gamifiedevidencebasednursing/shared/submission/dto/response`
 
 This DTO is what the team frontend receives when the admin finishes reviewing their submission.
 
@@ -40,15 +40,18 @@ package bswe.gamifiedevidencebasednursing.feature.roomofanalytics.dto.response;
 import java.time.Instant;
 import java.util.List;
 
+import bswe.gamifiedevidencebasednursing.shared.submission.dto.response.QuestionFeedbackResultDto;
+
 public record AnalyticsFeedbackDto(
     Long roomId,
     Integer progress,
     Instant feedbackAt,
     List<QuestionFeedbackResultDto> questions
-) {}
+) {
+}
 ```
 
-**New file:** `src/main/java/bswe/gamifiedevidencebasednursing/feature/roomofanalytics/dto/response/QuestionFeedbackResultDto.java`
+**New file:** `src/main/java/bswe/gamifiedevidencebasednursing/shared/submission/dto/response`
 
 ```java
 package bswe.gamifiedevidencebasednursing.feature.roomofanalytics.dto.response;
